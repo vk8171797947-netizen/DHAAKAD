@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DHAAKAD</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#101010;color:white;font-family:Arial,sans-serif}
+header{padding:20px;background:#181818;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #333}
+.logo{font-size:27px;font-weight:900;color:#ff7900}
+header span{color:#aaa;font-size:13px}
+.hero{padding:25px 18px;background:linear-gradient(135deg,#252525,#111)}
+.hero h1{font-size:30px;margin:5px 0;color:#ff7900}
+.hero p{color:#ccc}
+.upload{background:#ff7900;color:#111;border:0;padding:13px 22px;border-radius:9px;font-weight:bold;font-size:15px}
+h2{padding:0 18px;font-size:20px}
+.feed{padding:0 15px 90px}
+.post{background:#202020;border-radius:14px;margin:15px 0;overflow:hidden}
+.video{height:260px;background:linear-gradient(145deg,#38200e,#111);display:flex;align-items:center;justify-content:center;font-size:48px;color:#ff7900}
+.info{padding:14px}
+.info p{color:#aaa;font-size:14px}
+.actions{display:flex;gap:20px;color:#ff7900}
+nav{position:fixed;bottom:0;left:0;right:0;background:#181818;border-top:1px solid #333;display:flex;justify-content:space-around;padding:15px 5px;color:#ff7900}
+nav span{font-size:13px}
+input{display:none}
+</style>
+</head>
+<body>
+<header>
+<div class="logo">DHAAKAD 🔥</div>
+<span>CREATE • SHARE • EARN</span>
+</header>
+<section class="hero">
+<h1>अपना हुनर दिखाओ!</h1>
+<p>वीडियो बनाओ, दुनिया को दिखाओ और आगे बढ़ो।</p>
+<label class="upload" for="videoFile">+ Upload Video</label>
+<input type="file" id="videoFile" accept="video/*">
+</section>
+<h2>🔥 आपके लिए वीडियो</h2>
+<div class="feed" id="feed">
+<div class="post">
+<div class="video">▶</div>
+<div class="info">
+<strong>DHAAKAD में आपका स्वागत है!</strong>
+<p>अपना टैलेंट दुनिया को दिखाओ।</p>
+<div class="actions"><span>♡ Like</span><span>💬 Comment</span><span>↗ Share</span></div>
+</div>
+</div>
+</div>
+<nav>
+<span>🏠 Home</span><span>🔍 Search</span><span>➕ Create</span><span>👤 Profile</span>
+</nav>
+<script>
+document.getElementById('videoFile').addEventListener('change',function(){
+if(!this.files.length)return;
+const url=URL.createObjectURL(this.files[0]);
+const post=document.createElement('div');
+post.className='post';
+post.innerHTML='<video controls style="width:100%;max-height:350px"></video><div class="info"><strong>Your new video</strong><p>DHAAKAD</p></div>';
+post.querySelector('video').src=url;
+document.getElementById('feed').prepend(post);
+});
+</script>
+</body>
+</html>
