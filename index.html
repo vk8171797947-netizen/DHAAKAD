@@ -3,126 +3,307 @@
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>DHAAKAD</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#080808;color:white;font-family:Arial,sans-serif}
-header{padding:17px;background:#151515;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #333}
-.logo{font-size:27px;font-weight:900;color:#ff7900}
-.hero{padding:22px 16px;background:linear-gradient(135deg,#302010,#111)}
-.hero h1{color:#ff7900;font-size:28px}
-.hero p{color:#ccc}
-.upload{display:inline-block;background:#ff7900;color:#111;padding:13px 20px;border-radius:10px;font-weight:bold}
-input{display:none}
-h2{padding:0 15px;color:#ff7900}
-.feed{padding:0 12px 90px}
-.post{background:#191919;border-radius:14px;margin:16px 0;overflow:hidden}
-.video{height:390px;background:linear-gradient(145deg,#38200e,#101010);display:flex;align-items:center;justify-content:center;font-size:55px;color:#ff7900}
-.info{padding:14px}
-.info p{color:#bbb;font-size:14px}
-.creator{display:flex;justify-content:space-between;align-items:center}
-.follow{background:#ff7900;color:#111;border:0;border-radius:20px;padding:8px 13px;font-weight:bold}
-.actions{display:flex;justify-content:space-around;gap:5px;padding:12px 0;color:white}
-.actions button{background:#292929;color:white;border:0;border-radius:9px;padding:10px 7px;font-size:13px}
-.actions button:active{background:#ff7900}
-.saved{color:#ff7900!important}
-nav{position:fixed;bottom:0;left:0;right:0;background:#171717;border-top:1px solid #333;display:flex;justify-content:space-around;padding:17px 3px}
-nav span{font-size:13px;color:#ff7900}
+body{margin:0;background:#101010;color:white;font-family:Arial,sans-serif;padding-bottom:75px}
+header{background:#080808;padding:15px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:5;border-bottom:1px solid #333}
+.logo{font-size:25px;font-weight:900;color:#ff7100}
+button{background:#ff7100;color:white;border:0;border-radius:8px;padding:10px 13px;font-weight:bold;cursor:pointer}
+input,textarea{width:100%;padding:12px;margin:7px 0;background:#292929;color:white;border:1px solid #444;border-radius:8px}
+main{max-width:650px;margin:auto;padding:12px}
+.page{display:none}.page.active{display:block}
+.hero{padding:25px 12px;text-align:center;background:linear-gradient(140deg,#451b00,#17100b);border-radius:15px}
+h2{color:#ff7100}
+.card{background:#202020;border:1px solid #333;border-radius:12px;padding:14px;margin:13px 0}
+nav{position:fixed;bottom:0;left:0;right:0;background:#080808;display:flex;justify-content:space-around;padding:10px 0;border-top:1px solid #333;z-index:10}
+nav button{background:none;color:#ddd;font-size:12px;padding:7px 5px}
+nav button.active{color:#ff7100}
+.stories{display:flex;gap:14px;overflow-x:auto;padding:12px 0}
+.story{text-align:center;min-width:60px;font-size:12px}
+.circle{height:55px;width:55px;border-radius:50%;border:3px solid #ff7100;display:grid;place-items:center;margin:auto auto 5px;background:#292929;font-size:22px;overflow:hidden}
+.circle img{width:100%;height:100%;object-fit:cover}
+.posthead{display:flex;align-items:center;gap:10px}
+.posthead .circle{width:40px;height:40px;margin:0}
+.media{width:100%;max-height:450px;object-fit:contain;background:#080808;border-radius:10px;margin-top:12px}
+.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.actions button{background:#333;font-size:12px}
+.actions button.on{color:#ff7100}
+.muted{color:#aaa;font-size:13px}
+.profile{text-align:center;padding:20px}
+.profile .circle{height:100px;width:100px;font-size:35px}
 </style>
 </head>
 <body>
-
 <header>
-<div class="logo">DHAAKAD 🔥</div>
-<span>CREATE • SHARE • EARN</span>
+ <div class="logo">🔥 DHAAKAD</div>
+ <button onclick="show('notifications')">🔔</button>
 </header>
 
-<section class="hero">
-<h1>अपना हुनर दिखाओ!</h1>
-<p>वीडियो बनाओ, दुनिया को दिखाओ और आगे बढ़ो।</p>
-<label class="upload" for="videoFile">+ Upload Video</label>
-<input type="file" id="videoFile" accept="video/*">
+<main>
+<section id="home" class="page active">
+ <div class="hero">
+  <h1 style="color:#ff7100">अपना हुनर दिखाओ!</h1>
+  <p>CREATE • SHARE • EARN</p>
+  <button onclick="show('create')">＋ पोस्ट बनाओ</button>
+ </div>
+ <h3>स्टेटस</h3>
+ <div class="stories" id="stories">
+  <div class="story" onclick="show('create')"><div class="circle">＋</div>आपका स्टेटस</div>
+ </div>
+ <h3>आपकी फीड</h3>
+ <div id="feed"></div>
 </section>
 
-<h2>🔥 आपके लिए वीडियो</h2>
-<div class="feed" id="feed">
+<section id="create" class="page">
+ <h2>नई पोस्ट बनाएं</h2>
+ <div class="card">
+  <input id="caption" placeholder="अपनी पोस्ट के बारे में लिखें">
+  <label>फोटो या वीडियो चुनें</label>
+  <input id="mediafile" type="file" accept="image/*,video/*">
+  <button onclick="createPost()">पोस्ट शेयर करें</button>
+ </div>
+ <h2>स्टेटस डालें</h2>
+ <div class="card">
+  <input id="statusText" placeholder="आज क्या कहना चाहते हैं?">
+  <input id="statusFile" type="file" accept="image/*,video/*">
+  <button onclick="addStatus()">स्टेटस लगाएं</button>
+ </div>
+</section>
 
-<div class="post">
-<div class="video">▶</div>
-<div class="info">
-<div class="creator">
-<strong>DHAAKAD Creator</strong>
-<button class="follow" onclick="follow(this)">+ Follow</button>
-</div>
-<p>धाकड़ में आपका स्वागत है! 🔥</p>
-<div class="actions">
-<button onclick="like(this)">♡ Like</button>
-<button onclick="comment()">💬 Comment</button>
-<button onclick="share()">↗ Share</button>
-<button onclick="save(this)">🔖 Save</button>
-</div>
-</div>
-</div>
+<section id="search" class="page">
+ <h2>🔍 खोजें</h2>
+ <input id="searchbox" placeholder="पोस्ट खोजें..." oninput="searchPosts()">
+ <div id="results"></div>
+</section>
 
-</div>
+<section id="profile" class="page">
+ <div class="profile card">
+  <div class="circle" id="avatar">👤</div>
+  <h2 id="profileName">DHAAKAD USER</h2>
+  <p id="bio">अपना हुनर दिखाओ!</p>
+  <p>पोस्ट: <span id="postCount">0</span> | फॉलोअर्स: <span id="followers">0</span></p>
+ </div>
+ <div class="card">
+  <h3>प्रोफाइल बदलें</h3>
+  <input id="nameInput" placeholder="अपना नाम">
+  <textarea id="bioInput" placeholder="अपने बारे में लिखें"></textarea>
+  <label>अपनी DP चुनें</label>
+  <input id="dpFile" type="file" accept="image/*">
+  <button onclick="saveProfile()">प्रोफाइल सेव करें</button>
+ </div>
+</section>
+
+<section id="notifications" class="page">
+ <h2>🔔 Notifications</h2>
+ <div class="card" id="notice">अभी कोई नई Notification नहीं है।</div>
+</section>
+
+<section id="chat" class="page">
+ <h2>💬 Chat</h2>
+ <div class="card">
+  <input id="message" placeholder="अपना मैसेज लिखें">
+  <button onclick="sendMessage()">भेजें</button>
+  <div id="messages"></div>
+ </div>
+ <p class="muted">यह डेमो चैट है। असली चैट के लिए सर्वर जोड़ना होगा।</p>
+</section>
+
+<section id="earn" class="page">
+ <h2>💰 Creator Dashboard</h2>
+ <div class="card">
+  <h3>आपकी कमाई</h3>
+  <h1>₹0</h1>
+  <p>अपना हुनर दिखाएं और क्रिएटर बनें।</p>
+  <button onclick="alert('असली भुगतान सिस्टम बाद में जोड़ा जाएगा।')">Withdraw</button>
+ </div>
+</section>
+
+<section id="settings" class="page">
+ <h2>⚙️ Settings</h2>
+ <div class="card">
+  <button onclick="alert('Privacy सेटिंग जल्द जोड़ी जाएगी।')">Privacy</button>
+  <button onclick="alert('Help & Support')">Help & Support</button>
+  <button onclick="alert('Report विकल्प जल्द जोड़ा जाएगा।')">Report</button>
+ </div>
+</section>
+</main>
 
 <nav>
-<span>🏠 Home</span>
-<span>🔍 Search</span>
-<span>➕ Create</span>
-<span>🔖 Saved</span>
-<span>👤 Profile</span>
+ <button class="active" onclick="show('home',this)">🏠 Home</button>
+ <button onclick="show('search',this)">🔍 Search</button>
+ <button onclick="show('create',this)">➕ Create</button>
+ <button onclick="show('chat',this)">💬 Chat</button>
+ <button onclick="show('profile',this)">👤 Profile</button>
+ <button onclick="show('earn',this)">💰 Earn</button>
 </nav>
 
 <script>
-function like(btn){
-let liked=btn.dataset.liked==="yes";
-btn.dataset.liked=liked?"no":"yes";
-btn.innerHTML=liked?"♡ Like":"❤️ Liked";
+let posts=[];
+let statuses=[];
+let messages=[];
+let notices=[];
+let myName=localStorage.getItem('dhaakad_name')||'DHAAKAD USER';
+let myBio=localStorage.getItem('dhaakad_bio')||'अपना हुनर दिखाओ!';
+let myDP=localStorage.getItem('dhaakad_dp')||'';
+let followers=0;
+
+function show(id,btn){
+ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+ document.getElementById(id).classList.add('active');
+ document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+ if(btn)btn.classList.add('active');
+ if(id==='profile')updateProfile();
 }
-function follow(btn){
-let followed=btn.dataset.followed==="yes";
-btn.dataset.followed=followed?"no":"yes";
-btn.innerHTML=followed?"+ Follow":"✓ Following";
+
+function escapeHTML(s){
+ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
-function save(btn){
-let saved=btn.dataset.saved==="yes";
-btn.dataset.saved=saved?"no":"yes";
-btn.innerHTML=saved?"🔖 Save":"🔖 Saved";
-btn.classList.toggle("saved");
+
+function createPost(){
+ let caption=document.getElementById('caption').value.trim();
+ let file=document.getElementById('mediafile').files[0];
+ if(!caption&&!file){alert('कुछ लिखें या फोटो चुनें');return;}
+ let url=file?URL.createObjectURL(file):'';
+ posts.unshift({caption:caption,url:url,type:file?file.type:'',likes:0,liked:false,comments:[],following:false});
+ document.getElementById('caption').value='';
+ document.getElementById('mediafile').value='';
+ renderFeed();
+ show('home');
 }
-function comment(){
-let msg=prompt("अपना कमेंट लिखें");
-if(msg)alert("आपका कमेंट: "+msg);
+
+function renderFeed(){
+ let feed=document.getElementById('feed');
+ feed.innerHTML='';
+ if(posts.length===0){
+  feed.innerHTML='<div class="card">अभी कोई पोस्ट नहीं है। अपनी पहली पोस्ट बनाएं! 🔥</div>';
+ }
+ posts.forEach((p,i)=>{
+  let media='';
+  if(p.url){
+   media=p.type.startsWith('video')?
+   '<video class="media" controls src="'+p.url+'"></video>':
+   '<img class="media" src="'+p.url+'">';
+  }
+  let card=document.createElement('div');
+  card.className='card';
+  card.innerHTML=`
+   <div class="posthead">
+    <div class="circle">${myDP?'<img src="'+myDP+'">':'👤'}</div>
+    <div><b>${escapeHTML(myName)}</b><div class="muted">@dhaakad_user</div></div>
+   </div>
+   <p>${escapeHTML(p.caption)}</p>
+   ${media}
+   <div class="actions">
+    <button class="${p.liked?'on':''}" onclick="likePost(${i})">❤️ ${p.likes} Like</button>
+    <button onclick="commentPost(${i})">💬 Comment (${p.comments.length})</button>
+    <button onclick="sharePost(${i})">↗ Share</button>
+    <button onclick="followPost(${i},this)">${p.following?'Following':'＋ Follow'}</button>
+   </div>
+   <div>${p.comments.map(c=>'<p class="muted">💬 '+escapeHTML(c)+'</p>').join('')}</div>`;
+  feed.appendChild(card);
+ });
+ document.getElementById('postCount').textContent=posts.length;
 }
-function share(){
-if(navigator.share){
-navigator.share({title:"DHAAKAD",text:"देखो मेरा DHAAKAD वीडियो!"});
-}else{
-alert("DHAAKAD पर आपका स्वागत है!");
+
+function likePost(i){
+ let p=posts[i];p.liked=!p.liked;p.likes+=p.liked?1:-1;
+ renderFeed();
+ if(p.liked)addNotice('किसी ने आपकी पोस्ट Like की।');
 }
+
+function commentPost(i){
+ let c=prompt('अपना कमेंट लिखें');
+ if(c&&c.trim()){
+  posts[i].comments.push(c.trim());
+  renderFeed();addNotice('आपकी पोस्ट पर कमेंट आया।');
+ }
 }
-document.getElementById("videoFile").addEventListener("change",function(){
-if(!this.files.length)return;
-let url=URL.createObjectURL(this.files[0]);
-let post=document.createElement("div");
-post.className="post";
-post.innerHTML=`
-<video controls style="width:100%;max-height:450px"></video>
-<div class="info">
-<div class="creator"><strong>आपका वीडियो</strong>
-<button class="follow" onclick="follow(this)">+ Follow</button></div>
-<p>DHAAKAD 🔥</p>
-<div class="actions">
-<button onclick="like(this)">♡ Like</button>
-<button onclick="comment()">💬 Comment</button>
-<button onclick="share()">↗ Share</button>
-<button onclick="save(this)">🔖 Save</button>
-</div></div>`;
-post.querySelector("video").src=url;
-document.getElementById("feed").prepend(post);
-});
+
+function sharePost(i){
+ let text=posts[i].caption||'DHAAKAD पोस्ट';
+ if(navigator.share)navigator.share({title:'DHAAKAD',text:text,url:location.href}).catch(()=>{});
+ else if(navigator.clipboard)navigator.clipboard.writeText(text+' '+location.href).then(()=>alert('लिंक कॉपी हो गया'));
+ else alert(text);
+}
+
+function followPost(i,btn){
+ posts[i].following=!posts[i].following;
+ followers+=posts[i].following?1:-1;
+ renderFeed();updateProfile();
+ addNotice('Follow गतिविधि अपडेट हुई।');
+}
+
+function addStatus(){
+ let text=document.getElementById('statusText').value.trim();
+ let file=document.getElementById('statusFile').files[0];
+ if(!text&&!file){alert('स्टेटस लिखें या फोटो चुनें');return;}
+ statuses.unshift({text:text,url:file?URL.createObjectURL(file):'',type:file?file.type:''});
+ document.getElementById('statusText').value='';
+ document.getElementById('statusFile').value='';
+ renderStatuses();show('home');
+}
+
+function renderStatuses(){
+ let box=document.getElementById('stories');
+ box.innerHTML='<div class="story" onclick="show(\\'create\\')"><div class="circle">＋</div>आपका स्टेटस</div>';
+ statuses.forEach(s=>{
+  let item=document.createElement('div');
+  item.className='story';
+  item.innerHTML='<div class="circle">'+(s.url?'<img src="'+s.url+'">':'🔥')+'</div>आप';
+  item.onclick=()=>alert(s.text||'आपका स्टेटस');
+  box.appendChild(item);
+ });
+}
+
+function saveProfile(){
+ let name=document.getElementById('nameInput').value.trim();
+ let bio=document.getElementById('bioInput').value.trim();
+ let file=document.getElementById('dpFile').files[0];
+ if(name){myName=name;localStorage.setItem('dhaakad_name',name);}
+ if(bio){myBio=bio;localStorage.setItem('dhaakad_bio',bio);}
+ if(file){
+  let reader=new FileReader();
+  reader.onload=()=>{
+   myDP=reader.result;
+   try{localStorage.setItem('dhaakad_dp',myDP)}catch(e){alert('फोटो बहुत बड़ी है। छोटी फोटो चुनें।')}
+   updateProfile();renderFeed();
+  };
+  reader.readAsDataURL(file);
+ }else{updateProfile();renderFeed();}
+ alert('प्रोफाइल अपडेट हो गई!');
+}
+
+function updateProfile(){
+ document.getElementById('profileName').textContent=myName;
+ document.getElementById('bio').textContent=myBio;
+ document.getElementById('followers').textContent=followers;
+ document.getElementById('avatar').innerHTML=myDP?'<img src="'+myDP+'">':'👤';
+ document.getElementById('postCount').textContent=posts.length;
+}
+
+function searchPosts(){
+ let q=document.getElementById('searchbox').value.toLowerCase();
+ let found=posts.filter(p=>p.caption.toLowerCase().includes(q));
+ document.getElementById('results').innerHTML=found.map(p=>'<div class="card">'+escapeHTML(p.caption)+'</div>').join('')||'<p class="muted">कोई पोस्ट नहीं मिली।</p>';
+}
+
+function sendMessage(){
+ let input=document.getElementById('message');
+ let text=input.value.trim();if(!text)return;
+ messages.push(text);input.value='';
+ document.getElementById('messages').innerHTML=messages.map(m=>'<div class="card">'+escapeHTML(m)+'</div>').join('');
+}
+
+function addNotice(text){
+ notices.unshift(text);
+ document.getElementById('notice').innerHTML=notices.map(n=>'<p>🔔 '+escapeHTML(n)+'</p>').join('');
+}
+
+updateProfile();
+renderFeed();
+renderStatuses();
 </script>
 </body>
 </html>
