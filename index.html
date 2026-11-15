@@ -305,5 +305,66 @@ updateProfile();
 renderFeed();
 renderStatuses();
 </script>
+ 
+<!-- DHAAKAD SAVED VIDEOS FEATURE -->
+<style>
+#savedVideosBtn {
+  background: #ff7900;
+  color: white;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.saved-video-item {
+  background: #222;
+  color: white;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 8px;
+}
+</style>
+
+<button id="savedVideosBtn" onclick="showSavedVideos()">
+  🔖 Saved Videos
+</button>
+
+<div id="savedVideosList" style="display:none; color:white; padding:12px;">
+  <h3>मेरे सेव किए वीडियो</h3>
+  <div id="savedVideosContent"></div>
+</div>
+
+<script>
+function saveDhakaadVideo(videoId) {
+  let saved = JSON.parse(
+    localStorage.getItem("dhaakadSavedVideos") || "[]"
+  );
+
+  if (!saved.includes(videoId)) {
+    saved.push(videoId);
+    localStorage.setItem(
+      "dhaakadSavedVideos",
+      JSON.stringify(saved)
+    );
+    alert("वीडियो सेव हो गया!");
+  } else {
+    alert("यह वीडियो पहले से सेव है!");
+  }
+}
+
+function showSavedVideos() {
+  let saved = JSON.parse(
+    localStorage.getItem("dhaakadSavedVideos") || "[]"
+  );
+
+  document.getElementById("savedVideosList").style.display = "block";
+
+  document.getElementById("savedVideosContent").innerHTML =
+    saved.length
+      ? saved.map(id => '<div class="saved-video-item">🎬 Video ID: ' + id + '</div>').join("")
+      : "अभी कोई वीडियो सेव नहीं है।";
+}
+</script>
 </body>
 </html>
