@@ -546,6 +546,57 @@ document.getElementById("createPost").addEventListener("click", function() {
   Array.from(postArea.children).forEach(addSocialButtons);
 })();
 </script>
+
+<script type="module">
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/13.3.0/firebase-app.js";
+
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/13.3.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBahbShOGBzd6TYyKh0-njxVCxpO6OVIOU",
+  authDomain: "dhaakad-7b801.firebaseapp.com",
+  projectId: "dhaakad-7b801",
+  storageBucket: "dhaakad-7b801.firebasestorage.app",
+  messagingSenderId: "928208033292",
+  appId: "1:928208033292:web:5c48779b192cc2ea1b0029"
+};
+
+try {
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  window.dhaakadDb = db;
+
+  await setDoc(doc(db, "AppStatus", "connection"), {
+    connected: true,
+    appName: "DHAAKAD",
+    updatedAt: serverTimestamp()
+  });
+
+  const status = document.getElementById("socialStatus");
+
+  if (status) {
+    status.textContent = "DHAAKAD Firebase se connect ho gaya!";
+  }
+
+  console.log("DHAAKAD Firebase Connected!");
+
+} catch (error) {
+  console.error("Firebase Error:", error);
+
+  const status = document.getElementById("socialStatus");
+
+  if (status) {
+    status.textContent = "Firebase Error: " + error.message;
+  }
+}
+</script>
   
 </body>
 </html>
