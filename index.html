@@ -579,22 +579,16 @@ try {
     updatedAt: serverTimestamp()
   });
 
-  const status = document.getElementById("socialStatus");
-
-  if (status) {
-    status.textContent = "DHAAKAD Firebase se connect ho gaya!";
-  }
+  document.getElementById("socialStatus").textContent =
+    "DHAAKAD Firebase se connect ho gaya!";
 
   console.log("DHAAKAD Firebase Connected!");
 
 } catch (error) {
   console.error("Firebase Error:", error);
 
-  const status = document.getElementById("socialStatus");
-
-  if (status) {
-    status.textContent = "Firebase Error: " + error.message;
-  }
+  document.getElementById("socialStatus").textContent =
+    "Firebase Error: " + error.message;
 }
 </script>
   
