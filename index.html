@@ -284,23 +284,62 @@ document.getElementById("createPost").addEventListener("click", function() {
 });
 </script>
 
-<section style="background:#1c1c1c;padding:18px;margin:20px;border:1px solid #ff6500;border-radius:15px;color:white;">
-  <h2 style="color:#ff6500;text-align:center;">DHAAKAD SOCIAL</h2>
-  <p style="text-align:center;">LIKE • COMMENT • SHARE</p>
-  <p id="socialStatus" style="color:#ff6500;text-align:center;">अपनी पोस्ट बनाएँ।</p>
+<section style="background:#1c1c1c;padding:18px;margin:20px;border:1px solid #ff6500;border-radius:15px;">
+<h2 style="color:#ff6500;text-align:center;">DHAAKAD SOCIAL</h2>
+<p style="text-align:center;color:white;">LIKE • COMMENT • SHARE</p>
+<p id="socialStatus" style="color:#ff6500;text-align:center;">अपनी पोस्ट बनाकर टेस्ट करें।</p>
 </section>
+
+<style>
+.reel-wrap {
+  position: relative;
+  width: 100%;
+}
+.reel-wrap video {
+  display: block;
+  width: 100%;
+  border-radius: 8px;
+}
+.reel-actions {
+  position: absolute;
+  right: 8px;
+  bottom: 55px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.reel-actions button {
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0,0,0,.75);
+  color: white;
+  font-size: 19px;
+}
+.reel-comments {
+  display: none;
+  margin-top: 12px;
+}
+.reel-comments input {
+  width: 68%;
+  padding: 10px;
+}
+.reel-comments button {
+  background: #ff6500;
+  color: white;
+  padding: 10px;
+  border: none;
+}
+</style>
 
 <script>
 (function () {
   const postArea = document.getElementById("postResult");
-  const createButton = document.getElementById("createPost");
   const fileInput = document.getElementById("videoFile");
   const status = document.getElementById("socialStatus");
 
-  if (!postArea || !createButton || !fileInput || !status) {
-    if (status) status.textContent = "पोस्ट सिस्टम नहीं मिला।";
-    return;
-  }
+  if (!postArea || !fileInput || !status) return;
 
   function addSocialButtons(card) {
     if (!card || card.dataset.socialReady === "yes") return;
@@ -310,67 +349,72 @@ document.getElementById("createPost").addEventListener("click", function() {
 
     card.dataset.socialReady = "yes";
 
-    const controls = document.createElement("div");
-    controls.style.cssText =
-      "margin-top:15px;padding-top:15px;border-top:1px solid #ff6500;";
+    const wrap = document.createElement("div");
+    wrap.className = "reel-wrap";
 
-    let likes = 0;
+    video.parentNode.insertBefore(wrap, video);
+    wrap.appendChild(video);
 
-    const likeButton = document.createElement("button");
-    likeButton.type = "button";
-    likeButton.textContent = "❤️ LIKE (0)";
-    likeButton.style.cssText =
-      "background:#ff6500;color:white;padding:12px;border:0;border-radius:8px;margin:5px;";
+    const actions = document.createElement("div");
+    actions.className = "reel-actions";
 
-    likeButton.addEventListener("click", function () {
-      likes = likes === 0 ? 1 : 0;
-      likeButton.textContent = "❤️ LIKE (" + likes + ")";
-    });
+    let liked = false;
+    const like = document.createElement("button");
+    like.textContent = "🤍";
 
-    const commentInput = document.createElement("input");
-    commentInput.type = "text";
-    commentInput.maxLength = 300;
-    commentInput.placeholder = "अपना कमेंट लिखें...";
-    commentInput.style.cssText =
-      "width:100%;padding:12px;box-sizing:border-box;border-radius:8px;margin-top:10px;";
+    like.onclick = function () {
+      liked = !liked;
+      like.textContent = liked ? "❤️" : "🤍";
+      status.textContent = liked ? "आपने Like किया!" : "Like हटाया गया";
+    };
 
-    const commentButton = document.createElement("button");
-    commentButton.type = "button";
-    commentButton.textContent = "💬 COMMENT";
-    commentButton.style.cssText =
-      "background:#ff6500;color:white;padding:12px;border:0;border-radius:8px;margin:8px 5px;";
+    const commentBtn = document.createElement("button");
+    commentBtn.textContent = "💬";
 
-    const commentList = document.createElement("div");
+    const shareBtn = document.createElement("button");
+    shareBtn.textContent = "🔗";
 
-    commentButton.addEventListener("click", function () {
-      const value = commentInput.value.trim();
+    actions.append(like, commentBtn, shareBtn);
+    wrap.appendChild(actions);
 
-      if (!value) {
-        status.textContent = "पहले कमेंट लिखें!";
-        return;
-      }
+    const comments = document.createElement("div");
+    comments.className = "reel-comments";
 
-      const comment = document.createElement("p");
-      comment.textContent = "💬 " + value;
-      comment.style.cssText =
-        "background:#333;padding:10px;border-radius:8px;";
+    const input = document.createElement("input");
+    input.placeholder = "अपना कमेंट लिखें...";
+    input.maxLength = 300;
 
-      commentList.appendChild(comment);
-      commentInput.value = "";
-      status.textContent = "कमेंट पोस्ट पर जुड़ गया!";
-    });
+    const send = document.createElement("button");
+    send.textContent = "COMMENT";
 
-    const shareButton = document.createElement("button");
-    shareButton.type = "button";
-    shareButton.textContent = "📤 SHARE";
-    shareButton.style.cssText =
-      "background:#ff6500;color:white;padding:12px;border:0;border-radius:8px;margin:5px;";
+    const list = document.createElement("div");
 
-    shareButton.addEventListener("click", async function () {
+    send.onclick = function () {
+      const value = input.value.trim();
+      if (!value) return;
+
+      const item = document.createElement("p");
+      item.textContent = "💬 " + value;
+      item.style.cssText =
+        "background:#333;color:white;padding:10px;border-radius:8px;";
+      list.appendChild(item);
+      input.value = "";
+      status.textContent = "कमेंट जुड़ गया!";
+    };
+
+    commentBtn.onclick = function () {
+      comments.style.display =
+        comments.style.display === "block" ? "none" : "block";
+    };
+
+    comments.append(input, send, list);
+    card.appendChild(comments);
+
+    shareBtn.onclick = async function () {
       const file = fileInput.files && fileInput.files[0];
 
       if (!file) {
-        status.textContent = "पहले वीडियो चुनें!";
+        status.textContent = "पहले वीडियो चुनें";
         return;
       }
 
@@ -379,27 +423,19 @@ document.getElementById("createPost").addEventListener("click", function() {
             navigator.canShare({ files: [file] })) {
           await navigator.share({
             title: "DHAAKAD",
-            text: "मेरा हुनर देखिए!",
+            text: "मेरा धाकड़ वीडियो",
             files: [file]
           });
-          status.textContent = "शेयर प्रक्रिया पूरी हुई!";
+          status.textContent = "शेयर स्क्रीन खुल गई!";
         } else {
-          status.textContent = "इस ब्राउज़र में वीडियो शेयर उपलब्ध नहीं है।";
+          status.textContent = "इस ब्राउज़र में वीडियो शेयर उपलब्ध नहीं है";
         }
       } catch (error) {
         if (error.name !== "AbortError") {
-          status.textContent = "शेयर नहीं हो पाया।";
+          status.textContent = "शेयर नहीं हो पाया";
         }
       }
-    });
-
-    controls.appendChild(likeButton);
-    controls.appendChild(commentInput);
-    controls.appendChild(commentButton);
-    controls.appendChild(commentList);
-    controls.appendChild(shareButton);
-
-    card.appendChild(controls);
+    };
   }
 
   const observer = new MutationObserver(function () {
@@ -409,12 +445,6 @@ document.getElementById("createPost").addEventListener("click", function() {
   observer.observe(postArea, { childList: true });
 
   Array.from(postArea.children).forEach(addSocialButtons);
-
-  createButton.addEventListener("click", function () {
-    setTimeout(function () {
-      Array.from(postArea.children).forEach(addSocialButtons);
-    }, 100);
-  });
 })();
 </script>
   
