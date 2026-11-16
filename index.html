@@ -284,88 +284,133 @@ document.getElementById("createPost").addEventListener("click", function() {
 });
 </script>
 
-<section style="background:#1c1c1c;padding:18px;margin:20px;border:1px solid #ff6500;border-radius:15px;color:white;">
-  <h2 style="color:#ff6500;text-align:center;">DHAAKAD COMMUNITY</h2>
-  <p style="text-align:center;">LIKE • COMMENT • SUPPORT</p>
-  <p id="communityStatus" style="color:#ff6500;text-align:center;">
-    अपनी पोस्ट बनाकर Like और Comment करें।
-  </p>
+<section style="background:#1c1c1c;padding:18px;margin:20px;border:1px solid #ff6500;border-radius:15px;color:white;text-align:center;">
+  <h2 style="color:#ff6500;">DHAAKAD SOCIAL</h2>
+  <p>LIKE • COMMENT • SHARE</p>
+  <p id="socialStatus" style="color:#ff6500;">अपनी पोस्ट बनाकर टेस्ट करें।</p>
 </section>
 
 <script>
 (function () {
+  const createButton = document.getElementById("createPost");
   const postArea = document.getElementById("postResult");
-  const status = document.getElementById("communityStatus");
+  const titleInput = document.getElementById("postTitle");
+  const fileInput = document.getElementById("videoFile");
+  const status = document.getElementById("socialStatus");
 
-  if (!postArea) {
-    status.textContent = "पोस्ट सेक्शन नहीं मिला।";
+  if (!createButton || !postArea || !titleInput || !fileInput) {
+    status.textContent = "पोस्ट सिस्टम नहीं मिला।";
     return;
   }
 
-  function addCommunityFeatures(card) {
-    if (card.dataset.communityReady === "yes") return;
+  createButton.addEventListener("click", function () {
+    setTimeout(function () {
 
-    card.dataset.communityReady = "yes";
-
-    let likes = 0;
-
-    const likeButton = document.createElement("button");
-    likeButton.type = "button";
-    likeButton.textContent = "❤️ Like (0)";
-    likeButton.style.cssText =
-      "background:#ff6500;color:white;padding:10px 18px;border:0;border-radius:8px;margin:10px 5px;";
-
-    likeButton.addEventListener("click", function () {
-      likes = likes === 0 ? 1 : 0;
-      likeButton.textContent = "❤️ Like (" + likes + ")";
-    });
-
-    const commentBox = document.createElement("input");
-    commentBox.type = "text";
-    commentBox.maxLength = 300;
-    commentBox.placeholder = "अपना कमेंट लिखें...";
-    commentBox.style.cssText =
-      "width:100%;padding:12px;box-sizing:border-box;border-radius:8px;";
-
-    const commentButton = document.createElement("button");
-    commentButton.type = "button";
-    commentButton.textContent = "POST COMMENT";
-    commentButton.style.cssText =
-      "background:#ff6500;color:white;padding:10px 15px;border:0;border-radius:8px;margin:10px 0;";
-
-    const comments = document.createElement("div");
-
-    commentButton.addEventListener("click", function () {
-      const value = commentBox.value.trim();
-
-      if (!value) {
-        status.textContent = "पहले कमेंट लिखें!";
+      if (titleInput.value.trim() !== "" ||
+          !fileInput.files || !fileInput.files[0]) {
         return;
       }
 
-      const item = document.createElement("p");
-      item.textContent = "💬 " + value;
-      item.style.cssText =
-        "background:#444;padding:10px;border-radius:8px;";
+      const card = postArea.lastElementChild;
 
-      comments.appendChild(item);
-      commentBox.value = "";
-      status.textContent = "कमेंट इस पोस्ट पर जुड़ गया!";
-    });
+      if (!card || card.dataset.socialReady === "yes") {
+        return;
+      }
 
-    card.appendChild(likeButton);
-    card.appendChild(commentBox);
-    card.appendChild(commentButton);
-    card.appendChild(comments);
-  }
+      card.dataset.socialReady = "yes";
 
-  const observer = new MutationObserver(function () {
-    Array.from(postArea.children).forEach(addCommunityFeatures);
+      let likes = 0;
+
+      const controls = document.createElement("div");
+      controls.style.cssText =
+        "margin-top:15px;padding-top:12px;border-top:1px solid #ff6500;";
+
+      const likeButton = document.createElement("button");
+      likeButton.type = "button";
+      likeButton.textContent = "❤️ Like (0)";
+      likeButton.style.cssText =
+        "background:#ff6500;color:white;padding:12px;border:0;border-radius:8px;margin:5px;";
+
+      likeButton.addEventListener("click", function () {
+        likes = likes === 0 ? 1 : 0;
+        likeButton.textContent = "❤️ Like (" + likes + ")";
+      });
+
+      const commentInput = document.createElement("input");
+      commentInput.type = "text";
+      commentInput.maxLength = 300;
+      commentInput.placeholder = "अपना कमेंट लिखें...";
+      commentInput.style.cssText =
+        "width:100%;padding:12px;box-sizing:border-box;border-radius:8px;margin-top:10px;";
+
+      const commentButton = document.createElement("button");
+      commentButton.type = "button";
+      commentButton.textContent = "💬 COMMENT";
+      commentButton.style.cssText =
+        "background:#ff6500;color:white;padding:12px;border:0;border-radius:8px;margin:8px;";
+
+      const commentList = document.createElement("div");
+
+      commentButton.addEventListener("click", function () {
+        const value = commentInput.value.trim();
+
+        if (!value) {
+          status.textContent = "पहले कमेंट लिखें!";
+          return;
+        }
+
+        const comment = document.createElement("p");
+        comment.textContent = "💬 " + value;
+        comment.style.cssText =
+          "background:#333;padding:10px;border-radius:8px;";
+
+        commentList.appendChild(comment);
+        commentInput.value = "";
+        status.textContent = "कमेंट जुड़ गया!";
+      });
+
+      const shareButton = document.createElement("button");
+      shareButton.type = "button";
+      shareButton.textContent = "📤 SHARE";
+      shareButton.style.cssText =
+        "background:#ff6500;color:white;padding:12px;border:0;border-radius:8px;margin:5px;";
+
+      shareButton.addEventListener("click", async function () {
+        const file = fileInput.files[0];
+
+        if (!navigator.share || !navigator.canShare ||
+            !navigator.canShare({files:[file]})) {
+          status.textContent =
+            "इस ब्राउज़र में वीडियो शेयर उपलब्ध नहीं है।";
+          return;
+        }
+
+        try {
+          await navigator.share({
+            title: "DHAAKAD",
+            text: "मेरा हुनर देखिए!",
+            files: [file]
+          });
+
+          status.textContent = "शेयर प्रक्रिया पूरी हुई!";
+        } catch (error) {
+          if (error.name !== "AbortError") {
+            status.textContent = "शेयर नहीं हो पाया।";
+          }
+        }
+      });
+
+      controls.appendChild(likeButton);
+      controls.appendChild(commentInput);
+      controls.appendChild(commentButton);
+      controls.appendChild(commentList);
+      controls.appendChild(shareButton);
+
+      card.appendChild(controls);
+      status.textContent = "Like, Comment और Share तैयार हैं!";
+
+    }, 0);
   });
-
-  observer.observe(postArea, { childList: true });
-
-  Array.from(postArea.children).forEach(addCommunityFeatures);
 })();
 </script>
   
