@@ -140,6 +140,72 @@ videoFile.addEventListener("change", function() {
   videoMessage.textContent = "आपका वीडियो तैयार है!";
 });
       </script>
+
+<section style="background:#1c1c1c;padding:20px;margin:20px;border:1px solid #ff6500;border-radius:15px;text-align:center;color:white;">
+
+  <h2 style="color:#ff6500;">SHARE YOUR TALENT</h2>
+
+  <p>अपने वीडियो के बारे में कुछ लिखें</p>
+
+  <textarea
+    id="videoCaption"
+    placeholder="यहाँ अपना कैप्शन लिखें..."
+    style="width:100%;height:90px;padding:12px;border-radius:8px;box-sizing:border-box;"
+  ></textarea>
+
+  <button
+    id="shareVideo"
+    type="button"
+    style="background:#ff6500;color:white;border:0;padding:14px 25px;border-radius:8px;font-weight:bold;margin-top:15px;"
+  >
+    SHARE VIDEO
+  </button>
+
+  <p id="shareMessage" style="color:#ff6500;"></p>
+
+</section>
+
+<script>
+document.getElementById("shareVideo").addEventListener("click", async function() {
+
+  const fileInput = document.getElementById("videoFile");
+  const caption = document.getElementById("videoCaption").value.trim();
+  const message = document.getElementById("shareMessage");
+
+  if (!fileInput.files || !fileInput.files[0]) {
+    message.textContent = "पहले अपना वीडियो चुनें!";
+    return;
+  }
+
+  const file = fileInput.files[0];
+
+  if (!file.type.startsWith("video/")) {
+    message.textContent = "कृपया सही वीडियो चुनें!";
+    return;
+  }
+
+  if (!navigator.share || !navigator.canShare ||
+      !navigator.canShare({ files: [file] })) {
+    message.textContent = "आपका ब्राउज़र वीडियो शेयर करने की सुविधा नहीं देता।";
+    return;
+  }
+
+  try {
+    await navigator.share({
+      title: "DHAAKAD",
+      text: caption || "मेरा हुनर देखिए! DHAAKAD",
+      files: [file]
+    });
+
+    message.textContent = "शेयर प्रक्रिया पूरी हुई!";
+  } catch (error) {
+    if (error.name !== "AbortError") {
+      message.textContent = "शेयर नहीं हो पाया। दोबारा कोशिश करें।";
+    }
+  }
+
+});
+</script>
   
 </body>
 </html>
