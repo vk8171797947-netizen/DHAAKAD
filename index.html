@@ -1,282 +1,93 @@
+
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🔥 DHAAKAD - Apna Hunar Dikhao!</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
-body{background:#000;color:#fff}
-header{background:#ff6a00;color:#000;text-align:center;padding:15px 10px;position:sticky;top:0;z-index:10}
-header h1{font-size:28px}
-header p{font-weight:bold}
-nav{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;background:#111;padding:10px}
-nav button{background:#ff6a00;border:0;padding:9px 14px;border-radius:8px;font-weight:bold;cursor:pointer;color:#000}
-.card{background:#1a1a1a;margin:12px;padding:14px;border-radius:14px}
-input,textarea{width:100%;padding:12px;margin:7px 0;background:#222;border:1px solid #444;color:#fff;border-radius:10px;outline:none}
-.btn{background:#ff6a00;color:#000;border:0;padding:11px;border-radius:10px;font-weight:bold;cursor:pointer;width:100%;margin-top:7px}
-.btn2{background:#ff6a00;color:#000;border:0;padding:9px 12px;border-radius:8px;font-weight:bold;cursor:pointer;margin:3px}
-.post{background:#222;padding:12px;border-radius:12px;margin-top:12px}
-.post video,.post img{width:100%;border-radius:10px;margin:8px 0;max-height:380px;object-fit:cover}
-.flex{display:flex;gap:8px;flex-wrap:wrap}
-.hide{display:none}
-.small{font-size:13px;color:#aaa}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#ff6500">
+  <title>DHAAKAD</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #101010;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    header {
+      background: #000;
+      padding: 18px;
+      text-align: center;
+      border-bottom: 2px solid #ff6500;
+    }
+
+    header h1 {
+      color: #ff6500;
+      margin: 0;
+      font-size: 30px;
+      font-weight: 900;
+    }
+
+    header p {
+      margin: 7px 0 0;
+      color: white;
+    }
+
+    main {
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .welcome {
+      margin-top: 35px;
+      padding: 25px;
+      background: #1c1c1c;
+      border: 1px solid #ff6500;
+      border-radius: 15px;
+    }
+
+    .welcome h2 {
+      color: #ff6500;
+    }
+
+    .welcome p {
+      color: #ddd;
+      line-height: 1.6;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #999;
+    }
+  </style>
 </head>
+
 <body>
 
-<header>
-<h1>🔥 DHAAKAD</h1>
-<p>अपना हुनर दिखाओ!</p>
-<p>CREATE • SHARE • EARN</p>
-</header>
+  <header>
+    <h1>DHAAKAD</h1>
+    <p>अपना हुनर दिखाओ!</p>
+  </header>
 
-<nav>
-<button onclick="show('home')">होम</button>
-<button onclick="show('upload')">अपलोड</button>
-<button onclick="show('search')">खोजें</button>
-<button onclick="show('profile')">प्रोफाइल</button>
-<button onclick="show('notif')">🔔 <span id="notifCount"></span></button>
-<button onclick="show('saved')">सेव</button>
-<button onclick="show('msg')">मैसेज</button>
-</nav>
+  <main>
+    <section class="welcome">
+      <h2>WELCOME TO DHAAKAD</h2>
+      <p>CREATE • SHARE • EARN</p>
+      <p>अपनी प्रतिभा दुनिया को दिखाओ।</p>
+    </section>
+  </main>
 
-<!-- LOGIN -->
-<div class="card" id="loginBox">
-<h2 style="color:#ff6a00">DHAAKAD में लॉगिन करें</h2>
-<input id="email" placeholder="ईमेल">
-<input id="pass" type="password" placeholder="पासवर्ड">
-<div class="flex">
-<button class="btn2" onclick="register()">रजिस्टर</button>
-<button class="btn2" onclick="login()">लॉगिन</button>
-<button class="btn2" onclick="logout()">लॉगआउट</button>
-</div>
-<p class="small" id="loginMsg"></p>
-</div>
+  <footer>
+    © 2026 DHAAKAD
+  </footer>
 
-<!-- HOME -->
-<div class="card" id="home">
-<h2 style="color:#ff6a00">🔥 वीडियो फीड</h2>
-<div id="feed"></div>
-</div>
-
-<!-- UPLOAD -->
-<div class="card hide" id="upload">
-<h2>वीडियो अपलोड करें</h2>
-<input id="vTitle" placeholder="वीडियो का टाइटल">
-<input id="vUrl" placeholder="वीडियो / फोटो का Link (mp4 / jpg)">
-<textarea id="vDesc" placeholder="Description..."></textarea>
-<button class="btn" onclick="createPost()">अपलोड करें</button>
-</div>
-
-<!-- SEARCH -->
-<div class="card hide" id="search">
-<h2>खोजें</h2>
-<input id="searchInput" placeholder="Search..." oninput="searchPosts()">
-<div id="searchResult"></div>
-</div>
-
-<!-- PROFILE -->
-<div class="card hide" id="profile">
-<h2>प्रोफाइल</h2>
-<p id="profileInfo"></p>
-<input id="pName" placeholder="अपना नाम">
-<button class="btn" onclick="saveProfile()">Save Profile</button>
-<h3 style="margin-top:15px">मेरी पोस्ट</h3>
-<div id="myPosts"></div>
-</div>
-
-<!-- NOTIFICATION -->
-<div class="card hide" id="notif">
-<h2>Notifications</h2>
-<div id="notificationList">अभी कोई नोटिफिकेशन नहीं है</div>
-</div>
-
-<!-- SAVED -->
-<div class="card hide" id="saved">
-<h2>Saved Videos</h2>
-<div id="savedList"></div>
-</div>
-
-<!-- MESSAGES -->
-<div class="card hide" id="msg">
-<h2>मैसेज</h2>
-<input id="msgTo" placeholder="किसको भेजना है? (email)">
-<input id="msgText" placeholder="मैसेज लिखो...">
-<button class="btn" onclick="sendMessage()">भेजें</button>
-<div id="msgList"></div>
-</div>
-
-<script>
-// ===== DATA =====
-let users = JSON.parse(localStorage.getItem("dhaakad_users")||"[]");
-let posts = JSON.parse(localStorage.getItem("dhaakad_posts")||"[]");
-let notifs = JSON.parse(localStorage.getItem("dhaakad_notifs")||"[]");
-let msgs = JSON.parse(localStorage.getItem("dhaakad_msgs")||"[]");
-let currentUser = JSON.parse(localStorage.getItem("dhaakad_current")||"null");
-let saved = JSON.parse(localStorage.getItem("dhaakad_saved")||"[]");
-
-function saveAll(){
-  localStorage.setItem("dhaakad_users",JSON.stringify(users));
-  localStorage.setItem("dhaakad_posts",JSON.stringify(posts));
-  localStorage.setItem("dhaakad_notifs",JSON.stringify(notifs));
-  localStorage.setItem("dhaakad_msgs",JSON.stringify(msgs));
-  localStorage.setItem("dhaakad_current",JSON.stringify(currentUser));
-  localStorage.setItem("dhaakad_saved",JSON.stringify(saved));
-}
-function requireLogin(){
-  if(!currentUser){ alert("पहले लॉगिन करो भाई!"); return false; }
-  return true;
-}
-function addNotice(to, text){
-  notifs.unshift({to, text, time: new Date().toLocaleString()});
-  saveAll(); loadNotifications();
-}
-
-// ===== AUTH =====
-function register(){
-  let e=email.value.trim(), p=pass.value.trim();
-  if(!e||!p) return alert("ईमेल और पासवर्ड डालो");
-  if(users.find(u=>u.email===e)) return alert("ये ईमेल पहले से है, लॉगिन करो");
-  users.push({email:e, pass:p, name:e.split("@")[0]});
-  saveAll(); alert("रजिस्टर हो गया! अब लॉगिन करो");
-}
-function login(){
-  let e=email.value.trim(), p=pass.value.trim();
-  let u=users.find(x=>x.email===e && x.pass===p);
-  if(!u) return alert("गलत ईमेल / पासवर्ड");
-  currentUser=u; saveAll();
-  document.getElementById("loginMsg").innerText="लॉगिन हो गया: "+e;
-  alert("Welcome "+u.name+" 🔥");
-  renderFeed(); loadNotifications(); loadProfile();
-}
-function logout(){ currentUser=null; saveAll(); alert("लॉगआउट हो गया"); location.reload(); }
-
-// ===== NAV =====
-function show(id){
-  ["home","upload","search","profile","notif","saved","msg"].forEach(x=>{
-    document.getElementById(x).classList.add("hide");
-  });
-  document.getElementById(id).classList.remove("hide");
-  if(id==="home") renderFeed();
-  if(id==="saved") renderSaved();
-  if(id==="profile") loadProfile();
-  if(id==="msg") renderMsgs();
-}
-
-// ===== FEED =====
-function createPost(){
-  if(!requireLogin()) return;
-  let t=vTitle.value.trim(), u=vUrl.value.trim();
-  if(!t||!u) return alert("टाइटल और Link डालो");
-  posts.unshift({id:Date.now(), title:t, url:u, desc:vDesc.value, user:currentUser.email, likes:[], comments:[], time:new Date().toLocaleString()});
-  saveAll(); vTitle.value=""; vUrl.value=""; vDesc.value="";
-  alert("अपलोड हो गया 🔥"); show("home");
-}
-function renderFeed(list=posts){
-  let box=document.getElementById("feed");
-  if(list.length===0){ box.innerHTML="अभी कोई वीडियो नहीं है, पहले अपलोड करो!"; return; }
-  box.innerHTML="";
-  list.forEach(p=>{
-    let isVideo = p.url.includes(".mp4") || p.url.includes("video");
-    let media = isVideo ? `<video src="${p.url}" controls></video>` : `<img src="${p.url}">`;
-    let d=document.createElement("div"); d.className="post";
-    d.innerHTML=`<b>${p.user}</b> <span class="small">${p.time}</span><h3>${p.title}</h3>${media}<p>${p.desc||""}</p>
-    <div class="flex">
-      <button class="btn2" onclick="likePost(${p.id})">❤️ Like (${p.likes.length})</button>
-      <button class="btn2" onclick="savePost(${p.id})">💾 Save</button>
-      <button class="btn2" onclick="sharePost(${p.id})">↗️ Share</button>
-      <button class="btn2" onclick="followPost('${p.user}')">➕ Follow</button>
-    </div>
-    <input placeholder="Comment..." id="c${p.id}">
-    <button class="btn2" onclick="commentPost(${p.id})">Comment</button>
-    <div>${p.comments.map(c=>`<p class="small">💬 <b>${c.user}:</b> ${c.text}</p>`).join("")}</div>`;
-    box.appendChild(d);
-  });
-}
-function likePost(id){
-  if(!requireLogin()) return;
-  let p=posts.find(x=>x.id===id);
-  if(p.likes.includes(currentUser.email)) p.likes=p.likes.filter(x=>x!==currentUser.email);
-  else { p.likes.push(currentUser.email); if(p.user!==currentUser.email) addNotice(p.user, currentUser.email+" ने आपकी पोस्ट को Like किया"); }
-  saveAll(); renderFeed();
-}
-function commentPost(id){
-  if(!requireLogin()) return;
-  let inp=document.getElementById("c"+id);
-  if(!inp.value.trim()) return;
-  let p=posts.find(x=>x.id===id);
-  p.comments.push({user:currentUser.email, text:inp.value});
-  if(p.user!==currentUser.email) addNotice(p.user, currentUser.email+" ने Comment किया: "+inp.value);
-  saveAll(); renderFeed();
-}
-function sharePost(id){
-  let p=posts.find(x=>x.id===id);
-  let link=location.href+"#"+id;
-  if(navigator.share){ navigator.share({title:p.title, text:p.title, url:link}); }
-  else { navigator.clipboard.writeText(link); alert("Link Copy हो गया: "+link); }
-}
-function followPost(userEmail){
-  if(!requireLogin()) return;
-  addNotice(userEmail, currentUser.email+" ने आपको Follow किया");
-  alert("Follow हो गया ✅");
-}
-function savePost(id){
-  if(!requireLogin()) return;
-  if(!saved.includes(id)) saved.push(id);
-  saveAll(); alert("Save हो गया 💾");
-}
-function renderSaved(){
-  let box=document.getElementById("savedList");
-  let list=posts.filter(p=>saved.includes(p.id));
-  if(list.length===0){ box.innerHTML="कोई Saved Video नहीं है"; return; }
-  box.innerHTML=list.map(p=>`<div class="post"><b>${p.title}</b><p>${p.user}</p><button class="btn2" onclick="savePost(${p.id})">Unsave</button></div>`).join("");
-}
-
-// ===== SEARCH / PROFILE / NOTIF / MSG =====
-function searchPosts(){
-  let q=searchInput.value.toLowerCase();
-  let list=posts.filter(p=>p.title.toLowerCase().includes(q)||p.user.toLowerCase().includes(q));
-  let box=document.getElementById("searchResult");
-  box.innerHTML=list.map(p=>`<div class="post"><b>${p.title}</b><p>${p.user}</p></div>`).join("") || "कुछ नहीं मिला";
-}
-function loadProfile(){
-  if(!currentUser){ document.getElementById("profileInfo").innerText="लॉगिन नहीं हो"; return; }
-  document.getElementById("profileInfo").innerText="Email: "+currentUser.email+" | Name: "+(currentUser.name||"");
-  document.getElementById("pName").value=currentUser.name||"";
-  let mine=posts.filter(p=>p.user===currentUser.email);
-  document.getElementById("myPosts").innerHTML=mine.map(p=>`<div class="post">${p.title}</div>`).join("")||"अभी कोई पोस्ट नहीं";
-}
-function saveProfile(){
-  if(!requireLogin()) return;
-  currentUser.name=pName.value||currentUser.name;
-  let u=users.find(x=>x.email===currentUser.email); if(u) u.name=currentUser.name;
-  saveAll(); alert("Profile Save हो गया ✅"); loadProfile();
-}
-function loadNotifications(){
-  let box=document.getElementById("notificationList");
-  if(!currentUser){ box.innerHTML="लॉगिन करो"; return; }
-  let mine=notifs.filter(n=>n.to===currentUser.email);
-  document.getElementById("notifCount").innerText=mine.length?mine.length:"";
-  box.innerHTML=mine.map(n=>`<div class="post">${n.text}<br><span class="small">${n.time}</span></div>`).join("")||"अभी कोई नोटिफिकेशन नहीं है";
-}
-function sendMessage(){
-  if(!requireLogin()) return;
-  if(!msgTo.value||!msgText.value) return alert("To और Message डालो");
-  msgs.unshift({from:currentUser.email, to:msgTo.value, text:msgText.value, time:new Date().toLocaleString()});
-  addNotice(msgTo.value, currentUser.email+" ने मैसेज भेजा: "+msgText.value);
-  saveAll(); msgText.value=""; renderMsgs(); alert("मैसेज भेज दिया ✅");
-}
-function renderMsgs(){
-  let box=document.getElementById("msgList");
-  if(!currentUser) return;
-  let mine=msgs.filter(m=>m.to===currentUser.email||m.from===currentUser.email);
-  box.innerHTML=mine.map(m=>`<div class="post"><b>${m.from} → ${m.to}</b><p>${m.text}</p><span class="small">${m.time}</span></div>`).join("")||"कोई मैसेज नहीं";
-}
-
-// START
-renderFeed(); loadNotifications();
-if(currentUser) loadProfile();
-</script>
 </body>
 </html>
