@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="hi">
 <head>
@@ -27,8 +26,12 @@ video{max-width:100%;border-radius:9px}
 .post-video{width:100%;display:block}
 .reel-actions{display:flex;justify-content:space-around;flex-wrap:wrap;gap:5px;margin-top:10px}
 .reel-actions button{flex:1;min-width:65px}
-.reel-comments{display:none;margin-top:12px}
+.saved-action{display:block;width:100%;margin:10px 0}
+.reel-comments{display:block;margin-top:10px}
+.reel-comments input{width:100%;margin:5px 0}
+.reel-comments button{width:100%;margin:5px 0}
 .comment-item{background:#444;padding:9px;border-radius:8px;margin:7px 0;overflow-wrap:anywhere}
+.post-social-footer{text-align:center;color:#ff6500;font-weight:bold;border-top:1px solid #ff6500;padding-top:12px;margin-top:15px}
 .firebase-message{font-size:13px;color:#ffb27f;margin-top:10px}
 .saved-item{background:#303030;padding:12px;margin:12px 0;border-radius:10px}
 .saved-item video{width:100%}
@@ -242,15 +245,13 @@ footer{text-align:center;padding:20px;color:#999}
     actions.className = "reel-actions";
 
     let liked = false;
-    let likeCount = 0;
 
     const like = document.createElement("button");
     like.textContent = "🤍 Like 0";
     like.type = "button";
     like.onclick = () => {
       liked = !liked;
-      likeCount = liked ? 1 : 0;
-      like.textContent = (liked ? "❤️" : "🤍") + " Like " + likeCount;
+      like.textContent = liked ? "❤️ Like 1" : "🤍 Like 0";
     };
 
     const commentBtn = document.createElement("button");
@@ -261,11 +262,12 @@ footer{text-align:center;padding:20px;color:#999}
     shareBtn.textContent = "🔗 Share";
     shareBtn.type = "button";
 
-    const saveBtn = document.createElement("button");
-    saveBtn.textContent = "🔖 Save";
-    saveBtn.type = "button";
+    actions.append(like, commentBtn, shareBtn);
 
-    actions.append(like, commentBtn, shareBtn, saveBtn);
+    const saveBtn = document.createElement("button");
+    saveBtn.className = "saved-action";
+    saveBtn.type = "button";
+    saveBtn.textContent = "🔖 Save";
 
     const comments = document.createElement("div");
     comments.className = "reel-comments";
@@ -283,7 +285,10 @@ footer{text-align:center;padding:20px;color:#999}
 
     sendComment.onclick = () => {
       const value = commentInput.value.trim();
-      if (!value) return;
+      if (!value) {
+        commentInput.focus();
+        return;
+      }
 
       const item = document.createElement("p");
       item.className = "comment-item";
@@ -294,11 +299,8 @@ footer{text-align:center;padding:20px;color:#999}
     };
 
     commentBtn.onclick = () => {
-      comments.style.display =
-        comments.style.display === "block" ? "none" : "block";
+      commentInput.focus();
     };
-
-    comments.append(commentInput, sendComment, commentList);
 
     saveBtn.onclick = async () => {
       if (!dbReady || !db) {
@@ -317,12 +319,14 @@ footer{text-align:center;padding:20px;color:#999}
       try {
         await new Promise((resolve, reject) => {
           const transaction = db.transaction("videos", "readwrite");
+
           transaction.objectStore("videos").put({
             id: card.dataset.localId,
             title: card.querySelector("h3").textContent,
             file,
             savedAt: Date.now()
           });
+
           transaction.oncomplete = resolve;
           transaction.onerror = () => reject(transaction.error);
           transaction.onabort = () => reject(transaction.error);
@@ -331,6 +335,7 @@ footer{text-align:center;padding:20px;color:#999}
         saveBtn.textContent = "✅ Saved";
         socialStatus.textContent = "वीडियो Saved Videos में सेव हो गया!";
         await showSavedVideos();
+
       } catch (error) {
         socialStatus.textContent = "वीडियो सेव नहीं हो पाया।";
         saveBtn.disabled = false;
@@ -339,6 +344,7 @@ footer{text-align:center;padding:20px;color:#999}
 
     shareBtn.onclick = async () => {
       const file = card._videoFile;
+
       if (!file) {
         socialStatus.textContent = "इस पोस्ट की वीडियो फाइल नहीं मिली।";
         return;
@@ -364,7 +370,12 @@ footer{text-align:center;padding:20px;color:#999}
       }
     };
 
-    card.append(actions, comments);
+    const socialFooter = document.createElement("div");
+    socialFooter.className = "post-social-footer";
+    socialFooter.textContent = "🔥 DHAAKAD SOCIAL 🔥";
+
+    comments.append(commentInput, sendComment, commentList);
+    card.append(actions, saveBtn, comments, socialFooter);
   }
 
   $("createPost").addEventListener("click", () => {
@@ -406,6 +417,7 @@ footer{text-align:center;padding:20px;color:#999}
 
     postTitle.value = "";
     socialStatus.textContent = "आपकी पोस्ट बन गई है!";
+
     window.dispatchEvent(new CustomEvent("dhaakad:new-post", {
       detail: { card }
     }));
@@ -497,6 +509,7 @@ async function savePost(card) {
     card.dataset.firebaseSaved = "yes";
     message.textContent = "✅ पोस्ट Firebase में सेव हो गई!";
     status.textContent = "Firebase कनेक्शन और पोस्ट सेव सफल!";
+
   } catch (error) {
     card.dataset.firebaseSaved = "error";
     message.textContent = "पोस्ट Firebase में सेव नहीं हुई: " + error.message;
@@ -555,3 +568,4 @@ try {
 
 </body>
 </html>
+
