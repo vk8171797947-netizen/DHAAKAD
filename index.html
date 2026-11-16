@@ -2,411 +2,232 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#ff6500">
-  <title>DHAAKAD</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#ff6500">
+<title>DHAAKAD</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      background: #101010;
-      color: white;
-      font-family: Arial, sans-serif;
-    }
-
-    header {
-      background: #000;
-      padding: 18px;
-      text-align: center;
-      border-bottom: 2px solid #ff6500;
-    }
-
-    header h1 {
-      color: #ff6500;
-      margin: 0;
-      font-size: 30px;
-      font-weight: 900;
-    }
-
-    header p {
-      margin: 7px 0 0;
-      color: white;
-    }
-
-    main {
-      max-width: 600px;
-      margin: auto;
-      padding: 20px;
-      text-align: center;
-    }
-
-    .welcome {
-      margin-top: 35px;
-      padding: 25px;
-      background: #1c1c1c;
-      border: 1px solid #ff6500;
-      border-radius: 15px;
-    }
-
-    .welcome h2 {
-      color: #ff6500;
-    }
-
-    .welcome p {
-      color: #ddd;
-      line-height: 1.6;
-    }
-
-    footer {
-      text-align: center;
-      padding: 20px;
-      color: #999;
-    }
-  </style>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#101010;color:white;font-family:Arial,sans-serif}
+header{background:#000;padding:18px;text-align:center;border-bottom:2px solid #ff6500}
+header h1{color:#ff6500;margin:0;font-size:30px;font-weight:900}
+header p{margin:7px 0 0}
+main{max-width:650px;margin:auto;padding:12px}
+section.panel{background:#1c1c1c;padding:18px;margin:15px 0;border:1px solid #ff6500;border-radius:15px;text-align:center}
+h2{color:#ff6500}
+input,textarea{width:100%;padding:12px;border-radius:8px;border:1px solid #777;margin:8px 0;font-size:16px}
+button{cursor:pointer;background:#ff6500;color:white;border:0;padding:12px 16px;border-radius:8px;font-weight:bold;margin:5px}
+button:disabled{opacity:.55;cursor:not-allowed}
+video{max-width:100%;border-radius:9px}
+#videoPreview{display:none;width:100%;margin-top:12px}
+#postResult{text-align:left}
+.post-card{background:#303030;padding:14px;margin:15px 0;border-radius:12px;border:1px solid #ff6500}
+.post-card h3{color:#ff6500}
+.post-video{width:100%;display:block}
+.reel-actions{display:flex;justify-content:space-around;flex-wrap:wrap;gap:5px;margin-top:10px}
+.reel-actions button{flex:1;min-width:65px}
+.reel-comments{display:none;margin-top:12px}
+.comment-item{background:#444;padding:9px;border-radius:8px;margin:7px 0;overflow-wrap:anywhere}
+.firebase-message{font-size:13px;color:#ffb27f;margin-top:10px}
+.saved-item{background:#303030;padding:12px;margin:12px 0;border-radius:10px}
+.saved-item video{width:100%}
+.status{color:#ff9b55;overflow-wrap:anywhere}
+footer{text-align:center;padding:20px;color:#999}
+</style>
 </head>
 
 <body>
+<header>
+  <h1>DHAAKAD</h1>
+  <p>अपना हुनर दिखाओ!</p>
+  <p>CREATE • SHARE • EARN</p>
+</header>
 
-  <header>
-    <h1>DHAAKAD</h1>
-    <p>अपना हुनर दिखाओ!</p>
-  </header>
+<main>
+  <section class="panel">
+    <h2>WELCOME TO DHAAKAD</h2>
+    <p>अपनी प्रतिभा दुनिया को दिखाओ।</p>
+  </section>
 
-  <main>
-    <section class="welcome">
-      <h2>WELCOME TO DHAAKAD</h2>
-      <p>CREATE • SHARE • EARN</p>
-      <p>अपनी प्रतिभा दुनिया को दिखाओ।</p>
-    </section>
-  </main>
+  <section class="panel">
+    <h2>DHAAKAD VIDEO UPLOAD</h2>
+    <p>अपना वीडियो चुनें और दुनिया को हुनर दिखाएँ!</p>
+    <input type="file" id="videoFile" accept="video/*">
+    <video id="videoPreview" controls playsinline></video>
+    <p id="videoMessage" class="status"></p>
+  </section>
 
-  <footer>
-    © 2026 DHAAKAD
-  </footer>
+  <section class="panel">
+    <h2>SHARE YOUR TALENT</h2>
+    <textarea id="videoCaption" maxlength="500" placeholder="अपने वीडियो के बारे में कुछ लिखें..."></textarea>
+    <button id="shareVideo" type="button">SHARE VIDEO</button>
+    <p id="shareMessage" class="status"></p>
+  </section>
 
-<section style="background:#1c1c1c;padding:20px;margin:20px;border:1px solid #ff6500;border-radius:15px;text-align:center;color:white;">
-  <h2 style="color:#ff6500;">DHAAKAD VIDEO UPLOAD</h2>
+  <section class="panel">
+    <h2>MY DHAAKAD POST</h2>
+    <input id="postTitle" type="text" maxlength="80" placeholder="अपनी पोस्ट का नाम लिखें...">
+    <button id="createPost" type="button">CREATE POST</button>
+    <div id="postResult"></div>
+  </section>
 
-  <p>अपना वीडियो चुनें और दुनिया को हुनर दिखाएँ!</p>
+  <section class="panel">
+    <h2>DHAAKAD SOCIAL</h2>
+    <p>LIKE • COMMENT • SHARE • SAVE</p>
+    <p id="socialStatus" class="status">अपनी पोस्ट बनाकर टेस्ट करें।</p>
+  </section>
 
-  <input
-    type="file"
-    id="videoFile"
-    accept="video/*"
-    style="max-width:100%;color:white;"
-  >
+  <section class="panel">
+    <h2>🔖 SAVED VIDEOS</h2>
+    <div id="savedVideos">अभी कोई वीडियो सेव नहीं है।</div>
+  </section>
+</main>
 
-  <video
-    id="videoPreview"
-    controls
-    playsinline
-    style="display:none;width:100%;margin-top:15px;border-radius:10px;"
-  ></video>
-
-  <p id="videoMessage" style="color:#ff6500;"></p>
-</section>
-
-<script>
-const videoFile = document.getElementById("videoFile");
-const videoPreview = document.getElementById("videoPreview");
-const videoMessage = document.getElementById("videoMessage");
-
-let videoURL = null;
-
-videoFile.addEventListener("change", function() {
-  const file = this.files[0];
-
-  if (!file) return;
-
-  if (videoURL) {
-    URL.revokeObjectURL(videoURL);
-  }
-
-  if (!file.type.startsWith("video/")) {
-    videoMessage.textContent = "कृपया वीडियो चुनें।";
-    videoPreview.style.display = "none";
-    return;
-  }
-
-  videoURL = URL.createObjectURL(file);
-  videoPreview.src = videoURL;
-  videoPreview.style.display = "block";
-
-  videoMessage.textContent = "आपका वीडियो तैयार है!";
-});
-      </script>
-
-<section style="background:#1c1c1c;padding:20px;margin:20px;border:1px solid #ff6500;border-radius:15px;text-align:center;color:white;">
-
-  <h2 style="color:#ff6500;">SHARE YOUR TALENT</h2>
-
-  <p>अपने वीडियो के बारे में कुछ लिखें</p>
-
-  <textarea
-    id="videoCaption"
-    placeholder="यहाँ अपना कैप्शन लिखें..."
-    style="width:100%;height:90px;padding:12px;border-radius:8px;box-sizing:border-box;"
-  ></textarea>
-
-  <button
-    id="shareVideo"
-    type="button"
-    style="background:#ff6500;color:white;border:0;padding:14px 25px;border-radius:8px;font-weight:bold;margin-top:15px;"
-  >
-    SHARE VIDEO
-  </button>
-
-  <p id="shareMessage" style="color:#ff6500;"></p>
-
-</section>
+<footer>© 2026 DHAAKAD</footer>
 
 <script>
-document.getElementById("shareVideo").addEventListener("click", async function() {
+(() => {
+  const $ = id => document.getElementById(id);
 
-  const fileInput = document.getElementById("videoFile");
-  const caption = document.getElementById("videoCaption").value.trim();
-  const message = document.getElementById("shareMessage");
+  const fileInput = $("videoFile");
+  const preview = $("videoPreview");
+  const videoMessage = $("videoMessage");
+  const captionInput = $("videoCaption");
+  const postTitle = $("postTitle");
+  const postResult = $("postResult");
+  const socialStatus = $("socialStatus");
+  const savedArea = $("savedVideos");
 
-  if (!fileInput.files || !fileInput.files[0]) {
-    message.textContent = "पहले अपना वीडियो चुनें!";
-    return;
+  let previewURL = null;
+  let db = null;
+  let dbReady = false;
+  let savedObjectURLs = [];
+
+  function makeId() {
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    return "post_" + Date.now() + "_" + Math.random().toString(36).slice(2);
   }
 
-  const file = fileInput.files[0];
-
-  if (!file.type.startsWith("video/")) {
-    message.textContent = "कृपया सही वीडियो चुनें!";
-    return;
+  function selectedVideo() {
+    const file = fileInput.files && fileInput.files[0];
+    if (!file || !file.type.startsWith("video/")) return null;
+    return file;
   }
 
-  if (!navigator.share || !navigator.canShare ||
-      !navigator.canShare({ files: [file] })) {
-    message.textContent = "आपका ब्राउज़र वीडियो शेयर करने की सुविधा नहीं देता।";
-    return;
-  }
+  fileInput.addEventListener("change", () => {
+    const file = selectedVideo();
 
-  try {
-    await navigator.share({
-      title: "DHAAKAD",
-      text: caption || "मेरा हुनर देखिए! DHAAKAD",
-      files: [file]
-    });
+    if (previewURL) URL.revokeObjectURL(previewURL);
+    previewURL = null;
+    preview.removeAttribute("src");
+    preview.style.display = "none";
 
-    message.textContent = "शेयर प्रक्रिया पूरी हुई!";
-  } catch (error) {
-    if (error.name !== "AbortError") {
-      message.textContent = "शेयर नहीं हो पाया। दोबारा कोशिश करें।";
+    if (!file) {
+      videoMessage.textContent = fileInput.files.length
+        ? "कृपया सही वीडियो चुनें।"
+        : "";
+      return;
     }
-  }
 
-});
-</script>
+    previewURL = URL.createObjectURL(file);
+    preview.src = previewURL;
+    preview.style.display = "block";
+    videoMessage.textContent = "आपका वीडियो तैयार है!";
+  });
 
-<section style="background:#1c1c1c;padding:20px;margin:20px;border:1px solid #ff6500;border-radius:15px;color:white;text-align:center;">
+  $("shareVideo").addEventListener("click", async () => {
+    const file = selectedVideo();
+    const message = $("shareMessage");
+    const caption = captionInput.value.trim();
 
-  <h2 style="color:#ff6500;">MY DHAAKAD POST</h2>
+    if (!file) {
+      message.textContent = "पहले अपना वीडियो चुनें!";
+      return;
+    }
 
-  <p>अपनी पोस्ट का नाम लिखें</p>
+    if (!navigator.share || !navigator.canShare ||
+        !navigator.canShare({ files: [file] })) {
+      message.textContent = "इस ब्राउज़र में वीडियो शेयर उपलब्ध नहीं है।";
+      return;
+    }
 
-  <input
-    type="text"
-    id="postTitle"
-    placeholder="पोस्ट का नाम..."
-    maxlength="80"
-    style="width:100%;padding:12px;border-radius:8px;box-sizing:border-box;"
-  >
-
-  <button
-    type="button"
-    id="createPost"
-    style="background:#ff6500;color:white;border:0;padding:13px 22px;border-radius:8px;margin-top:15px;font-weight:bold;"
-  >
-    CREATE POST
-  </button>
-
-  <div id="postResult" style="margin-top:20px;text-align:left;"></div>
-
-</section>
-
-
-<script>
-document.getElementById("createPost").addEventListener("click", function() {
-
-  const title = document.getElementById("postTitle").value.trim();
-  const caption = document.getElementById("videoCaption").value.trim();
-  const fileInput = document.getElementById("videoFile");
-  const result = document.getElementById("postResult");
-
-  if (!title) {
-    alert("पहले पोस्ट का नाम लिखें!");
-    return;
-  }
-
-  if (!fileInput.files || !fileInput.files[0]) {
-    alert("पहले वीडियो चुनें!");
-    return;
-  }
-
-  const file = fileInput.files[0];
-
-  if (!file.type.startsWith("video/")) {
-    alert("कृपया सही वीडियो चुनें!");
-    return;
-  }
-
-  const card = document.createElement("div");
-  card.style.cssText =
-    "background:#303030;padding:15px;margin-bottom:15px;border-radius:10px;border:1px solid #ff6500;";
-
-  const heading = document.createElement("h3");
-  heading.style.color = "#ff6500";
-  heading.textContent = title;
-
-  const description = document.createElement("p");
-  description.textContent = caption || "DHAAKAD पर मेरा हुनर!";
-
-  const video = document.createElement("video");
-  video.src = URL.createObjectURL(file);
-  video.controls = true;
-  video.playsInline = true;
-  video.style.width = "100%";
-  video.style.borderRadius = "8px";
-
-  card.append(heading, description, video);
-
-  card.dataset.videoFile = "selected";
-
-  result.appendChild(card);
-
-  document.getElementById("postTitle").value = "";
-
-});
-</script>
-
-<section style="background:#1c1c1c;padding:18px;margin:20px;border:1px solid #ff6500;border-radius:15px;">
-<h2 style="color:#ff6500;text-align:center;">DHAAKAD SOCIAL</h2>
-<p style="text-align:center;color:white;">LIKE • COMMENT • SHARE • SAVE</p>
-<p id="socialStatus" style="color:#ff6500;text-align:center;">अपनी पोस्ट बनाकर टेस्ट करें।</p>
-</section>
-
-<section style="background:#1c1c1c;padding:15px;margin:20px;border:1px solid #ff6500;border-radius:15px;">
-<h2 style="color:#ff6500;">🔖 SAVED VIDEOS</h2>
-<div id="savedVideos" style="color:white;">अभी कोई वीडियो सेव नहीं है।</div>
-</section>
-
-<style>
-.reel-wrap {
-  position: relative;
-  width: 100%;
-}
-.reel-wrap video {
-  display: block;
-  width: 100%;
-  border-radius: 8px;
-}
-.reel-actions {
-  position: absolute;
-  right: 8px;
-  bottom: 55px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.reel-actions button {
-  width: 48px;
-  height: 48px;
-  border: none;
-  border-radius: 50%;
-  background: rgba(0,0,0,.8);
-  color: white;
-  font-size: 19px;
-}
-.reel-comments {
-  display: none;
-  margin-top: 12px;
-}
-.reel-comments input {
-  width: 68%;
-  padding: 10px;
-}
-.reel-comments button {
-  background: #ff6500;
-  color: white;
-  padding: 10px;
-  border: none;
-}
-</style>
-
-<script>
-(function () {
-  const postArea = document.getElementById("postResult");
-  const fileInput = document.getElementById("videoFile");
-  const status = document.getElementById("socialStatus");
-  const savedArea = document.getElementById("savedVideos");
-
-  if (!postArea || !fileInput || !status || !savedArea) return;
-
-  let db;
-
-  const request = indexedDB.open("DhaakadSavedVideos", 1);
-
-  request.onupgradeneeded = function (event) {
-    db = event.target.result;
-    if (!db.objectStoreNames.contains("videos")) {
-      db.createObjectStore("videos", {
-        keyPath: "id",
-        autoIncrement: true
+    try {
+      await navigator.share({
+        title: "DHAAKAD",
+        text: caption || "मेरा हुनर देखिए! DHAAKAD",
+        files: [file]
       });
+      message.textContent = "शेयर प्रक्रिया पूरी हुई!";
+    } catch (error) {
+      if (error.name !== "AbortError") {
+        message.textContent = "शेयर नहीं हो पाया। दोबारा कोशिश करें।";
+      }
     }
-  };
+  });
 
-  request.onsuccess = function (event) {
-    db = event.target.result;
-    showSavedVideos();
-  };
+  function openDatabase() {
+    return new Promise((resolve, reject) => {
+      if (!("indexedDB" in window)) {
+        reject(new Error("इस ब्राउज़र में वीडियो सेव सुविधा उपलब्ध नहीं है।"));
+        return;
+      }
 
-  request.onerror = function () {
-    status.textContent = "Save सिस्टम शुरू नहीं हुआ";
-  };
+      const request = indexedDB.open("DhaakadSavedVideos", 1);
 
-  function showSavedVideos() {
+      request.onupgradeneeded = event => {
+        const database = event.target.result;
+        if (!database.objectStoreNames.contains("videos")) {
+          database.createObjectStore("videos", { keyPath: "id" });
+        }
+      };
+
+      request.onsuccess = event => resolve(event.target.result);
+      request.onerror = () => reject(request.error || new Error("Database नहीं खुला।"));
+    });
+  }
+
+  async function showSavedVideos() {
     if (!db) return;
 
-    const transaction = db.transaction("videos", "readonly");
-    const store = transaction.objectStore("videos");
-    const getAll = store.getAll();
+    savedObjectURLs.forEach(url => URL.revokeObjectURL(url));
+    savedObjectURLs = [];
+    savedArea.replaceChildren();
 
-    getAll.onsuccess = function () {
-      savedArea.replaceChildren();
+    try {
+      const items = await new Promise((resolve, reject) => {
+        const request = db.transaction("videos", "readonly")
+          .objectStore("videos").getAll();
+        request.onsuccess = () => resolve(request.result || []);
+        request.onerror = () => reject(request.error);
+      });
 
-      if (!getAll.result.length) {
+      if (!items.length) {
         savedArea.textContent = "अभी कोई वीडियो सेव नहीं है।";
         return;
       }
 
-      getAll.result.forEach(function (item) {
+      items.sort((a, b) => (b.savedAt || 0) - (a.savedAt || 0));
+
+      items.forEach(item => {
         const box = document.createElement("div");
-        box.style.cssText =
-          "background:#303030;padding:12px;margin:10px 0;border-radius:10px;";
+        box.className = "saved-item";
 
         const title = document.createElement("p");
-        title.textContent = item.title;
+        title.textContent = item.title || "DHAAKAD Video";
 
         const video = document.createElement("video");
-        video.src = URL.createObjectURL(item.file);
         video.controls = true;
         video.playsInline = true;
-        video.style.width = "100%";
+        video.src = URL.createObjectURL(item.file);
+        savedObjectURLs.push(video.src);
 
         box.append(title, video);
         savedArea.appendChild(box);
       });
-    };
+    } catch (error) {
+      savedArea.textContent = "सेव वीडियो दिखाने में समस्या हुई।";
+    }
   }
 
   function addSocialButtons(card) {
@@ -417,137 +238,193 @@ document.getElementById("createPost").addEventListener("click", function() {
 
     card.dataset.socialReady = "yes";
 
-    const wrap = document.createElement("div");
-    wrap.className = "reel-wrap";
-
-    video.parentNode.insertBefore(wrap, video);
-    wrap.appendChild(video);
-
     const actions = document.createElement("div");
     actions.className = "reel-actions";
 
     let liked = false;
+    let likeCount = 0;
 
     const like = document.createElement("button");
-    like.textContent = "🤍";
-    like.onclick = function () {
+    like.textContent = "🤍 Like 0";
+    like.type = "button";
+    like.onclick = () => {
       liked = !liked;
-      like.textContent = liked ? "❤️" : "🤍";
+      likeCount = liked ? 1 : 0;
+      like.textContent = (liked ? "❤️" : "🤍") + " Like " + likeCount;
     };
 
     const commentBtn = document.createElement("button");
-    commentBtn.textContent = "💬";
+    commentBtn.textContent = "💬 Comment";
+    commentBtn.type = "button";
 
     const shareBtn = document.createElement("button");
-    shareBtn.textContent = "🔗";
+    shareBtn.textContent = "🔗 Share";
+    shareBtn.type = "button";
 
     const saveBtn = document.createElement("button");
-    saveBtn.textContent = "🔖";
-
-    saveBtn.onclick = function () {
-      const file = fileInput.files && fileInput.files[0];
-
-      if (!file) {
-        status.textContent = "पहले वीडियो चुनें";
-        return;
-      }
-
-      if (!db) {
-        status.textContent = "Save सिस्टम तैयार हो रहा है";
-        return;
-      }
-
-      const heading = card.querySelector("h3");
-      const title = heading ? heading.textContent : "DHAAKAD Video";
-
-      const transaction = db.transaction("videos", "readwrite");
-      transaction.objectStore("videos").add({
-        title: title,
-        file: file,
-        savedAt: Date.now()
-      });
-
-      transaction.oncomplete = function () {
-        saveBtn.textContent = "✅";
-        status.textContent = "वीडियो Saved Videos में सेव हो गया!";
-        showSavedVideos();
-      };
-
-      transaction.onerror = function () {
-        status.textContent = "वीडियो सेव नहीं हो पाया";
-      };
-    };
+    saveBtn.textContent = "🔖 Save";
+    saveBtn.type = "button";
 
     actions.append(like, commentBtn, shareBtn, saveBtn);
-    wrap.appendChild(actions);
 
     const comments = document.createElement("div");
     comments.className = "reel-comments";
 
-    const input = document.createElement("input");
-    input.placeholder = "अपना कमेंट लिखें...";
-    input.maxLength = 300;
+    const commentInput = document.createElement("input");
+    commentInput.type = "text";
+    commentInput.maxLength = 300;
+    commentInput.placeholder = "अपना कमेंट लिखें...";
 
-    const send = document.createElement("button");
-    send.textContent = "COMMENT";
+    const sendComment = document.createElement("button");
+    sendComment.type = "button";
+    sendComment.textContent = "COMMENT";
 
-    const list = document.createElement("div");
+    const commentList = document.createElement("div");
 
-    send.onclick = function () {
-      const value = input.value.trim();
+    sendComment.onclick = () => {
+      const value = commentInput.value.trim();
       if (!value) return;
 
       const item = document.createElement("p");
+      item.className = "comment-item";
       item.textContent = "💬 " + value;
-      item.style.cssText =
-        "background:#333;color:white;padding:10px;border-radius:8px;";
-
-      list.appendChild(item);
-      input.value = "";
-      status.textContent = "कमेंट जुड़ गया!";
+      commentList.appendChild(item);
+      commentInput.value = "";
+      socialStatus.textContent = "कमेंट इस डिवाइस पर जुड़ गया।";
     };
 
-    commentBtn.onclick = function () {
+    commentBtn.onclick = () => {
       comments.style.display =
         comments.style.display === "block" ? "none" : "block";
     };
 
-    comments.append(input, send, list);
-    card.appendChild(comments);
+    comments.append(commentInput, sendComment, commentList);
 
-    shareBtn.onclick = async function () {
-      const file = fileInput.files && fileInput.files[0];
+    saveBtn.onclick = async () => {
+      if (!dbReady || !db) {
+        socialStatus.textContent = "वीडियो सेव सिस्टम तैयार नहीं है।";
+        return;
+      }
 
+      const file = card._videoFile;
       if (!file) {
-        status.textContent = "पहले वीडियो चुनें";
+        socialStatus.textContent = "इस पोस्ट की वीडियो फाइल नहीं मिली।";
+        return;
+      }
+
+      saveBtn.disabled = true;
+
+      try {
+        await new Promise((resolve, reject) => {
+          const transaction = db.transaction("videos", "readwrite");
+          transaction.objectStore("videos").put({
+            id: card.dataset.localId,
+            title: card.querySelector("h3").textContent,
+            file,
+            savedAt: Date.now()
+          });
+          transaction.oncomplete = resolve;
+          transaction.onerror = () => reject(transaction.error);
+          transaction.onabort = () => reject(transaction.error);
+        });
+
+        saveBtn.textContent = "✅ Saved";
+        socialStatus.textContent = "वीडियो Saved Videos में सेव हो गया!";
+        await showSavedVideos();
+      } catch (error) {
+        socialStatus.textContent = "वीडियो सेव नहीं हो पाया।";
+        saveBtn.disabled = false;
+      }
+    };
+
+    shareBtn.onclick = async () => {
+      const file = card._videoFile;
+      if (!file) {
+        socialStatus.textContent = "इस पोस्ट की वीडियो फाइल नहीं मिली।";
+        return;
+      }
+
+      if (!navigator.share || !navigator.canShare ||
+          !navigator.canShare({ files: [file] })) {
+        socialStatus.textContent = "इस ब्राउज़र में वीडियो शेयर उपलब्ध नहीं है।";
         return;
       }
 
       try {
-        if (navigator.share && navigator.canShare &&
-            navigator.canShare({ files: [file] })) {
-          await navigator.share({
-            title: "DHAAKAD",
-            text: "मेरा धाकड़ वीडियो",
-            files: [file]
-          });
-        } else {
-          status.textContent = "इस ब्राउज़र में वीडियो शेयर उपलब्ध नहीं है";
-        }
+        await navigator.share({
+          title: card.querySelector("h3").textContent,
+          text: "मेरा धाकड़ वीडियो!",
+          files: [file]
+        });
+        socialStatus.textContent = "शेयर प्रक्रिया पूरी हुई!";
       } catch (error) {
         if (error.name !== "AbortError") {
-          status.textContent = "शेयर नहीं हो पाया";
+          socialStatus.textContent = "शेयर नहीं हो पाया।";
         }
       }
     };
+
+    card.append(actions, comments);
   }
 
-  const observer = new MutationObserver(function () {
-    Array.from(postArea.children).forEach(addSocialButtons);
+  $("createPost").addEventListener("click", () => {
+    const title = postTitle.value.trim();
+    const caption = captionInput.value.trim();
+    const file = selectedVideo();
+
+    if (!title) {
+      alert("पहले पोस्ट का नाम लिखें!");
+      return;
+    }
+
+    if (!file) {
+      alert("पहले वीडियो चुनें!");
+      return;
+    }
+
+    const card = document.createElement("article");
+    card.className = "post-card";
+    card.dataset.localId = makeId();
+    card._videoFile = file;
+
+    const heading = document.createElement("h3");
+    heading.textContent = title;
+
+    const description = document.createElement("p");
+    description.textContent = caption || "DHAAKAD पर मेरा हुनर!";
+
+    const video = document.createElement("video");
+    video.className = "post-video";
+    video.src = URL.createObjectURL(file);
+    video.controls = true;
+    video.playsInline = true;
+
+    card.append(heading, description, video);
+    postResult.prepend(card);
+
+    addSocialButtons(card);
+
+    postTitle.value = "";
+    socialStatus.textContent = "आपकी पोस्ट बन गई है!";
+    window.dispatchEvent(new CustomEvent("dhaakad:new-post", {
+      detail: { card }
+    }));
   });
 
-  observer.observe(postArea, { childList: true });
-  Array.from(postArea.children).forEach(addSocialButtons);
+  openDatabase()
+    .then(database => {
+      db = database;
+      dbReady = true;
+      showSavedVideos();
+    })
+    .catch(error => {
+      socialStatus.textContent = "Save सिस्टम: " + error.message;
+    });
+
+  window.addEventListener("beforeunload", () => {
+    if (previewURL) URL.revokeObjectURL(previewURL);
+    savedObjectURLs.forEach(url => URL.revokeObjectURL(url));
+  });
 })();
 </script>
 
@@ -571,120 +448,110 @@ const firebaseConfig = {
   appId: "1:928208033292:web:5c48779b192cc2ea1b0029"
 };
 
+const status = document.getElementById("socialStatus");
+const postArea = document.getElementById("postResult");
+
+let firestore = null;
+
+function getStablePostId(card) {
+  if (!card.dataset.firebasePostId) {
+    card.dataset.firebasePostId = card.dataset.localId ||
+      ("post_" + Date.now() + "_" + Math.random().toString(36).slice(2));
+  }
+  return card.dataset.firebasePostId;
+}
+
+async function savePost(card) {
+  if (!firestore || !card || card.dataset.firebaseSaved === "yes" ||
+      card.dataset.firebaseSaved === "saving") return;
+
+  const heading = card.querySelector("h3");
+  const description = card.querySelector("p");
+
+  if (!heading) return;
+
+  const postId = getStablePostId(card);
+  card.dataset.firebaseSaved = "saving";
+
+  let message = card.querySelector(".firebase-message");
+  if (!message) {
+    message = document.createElement("p");
+    message.className = "firebase-message";
+    card.appendChild(message);
+  }
+
+  let retry = card.querySelector(".firebase-retry");
+  if (retry) retry.remove();
+
+  message.textContent = "Firebase में पोस्ट सेव हो रही है...";
+
+  try {
+    await setDoc(doc(firestore, "Posts", postId), {
+      postId,
+      title: heading.textContent,
+      caption: description ? description.textContent : "",
+      appName: "DHAAKAD",
+      createdAt: serverTimestamp()
+    });
+
+    card.dataset.firebaseSaved = "yes";
+    message.textContent = "✅ पोस्ट Firebase में सेव हो गई!";
+    status.textContent = "Firebase कनेक्शन और पोस्ट सेव सफल!";
+  } catch (error) {
+    card.dataset.firebaseSaved = "error";
+    message.textContent = "पोस्ट Firebase में सेव नहीं हुई: " + error.message;
+
+    retry = document.createElement("button");
+    retry.type = "button";
+    retry.className = "firebase-retry";
+    retry.textContent = "RETRY";
+    retry.onclick = () => savePost(card);
+    card.appendChild(retry);
+
+    status.textContent = "Firebase पोस्ट सेव में समस्या हुई। Retry दबाएँ।";
+    console.error("DHAAKAD Firestore save error:", error);
+  }
+}
+
 try {
   const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+  firestore = getFirestore(app);
 
-  window.dhaakadDb = db;
-
-  await setDoc(doc(db, "AppStatus", "connection"), {
+  await setDoc(doc(firestore, "AppStatus", "connection"), {
     connected: true,
     appName: "DHAAKAD",
     updatedAt: serverTimestamp()
   });
 
-  document.getElementById("socialStatus").textContent =
-    "DHAAKAD Firebase se connect ho gaya!";
-
-  console.log("DHAAKAD Firebase Connected!");
-
-} catch (error) {
-  console.error("Firebase Error:", error);
-
-  document.getElementById("socialStatus").textContent =
-    "Firebase Error: " + error.message;
-}
-</script>
-
-<script type="module">
-import { getApp }
-from "https://www.gstatic.com/firebasejs/13.3.0/firebase-app.js";
-
-import {
-  getFirestore,
-  doc,
-  setDoc,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/13.3.0/firebase-firestore.js";
-
-try {
-  const app = getApp();
-  const db = getFirestore(app);
-
-  const postArea = document.getElementById("postResult");
-  const status = document.getElementById("socialStatus");
-
-  if (!postArea) {
-    throw new Error("Post area nahi mila");
-  }
-
-  async function savePost(card) {
-    if (card.dataset.firebaseSaved) return;
-
-    const heading = card.querySelector("h3");
-    if (!heading) return;
-
-    card.dataset.firebaseSaved = "saving";
-
-    const paragraphs = card.querySelectorAll("p");
-    const caption = paragraphs.length > 0
-      ? paragraphs[0].textContent
-      : "";
-
-    const postId = crypto.randomUUID();
-
-    try {
-      await setDoc(doc(db, "Posts", postId), {
-        postId: postId,
-        title: heading.textContent,
-        caption: caption,
-        appName: "DHAAKAD",
-        createdAt: serverTimestamp()
-      });
-
-      card.dataset.firebaseSaved = "yes";
-
-      if (status) {
-        status.textContent =
-          "Post Firebase mein save ho gayi!";
-      }
-
-      console.log("DHAAKAD Post Saved:", postId);
-
-    } catch (error) {
-      card.dataset.firebaseSaved = "error";
-
-      if (status) {
-        status.textContent =
-          "Post Save Error: " + error.message;
-      }
-
-      console.error(error);
-    }
-  }
-
-  const observer = new MutationObserver(function () {
-    Array.from(postArea.children).forEach(savePost);
-  });
-
-  observer.observe(postArea, {
-    childList: true
-  });
+  status.textContent = "DHAAKAD Firebase से कनेक्ट हो गया!";
 
   Array.from(postArea.children).forEach(savePost);
 
-  console.log("DHAAKAD Post Save System Ready!");
+  const observer = new MutationObserver(records => {
+    records.forEach(record => {
+      record.addedNodes.forEach(node => {
+        if (node.nodeType === 1 && node.parentElement === postArea) {
+          savePost(node);
+        }
+      });
+    });
+  });
+
+  observer.observe(postArea, { childList: true });
+
+  window.addEventListener("dhaakad:new-post", event => {
+    if (event.detail && event.detail.card) {
+      savePost(event.detail.card);
+    }
+  });
+
+  console.log("DHAAKAD Firebase Ready");
 
 } catch (error) {
-  console.error("DHAAKAD Firebase Error:", error);
-
-  const status = document.getElementById("socialStatus");
-
-  if (status) {
-    status.textContent = "Firebase Error: " + error.message;
-  }
+  console.error("DHAAKAD Firebase connection error:", error);
+  status.textContent = "Firebase कनेक्शन में समस्या: " + error.message;
 }
 </script>
-  
+
 </body>
 </html>
