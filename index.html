@@ -1,767 +1,282 @@
-
 <!DOCTYPE html>
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#101010">
-<title>DHAAKAD - अपना हुनर दिखाओ</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔥 DHAAKAD - Apna Hunar Dikhao!</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#101010;color:white;font-family:Arial,sans-serif}
-header{background:#ff6500;color:#111;padding:16px;text-align:center;position:sticky;top:0;z-index:10}
-header h2{margin:0;font-size:25px}
-header p{margin:6px 0 0;font-weight:bold}
-nav{display:flex;justify-content:center;gap:5px;flex-wrap:wrap;background:#222;padding:9px;position:sticky;top:76px;z-index:9}
-button{background:#ff6500;color:#111;border:0;border-radius:7px;padding:10px;font-weight:bold;cursor:pointer}
-button:disabled{opacity:.5;cursor:not-allowed}
-nav button{padding:9px 11px}
-main{max-width:650px;margin:auto;padding:12px}
-section{margin-bottom:20px}
-.card{background:#202020;border-radius:12px;padding:13px;margin:12px 0;overflow-wrap:anywhere}
-input,textarea{width:100%;padding:12px;margin:7px 0;background:#252525;color:white;border:1px solid #555;border-radius:7px}
-textarea{min-height:85px;resize:vertical}
-video{width:100%;max-height:520px;background:black;border-radius:8px}
-.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
-.actions button{flex:1}
-.hidden{display:none!important}
-.orange{color:#ff6500}
-.muted{color:#aaa;font-size:13px}
-.message{padding:10px;margin:7px 0;background:#252525;border-radius:8px;overflow-wrap:anywhere}
-.mine{background:#713000;text-align:right}
-#status{padding:9px;color:#ff9b55}
-.progress{width:100%;height:8px;background:#444;border-radius:8px;overflow:hidden}
-#progressBar{height:100%;width:0;background:#ff6500}
-.small{font-size:12px;color:#aaa}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+body{background:#000;color:#fff}
+header{background:#ff6a00;color:#000;text-align:center;padding:15px 10px;position:sticky;top:0;z-index:10}
+header h1{font-size:28px}
+header p{font-weight:bold}
+nav{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;background:#111;padding:10px}
+nav button{background:#ff6a00;border:0;padding:9px 14px;border-radius:8px;font-weight:bold;cursor:pointer;color:#000}
+.card{background:#1a1a1a;margin:12px;padding:14px;border-radius:14px}
+input,textarea{width:100%;padding:12px;margin:7px 0;background:#222;border:1px solid #444;color:#fff;border-radius:10px;outline:none}
+.btn{background:#ff6a00;color:#000;border:0;padding:11px;border-radius:10px;font-weight:bold;cursor:pointer;width:100%;margin-top:7px}
+.btn2{background:#ff6a00;color:#000;border:0;padding:9px 12px;border-radius:8px;font-weight:bold;cursor:pointer;margin:3px}
+.post{background:#222;padding:12px;border-radius:12px;margin-top:12px}
+.post video,.post img{width:100%;border-radius:10px;margin:8px 0;max-height:380px;object-fit:cover}
+.flex{display:flex;gap:8px;flex-wrap:wrap}
+.hide{display:none}
+.small{font-size:13px;color:#aaa}
 </style>
 </head>
-
 <body>
+
 <header>
-<h2>🔥 DHAAKAD</h2>
-<b>अपना हुनर दिखाओ!</b>
+<h1>🔥 DHAAKAD</h1>
+<p>अपना हुनर दिखाओ!</p>
 <p>CREATE • SHARE • EARN</p>
 </header>
 
 <nav>
-<button onclick="show('feed')">होम</button>
+<button onclick="show('home')">होम</button>
 <button onclick="show('upload')">अपलोड</button>
 <button onclick="show('search')">खोजें</button>
 <button onclick="show('profile')">प्रोफाइल</button>
-<button onclick="show('notifications')">🔔</button>
+<button onclick="show('notif')">🔔 <span id="notifCount"></span></button>
 <button onclick="show('saved')">सेव</button>
-<button onclick="show('chat')">मैसेज</button>
+<button onclick="show('msg')">मैसेज</button>
 </nav>
 
-<main>
-<div id="status"></div>
-
-<section id="login" class="card">
-<h3 class="orange">DHAAKAD में लॉगिन करें</h3>
-<input id="email" type="email" placeholder="ईमेल" autocomplete="email">
-<input id="password" type="password" placeholder="पासवर्ड" autocomplete="current-password">
-<div class="actions">
-<button onclick="register()">रजिस्टर</button>
-<button onclick="login()">लॉगिन</button>
+<!-- LOGIN -->
+<div class="card" id="loginBox">
+<h2 style="color:#ff6a00">DHAAKAD में लॉगिन करें</h2>
+<input id="email" placeholder="ईमेल">
+<input id="pass" type="password" placeholder="पासवर्ड">
+<div class="flex">
+<button class="btn2" onclick="register()">रजिस्टर</button>
+<button class="btn2" onclick="login()">लॉगिन</button>
+<button class="btn2" onclick="logout()">लॉगआउट</button>
 </div>
-<div class="actions">
-<button onclick="resetPassword()">पासवर्ड भूल गए?</button>
-<button onclick="logout()">लॉगआउट</button>
+<p class="small" id="loginMsg"></p>
 </div>
-<p id="authmsg"></p>
-</section>
 
-<section id="feed">
-<h3 class="orange">🔥 वीडियो फीड</h3>
-<div id="videos"></div>
-</section>
-
-<section id="upload" class="hidden">
-<div class="card">
-<h3 class="orange">अपना वीडियो अपलोड करें</h3>
-<input type="file" id="videoFile" accept="video/*">
-<textarea id="caption" maxlength="1000" placeholder="वीडियो के बारे में लिखें"></textarea>
-<div class="progress"><div id="progressBar"></div></div>
-<p id="uploadmsg" class="muted"></p>
-<button id="uploadBtn" onclick="uploadVideo()">वीडियो प्रकाशित करें</button>
+<!-- HOME -->
+<div class="card" id="home">
+<h2 style="color:#ff6a00">🔥 वीडियो फीड</h2>
+<div id="feed"></div>
 </div>
-</section>
 
-<section id="search" class="hidden">
-<div class="card">
-<h3 class="orange">यूजर खोजें</h3>
-<input id="searchInput" type="email" placeholder="यूजर का पूरा ईमेल">
-<button onclick="searchUsers()">खोजें</button>
-<div id="searchResults"></div>
+<!-- UPLOAD -->
+<div class="card hide" id="upload">
+<h2>वीडियो अपलोड करें</h2>
+<input id="vTitle" placeholder="वीडियो का टाइटल">
+<input id="vUrl" placeholder="वीडियो / फोटो का Link (mp4 / jpg)">
+<textarea id="vDesc" placeholder="Description..."></textarea>
+<button class="btn" onclick="createPost()">अपलोड करें</button>
 </div>
-</section>
 
-<section id="profile" class="hidden">
-<div class="card">
-<h3 class="orange">मेरी प्रोफाइल</h3>
-<input id="displayName" maxlength="40" placeholder="अपना नाम">
-<button onclick="updateProfile()">नाम अपडेट करें</button>
-<div id="profileInfo"></div>
+<!-- SEARCH -->
+<div class="card hide" id="search">
+<h2>खोजें</h2>
+<input id="searchInput" placeholder="Search..." oninput="searchPosts()">
+<div id="searchResult"></div>
 </div>
-<div class="card">
-<h3>मेरे वीडियो</h3>
-<div id="myVideos"></div>
-</div>
-</section>
 
-<section id="notifications" class="hidden">
-<div class="card">
-<h3 class="orange">🔔 नोटिफिकेशन</h3>
-<div id="notificationList"></div>
+<!-- PROFILE -->
+<div class="card hide" id="profile">
+<h2>प्रोफाइल</h2>
+<p id="profileInfo"></p>
+<input id="pName" placeholder="अपना नाम">
+<button class="btn" onclick="saveProfile()">Save Profile</button>
+<h3 style="margin-top:15px">मेरी पोस्ट</h3>
+<div id="myPosts"></div>
 </div>
-</section>
 
-<section id="saved" class="hidden">
-<div class="card">
-<h3 class="orange">सेव किए वीडियो</h3>
-<div id="savedVideos"></div>
+<!-- NOTIFICATION -->
+<div class="card hide" id="notif">
+<h2>Notifications</h2>
+<div id="notificationList">अभी कोई नोटिफिकेशन नहीं है</div>
 </div>
-</section>
 
-<section id="chat" class="hidden">
-<div class="card">
-<h3 class="orange">मैसेज</h3>
-<input id="chatUser" placeholder="दूसरे यूजर की UID">
-<button onclick="loadMessages()">चैट खोलें</button>
-<div id="messages"></div>
-<input id="messageText" maxlength="2000" placeholder="मैसेज लिखें">
-<button onclick="sendMessage()">भेजें</button>
+<!-- SAVED -->
+<div class="card hide" id="saved">
+<h2>Saved Videos</h2>
+<div id="savedList"></div>
 </div>
-</section>
-</main>
 
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
+<!-- MESSAGES -->
+<div class="card hide" id="msg">
+<h2>मैसेज</h2>
+<input id="msgTo" placeholder="किसको भेजना है? (email)">
+<input id="msgText" placeholder="मैसेज लिखो...">
+<button class="btn" onclick="sendMessage()">भेजें</button>
+<div id="msgList"></div>
+</div>
 
 <script>
-"use strict";
+// ===== DATA =====
+let users = JSON.parse(localStorage.getItem("dhaakad_users")||"[]");
+let posts = JSON.parse(localStorage.getItem("dhaakad_posts")||"[]");
+let notifs = JSON.parse(localStorage.getItem("dhaakad_notifs")||"[]");
+let msgs = JSON.parse(localStorage.getItem("dhaakad_msgs")||"[]");
+let currentUser = JSON.parse(localStorage.getItem("dhaakad_current")||"null");
+let saved = JSON.parse(localStorage.getItem("dhaakad_saved")||"[]");
 
-/*
-FIREBASE CONFIG:
-Firebase Console > Project settings > Your apps > SDK setup
-यहाँ अपने असली Firebase config की values डालें।
-अंदाजे वाली API key या App ID इस्तेमाल न करें।
-*/
-const firebaseConfig = {
-  apiKey: "PASTE_YOUR_REAL_API_KEY",
-  authDomain: "dhaakad-7b801.firebaseapp.com",
-  projectId: "dhaakad-7b801",
-  storageBucket: "PASTE_YOUR_REAL_STORAGE_BUCKET",
-  messagingSenderId: "928208033292",
-  appId: "PASTE_YOUR_REAL_APP_ID"
-};
-
-const $ = id => document.getElementById(id);
-
-let auth, db, storage;
-let currentUser = null;
-let unsubscribeFeed = null;
-let unsubscribeMessages = null;
-let currentRoom = null;
-let uploadTask = null;
-let appReady = false;
-
-function status(message){
-  $("status").textContent = message || "";
+function saveAll(){
+  localStorage.setItem("dhaakad_users",JSON.stringify(users));
+  localStorage.setItem("dhaakad_posts",JSON.stringify(posts));
+  localStorage.setItem("dhaakad_notifs",JSON.stringify(notifs));
+  localStorage.setItem("dhaakad_msgs",JSON.stringify(msgs));
+  localStorage.setItem("dhaakad_current",JSON.stringify(currentUser));
+  localStorage.setItem("dhaakad_saved",JSON.stringify(saved));
 }
-
 function requireLogin(){
-  if(!currentUser){
-    alert("पहले लॉगिन करें");
-    return false;
-  }
+  if(!currentUser){ alert("पहले लॉगिन करो भाई!"); return false; }
   return true;
 }
+function addNotice(to, text){
+  notifs.unshift({to, text, time: new Date().toLocaleString()});
+  saveAll(); loadNotifications();
+}
 
+// ===== AUTH =====
+function register(){
+  let e=email.value.trim(), p=pass.value.trim();
+  if(!e||!p) return alert("ईमेल और पासवर्ड डालो");
+  if(users.find(u=>u.email===e)) return alert("ये ईमेल पहले से है, लॉगिन करो");
+  users.push({email:e, pass:p, name:e.split("@")[0]});
+  saveAll(); alert("रजिस्टर हो गया! अब लॉगिन करो");
+}
+function login(){
+  let e=email.value.trim(), p=pass.value.trim();
+  let u=users.find(x=>x.email===e && x.pass===p);
+  if(!u) return alert("गलत ईमेल / पासवर्ड");
+  currentUser=u; saveAll();
+  document.getElementById("loginMsg").innerText="लॉगिन हो गया: "+e;
+  alert("Welcome "+u.name+" 🔥");
+  renderFeed(); loadNotifications(); loadProfile();
+}
+function logout(){ currentUser=null; saveAll(); alert("लॉगआउट हो गया"); location.reload(); }
+
+// ===== NAV =====
 function show(id){
-  const allowed = [
-    "feed","upload","search","profile",
-    "notifications","saved","chat"
-  ];
-
-  if(!allowed.includes(id)) return;
-
-  if(id !== "feed" && !requireLogin()) return;
-
-  document.querySelectorAll("main section").forEach(section=>{
-    section.classList.add("hidden");
+  ["home","upload","search","profile","notif","saved","msg"].forEach(x=>{
+    document.getElementById(x).classList.add("hide");
   });
-
-  $(id).classList.remove("hidden");
-
-  if(id==="feed") loadVideos();
+  document.getElementById(id).classList.remove("hide");
+  if(id==="home") renderFeed();
+  if(id==="saved") renderSaved();
   if(id==="profile") loadProfile();
-  if(id==="notifications") loadNotifications();
-  if(id==="saved") loadSaved();
+  if(id==="msg") renderMsgs();
 }
 
-/* FIREBASE INITIALIZATION */
-
-try{
-  if(firebaseConfig.apiKey==="PASTE_YOUR_REAL_API_KEY" ||
-     firebaseConfig.appId==="PASTE_YOUR_REAL_APP_ID" ||
-     firebaseConfig.storageBucket==="PASTE_YOUR_REAL_STORAGE_BUCKET"){
-    throw new Error("Firebase config में अपनी असली API Key, App ID और Storage Bucket डालें।");
-  }
-
-  firebase.initializeApp(firebaseConfig);
-  auth = firebase.auth();
-  db = firebase.firestore();
-  storage = firebase.storage();
-  appReady = true;
-
-  auth.onAuthStateChanged(handleAuthState);
-
-}catch(error){
-  status("Firebase शुरू नहीं हुआ: "+error.message);
-  $("authmsg").textContent=error.message;
+// ===== FEED =====
+function createPost(){
+  if(!requireLogin()) return;
+  let t=vTitle.value.trim(), u=vUrl.value.trim();
+  if(!t||!u) return alert("टाइटल और Link डालो");
+  posts.unshift({id:Date.now(), title:t, url:u, desc:vDesc.value, user:currentUser.email, likes:[], comments:[], time:new Date().toLocaleString()});
+  saveAll(); vTitle.value=""; vUrl.value=""; vDesc.value="";
+  alert("अपलोड हो गया 🔥"); show("home");
 }
-
-/* AUTHENTICATION */
-
-async function register(){
-  if(!appReady) return alert("Firebase config ठीक करें।");
-
-  const email=$("email").value.trim().toLowerCase();
-  const password=$("password").value;
-
-  if(!email || password.length<6){
-    alert("सही ईमेल और कम से कम 6 अक्षर का पासवर्ड डालें।");
-    return;
-  }
-
-  try{
-    const result=await auth.createUserWithEmailAndPassword(email,password);
-
-    await db.collection("Users").doc(result.user.uid).set({
-      uid:result.user.uid,
-      email:email,
-      name:email.split("@")[0],
-      followers:[],
-      following:[],
-      saved:[],
-      createdAt:firebase.firestore.FieldValue.serverTimestamp()
-    });
-
-    alert("रजिस्ट्रेशन सफल हुआ।");
-  }catch(error){
-    alert("रजिस्ट्रेशन नहीं हुआ: "+error.message);
-  }
-}
-
-async function login(){
-  if(!appReady) return alert("Firebase config ठीक करें।");
-
-  const email=$("email").value.trim().toLowerCase();
-  const password=$("password").value;
-
-  if(!email || !password){
-    alert("ईमेल और पासवर्ड डालें।");
-    return;
-  }
-
-  try{
-    await auth.signInWithEmailAndPassword(email,password);
-    alert("लॉगिन सफल हुआ।");
-  }catch(error){
-    alert("लॉगिन नहीं हुआ: "+error.message);
-  }
-}
-
-async function resetPassword(){
-  if(!appReady) return;
-
-  const email=$("email").value.trim().toLowerCase();
-  if(!email) return alert("पहले ईमेल डालें।");
-
-  try{
-    await auth.sendPasswordResetEmail(email);
-    alert("पासवर्ड बदलने का लिंक ईमेल पर भेज दिया गया।");
-  }catch(error){
-    alert(error.message);
-  }
-}
-
-async function logout(){
-  if(!appReady) return;
-
-  try{
-    if(uploadTask) await uploadTask.cancel();
-    await auth.signOut();
-    status("आप लॉगआउट हो गए हैं।");
-  }catch(error){
-    alert(error.message);
-  }
-}
-
-async function handleAuthState(user){
-  currentUser=user;
-
-  $("authmsg").textContent=user
-    ? "लॉगिन सफल: "+user.email
-    : "लॉगिन करें";
-
-  if(unsubscribeFeed){
-    unsubscribeFeed();
-    unsubscribeFeed=null;
-  }
-
-  if(unsubscribeMessages){
-    unsubscribeMessages();
-    unsubscribeMessages=null;
-  }
-
-  currentRoom=null;
-  $("videos").innerHTML="";
-  $("messages").innerHTML="";
-
-  if(!user) return;
-
-  try{
-    const userRef=db.collection("Users").doc(user.uid);
-    const userSnap=await userRef.get();
-
-    if(!userSnap.exists){
-      await userRef.set({
-        uid:user.uid,
-        email:user.email,
-        name:user.email.split("@")[0],
-        followers:[],
-        following:[],
-        saved:[],
-        createdAt:firebase.firestore.FieldValue.serverTimestamp()
-      });
-    }
-
-    loadVideos();
-  }catch(error){
-    status("यूजर जानकारी लोड नहीं हुई: "+error.message);
-  }
-}
-
-/* NOTIFICATIONS */
-
-async function createNotification(to,text,type,videoId){
-  if(!currentUser || !to || to===currentUser.uid) return;
-
-  await db.collection("Notifications").add({
-    to:to,
-    from:currentUser.uid,
-    text:text,
-    type:type,
-    videoId:videoId || null,
-    read:false,
-    createdAt:firebase.firestore.FieldValue.serverTimestamp()
+function renderFeed(list=posts){
+  let box=document.getElementById("feed");
+  if(list.length===0){ box.innerHTML="अभी कोई वीडियो नहीं है, पहले अपलोड करो!"; return; }
+  box.innerHTML="";
+  list.forEach(p=>{
+    let isVideo = p.url.includes(".mp4") || p.url.includes("video");
+    let media = isVideo ? `<video src="${p.url}" controls></video>` : `<img src="${p.url}">`;
+    let d=document.createElement("div"); d.className="post";
+    d.innerHTML=`<b>${p.user}</b> <span class="small">${p.time}</span><h3>${p.title}</h3>${media}<p>${p.desc||""}</p>
+    <div class="flex">
+      <button class="btn2" onclick="likePost(${p.id})">❤️ Like (${p.likes.length})</button>
+      <button class="btn2" onclick="savePost(${p.id})">💾 Save</button>
+      <button class="btn2" onclick="sharePost(${p.id})">↗️ Share</button>
+      <button class="btn2" onclick="followPost('${p.user}')">➕ Follow</button>
+    </div>
+    <input placeholder="Comment..." id="c${p.id}">
+    <button class="btn2" onclick="commentPost(${p.id})">Comment</button>
+    <div>${p.comments.map(c=>`<p class="small">💬 <b>${c.user}:</b> ${c.text}</p>`).join("")}</div>`;
+    box.appendChild(d);
   });
 }
-
-async function loadNotifications(){
+function likePost(id){
   if(!requireLogin()) return;
-
-  const box=$("notificationList");
-  box.textContent="लोड हो रहा है...";
-
-  try{
-    const snap=await db.collection("Notifications")
-      .where("to","==",currentUser.uid)
-      .get();
-
-    const docs=snap.docs.sort((a,b)=>{
-      const ta=a.data().createdAt?.toMillis?.() || 0;
-      const tb=b.data().createdAt?.toMillis?.() || 0;
-      return tb-ta;
-    }).slice(0,50);
-
-    box.innerHTML="";
-
-    if(docs.length===0){
-      box.textContent="अभी कोई नोटिफिकेशन नहीं है।";
-      return;
-    }
-
-    docs.forEach(doc=>{
-      const data=doc.data();
-      const p=document.createElement("p");
-      p.className="message";
-      p.textContent=data.text || "नया नोटिफिकेशन";
-      box.appendChild(p);
-    });
-  }catch(error){
-    box.textContent="नोटिफिकेशन लोड नहीं हुए: "+error.message;
-  }
+  let p=posts.find(x=>x.id===id);
+  if(p.likes.includes(currentUser.email)) p.likes=p.likes.filter(x=>x!==currentUser.email);
+  else { p.likes.push(currentUser.email); if(p.user!==currentUser.email) addNotice(p.user, currentUser.email+" ने आपकी पोस्ट को Like किया"); }
+  saveAll(); renderFeed();
 }
-
-/* VIDEO UPLOAD */
-
-async function uploadVideo(){
+function commentPost(id){
   if(!requireLogin()) return;
-
-  const file=$("videoFile").files[0];
-  const caption=$("caption").value.trim();
-  const button=$("uploadBtn");
-
-  if(!file) return alert("पहले वीडियो चुनें।");
-  if(!file.type.startsWith("video/")) return alert("सही वीडियो फाइल चुनें।");
-  if(file.size>100*1024*1024) return alert("वीडियो 100 MB से छोटा होना चाहिए।");
-
-  button.disabled=true;
-  $("uploadmsg").textContent="वीडियो अपलोड हो रहा है...";
-  $("progressBar").style.width="0%";
-
-  try{
-    const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
-    const path="videos/"+currentUser.uid+"/"+Date.now()+"_"+safeName;
-    const ref=storage.ref(path);
-
-    uploadTask=ref.put(file,{contentType:file.type});
-
-    uploadTask.on("state_changed",snapshot=>{
-      const percent=snapshot.totalBytes
-        ? snapshot.bytesTransferred/snapshot.totalBytes*100
-        : 0;
-
-      $("progressBar").style.width=percent+"%";
-      $("uploadmsg").textContent="अपलोड: "+Math.round(percent)+"%";
-    });
-
-    const snapshot=await uploadTask;
-    const url=await snapshot.ref.getDownloadURL();
-
-    await db.collection("Videos").add({
-      uid:currentUser.uid,
-      caption:caption,
-      videoUrl:url,
-      storagePath:path,
-      likes:[],
-      createdAt:firebase.firestore.FieldValue.serverTimestamp()
-    });
-
-    $("uploadmsg").textContent="वीडियो सफलतापूर्वक प्रकाशित हुआ।";
-    $("videoFile").value="";
-    $("caption").value="";
-    $("progressBar").style.width="100%";
-    loadVideos();
-
-  }catch(error){
-    $("uploadmsg").textContent="अपलोड नहीं हुआ: "+error.message;
-  }finally{
-    button.disabled=false;
-    uploadTask=null;
-  }
+  let inp=document.getElementById("c"+id);
+  if(!inp.value.trim()) return;
+  let p=posts.find(x=>x.id===id);
+  p.comments.push({user:currentUser.email, text:inp.value});
+  if(p.user!==currentUser.email) addNotice(p.user, currentUser.email+" ने Comment किया: "+inp.value);
+  saveAll(); renderFeed();
 }
-
-/* VIDEO CARD */
-
-function makeVideoCard(id,v,container){
-  const card=document.createElement("div");
-  card.className="card";
-
-  const video=document.createElement("video");
-  video.src=v.videoUrl || "";
-  video.controls=true;
-  video.playsInline=true;
-  video.preload="metadata";
-
-  const owner=document.createElement("p");
-  owner.className="muted";
-  owner.textContent="Creator UID: "+(v.uid || "");
-
-  const caption=document.createElement("p");
-  caption.textContent=v.caption || "";
-
-  const actions=document.createElement("div");
-  actions.className="actions";
-
-  const likes=Array.isArray(v.likes)?v.likes:[];
-  const liked=currentUser && likes.includes(currentUser.uid);
-
-  const like=document.createElement("button");
-  like.textContent=(liked?"❤️ ":"🤍 ")+likes.length;
-  like.onclick=()=>likeVideo(id);
-
-  const comment=document.createElement("button");
-  comment.textContent="💬 कमेंट";
-  comment.onclick=()=>commentVideo(id);
-
-  const follow=document.createElement("button");
-  follow.textContent="➕ फॉलो";
-  follow.onclick=()=>followUser(v.uid);
-
-  const save=document.createElement("button");
-  save.textContent="🔖 सेव";
-  save.onclick=()=>saveVideo(id);
-
-  const share=document.createElement("button");
-  share.textContent="↗ शेयर";
-  share.onclick=()=>shareVideo(id);
-
-  actions.append(like,comment,follow,save,share);
-
-  const comments=document.createElement("div");
-  comments.id="comments-"+id;
-
-  card.append(video,owner,caption,actions,comments);
-  container.appendChild(card);
-
-  loadComments(id);
+function sharePost(id){
+  let p=posts.find(x=>x.id===id);
+  let link=location.href+"#"+id;
+  if(navigator.share){ navigator.share({title:p.title, text:p.title, url:link}); }
+  else { navigator.clipboard.writeText(link); alert("Link Copy हो गया: "+link); }
 }
-
-/* VIDEO FEED */
-
-function loadVideos(){
-  if(!appReady) return;
-
-  if(unsubscribeFeed){
-    unsubscribeFeed();
-    unsubscribeFeed=null;
-  }
-
-  const box=$("videos");
-  box.textContent="वीडियो लोड हो रहे हैं...";
-
-  unsubscribeFeed=db.collection("Videos")
-    .orderBy("createdAt","desc")
-    .limit(50)
-    .onSnapshot(snapshot=>{
-      box.innerHTML="";
-
-      if(snapshot.empty){
-        box.textContent="अभी कोई वीडियो उपलब्ध नहीं है।";
-        return;
-      }
-
-      snapshot.forEach(doc=>{
-        makeVideoCard(doc.id,doc.data(),box);
-      });
-    },error=>{
-      box.textContent="वीडियो फीड की समस्या: "+error.message;
-    });
-}
-
-/* LIKE */
-
-async function likeVideo(id){
+function followPost(userEmail){
   if(!requireLogin()) return;
-
-  const ref=db.collection("Videos").doc(id);
-
-  try{
-    let ownerUid=null;
-    let added=false;
-
-    await db.runTransaction(async transaction=>{
-      const snap=await transaction.get(ref);
-      if(!snap.exists) throw new Error("वीडियो नहीं मिला।");
-
-      const data=snap.data();
-      const likes=Array.isArray(data.likes)?data.likes:[];
-
-      ownerUid=data.uid;
-
-      if(likes.includes(currentUser.uid)){
-        transaction.update(ref,{
-          likes:firebase.firestore.FieldValue.arrayRemove(currentUser.uid)
-        });
-      }else{
-        transaction.update(ref,{
-          likes:firebase.firestore.FieldValue.arrayUnion(currentUser.uid)
-        });
-        added=true;
-      }
-    });
-
-    if(added && ownerUid){
-      await createNotification(ownerUid,"किसी ने आपका वीडियो लाइक किया।","like",id);
-    }
-  }catch(error){
-    alert("लाइक नहीं हुआ: "+error.message);
-  }
+  addNotice(userEmail, currentUser.email+" ने आपको Follow किया");
+  alert("Follow हो गया ✅");
 }
-
-/* COMMENTS */
-
-async function commentVideo(id){
+function savePost(id){
   if(!requireLogin()) return;
-
-  const comment=prompt("अपना कमेंट लिखें");
-  if(!comment || !comment.trim()) return;
-
-  try{
-    const videoRef=db.collection("Videos").doc(id);
-    const videoSnap=await videoRef.get();
-
-    if(!videoSnap.exists) throw new Error("वीडियो नहीं मिला।");
-
-    await videoRef.collection("Comments").add({
-      uid:currentUser.uid,
-      text:comment.trim().slice(0,1000),
-      createdAt:firebase.firestore.FieldValue.serverTimestamp()
-    });
-
-    await createNotification(
-      videoSnap.data().uid,
-      "किसी ने आपके वीडियो पर कमेंट किया।",
-      "comment",
-      id
-    );
-
-    loadComments(id);
-  }catch(error){
-    alert("कमेंट नहीं हुआ: "+error.message);
-  }
+  if(!saved.includes(id)) saved.push(id);
+  saveAll(); alert("Save हो गया 💾");
+}
+function renderSaved(){
+  let box=document.getElementById("savedList");
+  let list=posts.filter(p=>saved.includes(p.id));
+  if(list.length===0){ box.innerHTML="कोई Saved Video नहीं है"; return; }
+  box.innerHTML=list.map(p=>`<div class="post"><b>${p.title}</b><p>${p.user}</p><button class="btn2" onclick="savePost(${p.id})">Unsave</button></div>`).join("");
 }
 
-async function loadComments(id){
-  const box=$("comments-"+id);
-  if(!box) return;
-
-  try{
-    const snap=await db.collection("Videos").doc(id)
-      .collection("Comments")
-      .orderBy("createdAt","desc")
-      .limit(20)
-      .get();
-
-    box.innerHTML="";
-
-    snap.forEach(doc=>{
-      const p=document.createElement("p");
-      p.className="message";
-      p.textContent=doc.data().text || "";
-      box.appendChild(p);
-    });
-  }catch(error){
-    box.textContent="कमेंट लोड नहीं हुए: "+error.message;
-  }
+// ===== SEARCH / PROFILE / NOTIF / MSG =====
+function searchPosts(){
+  let q=searchInput.value.toLowerCase();
+  let list=posts.filter(p=>p.title.toLowerCase().includes(q)||p.user.toLowerCase().includes(q));
+  let box=document.getElementById("searchResult");
+  box.innerHTML=list.map(p=>`<div class="post"><b>${p.title}</b><p>${p.user}</p></div>`).join("") || "कुछ नहीं मिला";
 }
-
-/* FOLLOW */
-
-async function followUser(uid){
+function loadProfile(){
+  if(!currentUser){ document.getElementById("profileInfo").innerText="लॉगिन नहीं हो"; return; }
+  document.getElementById("profileInfo").innerText="Email: "+currentUser.email+" | Name: "+(currentUser.name||"");
+  document.getElementById("pName").value=currentUser.name||"";
+  let mine=posts.filter(p=>p.user===currentUser.email);
+  document.getElementById("myPosts").innerHTML=mine.map(p=>`<div class="post">${p.title}</div>`).join("")||"अभी कोई पोस्ट नहीं";
+}
+function saveProfile(){
   if(!requireLogin()) return;
-  if(!uid || uid===currentUser.uid) return;
-
-  const mine=db.collection("Users").doc(currentUser.uid);
-  const other=db.collection("Users").doc(uid);
-
-  try{
-    let followed=false;
-
-    await db.runTransaction(async transaction=>{
-      const a=await transaction.get(mine);
-      const b=await transaction.get(other);
-
-      if(!a.exists || !b.exists) throw new Error("यूजर नहीं मिला।");
-
-      const following=Array.isArray(a.data().following)?a.data().following:[];
-      const followers=Array.isArray(b.data().followers)?b.data().followers:[];
-
-      if(following.includes(uid)){
-        transaction.update(mine,{
-          following:firebase.firestore.FieldValue.arrayRemove(uid)
-        });
-        transaction.update(other,{
-          followers:firebase.firestore.FieldValue.arrayRemove(currentUser.uid)
-        });
-      }else{
-        transaction.update(mine,{
-          following:firebase.firestore.FieldValue.arrayUnion(uid)
-        });
-        transaction.update(other,{
-          followers:firebase.firestore.FieldValue.arrayUnion(currentUser.uid)
-        });
-        followed=true;
-      }
-    });
-
-    if(followed){
-      await createNotification(uid,"किसी ने आपको फॉलो किया।","follow");
-    }
-
-    alert(followed?"अब आप फॉलो कर रहे हैं।":"फॉलो हटाया गया।");
-  }catch(error){
-    alert("फॉलो नहीं हुआ: "+error.message);
-  }
+  currentUser.name=pName.value||currentUser.name;
+  let u=users.find(x=>x.email===currentUser.email); if(u) u.name=currentUser.name;
+  saveAll(); alert("Profile Save हो गया ✅"); loadProfile();
 }
-
-/* SAVE VIDEO */
-
-async function saveVideo(id){
+function loadNotifications(){
+  let box=document.getElementById("notificationList");
+  if(!currentUser){ box.innerHTML="लॉगिन करो"; return; }
+  let mine=notifs.filter(n=>n.to===currentUser.email);
+  document.getElementById("notifCount").innerText=mine.length?mine.length:"";
+  box.innerHTML=mine.map(n=>`<div class="post">${n.text}<br><span class="small">${n.time}</span></div>`).join("")||"अभी कोई नोटिफिकेशन नहीं है";
+}
+function sendMessage(){
   if(!requireLogin()) return;
-
-  const ref=db.collection("Users").doc(currentUser.uid);
-
-  try{
-    const snap=await ref.get();
-    if(!snap.exists) throw new Error("प्रोफाइल नहीं मिली।");
-
-    const saved=Array.isArray(snap.data().saved)?snap.data().saved:[];
-
-    if(saved.includes(id)){
-      await ref.update({
-        saved:firebase.firestore.FieldValue.arrayRemove(id)
-      });
-      alert("वीडियो सेव सूची से हटाया गया।");
-    }else{
-      await ref.update({
-        saved:firebase.firestore.FieldValue.arrayUnion(id)
-      });
-      alert("वीडियो सेव हो गया।");
-    }
-  }catch(error){
-    alert("वीडियो सेव नहीं हुआ: "+error.message);
-  }
+  if(!msgTo.value||!msgText.value) return alert("To और Message डालो");
+  msgs.unshift({from:currentUser.email, to:msgTo.value, text:msgText.value, time:new Date().toLocaleString()});
+  addNotice(msgTo.value, currentUser.email+" ने मैसेज भेजा: "+msgText.value);
+  saveAll(); msgText.value=""; renderMsgs(); alert("मैसेज भेज दिया ✅");
+}
+function renderMsgs(){
+  let box=document.getElementById("msgList");
+  if(!currentUser) return;
+  let mine=msgs.filter(m=>m.to===currentUser.email||m.from===currentUser.email);
+  box.innerHTML=mine.map(m=>`<div class="post"><b>${m.from} → ${m.to}</b><p>${m.text}</p><span class="small">${m.time}</span></div>`).join("")||"कोई मैसेज नहीं";
 }
 
-/* SAVED VIDEOS */
-
-async function loadSaved(){
-  if(!requireLogin()) return;
-
-  const box=$("savedVideos");
-  box.textContent="लोड हो रहा है...";
-
-  try{
-    const snap=await db.collection("Users").doc(currentUser.uid).get();
-    const ids=snap.exists && Array.isArray(snap.data().saved)
-      ? snap.data().saved
-      : [];
-
-    box.innerHTML="";
-
-    if(ids.length===0){
-      box.textContent="अभी कोई वीडियो सेव नहीं है।";
-      return;
-    }
-
-    for(const id of ids){
-      const doc=await db.collection("Videos").doc(id).get();
-      if(doc.exists) makeVideoCard(doc.id,doc.data(),box);
-    }
-  }catch(error){
-    box.textContent="सेव वीडियो लोड नहीं हुए: "+error.message;
-  }
-}
-
-/* SHARE */
-
-async function shareVideo(id){
-  const url=location.origin+location.pathname+"?video="+encodeURIComponent(id);
-
-  try{
-    if(navigator.share){
-      await navigator.share({title:"DHAAKAD Video",url:url});
-    }else if(navigator.clipboard && window.isSecureContext){
-      await navigator.clipboard.writeText(url);
-      alert("लिं
+// START
+renderFeed(); loadNotifications();
+if(currentUser) loadProfile();
 </script>
 </body>
 </html>
