@@ -206,6 +206,83 @@ document.getElementById("shareVideo").addEventListener("click", async function()
 
 });
 </script>
+
+<section style="background:#1c1c1c;padding:20px;margin:20px;border:1px solid #ff6500;border-radius:15px;color:white;text-align:center;">
+
+  <h2 style="color:#ff6500;">MY DHAAKAD POST</h2>
+
+  <p>अपनी पोस्ट का नाम लिखें</p>
+
+  <input
+    type="text"
+    id="postTitle"
+    placeholder="पोस्ट का नाम..."
+    maxlength="80"
+    style="width:100%;padding:12px;border-radius:8px;box-sizing:border-box;"
+  >
+
+  <button
+    type="button"
+    id="createPost"
+    style="background:#ff6500;color:white;border:0;padding:13px 22px;border-radius:8px;margin-top:15px;font-weight:bold;"
+  >
+    CREATE POST
+  </button>
+
+  <div id="postResult" style="margin-top:20px;text-align:left;"></div>
+
+</section>
+
+<script>
+document.getElementById("createPost").addEventListener("click", function() {
+
+  const title = document.getElementById("postTitle").value.trim();
+  const caption = document.getElementById("videoCaption").value.trim();
+  const fileInput = document.getElementById("videoFile");
+  const result = document.getElementById("postResult");
+
+  if (!title) {
+    result.textContent = "पहले पोस्ट का नाम लिखें!";
+    return;
+  }
+
+  if (!fileInput.files || !fileInput.files[0]) {
+    result.textContent = "पहले वीडियो चुनें!";
+    return;
+  }
+
+  const file = fileInput.files[0];
+
+  const card = document.createElement("div");
+  card.style.background = "#303030";
+  card.style.padding = "15px";
+  card.style.borderRadius = "10px";
+  card.style.border = "1px solid #ff6500";
+
+  const heading = document.createElement("h3");
+  heading.style.color = "#ff6500";
+  heading.textContent = title;
+
+  const description = document.createElement("p");
+  description.textContent = caption || "DHAAKAD पर मेरा हुनर!";
+
+  const video = document.createElement("video");
+  video.src = URL.createObjectURL(file);
+  video.controls = true;
+  video.playsInline = true;
+  video.style.width = "100%";
+  video.style.borderRadius = "8px";
+
+  card.appendChild(heading);
+  card.appendChild(description);
+  card.appendChild(video);
+
+  result.replaceChildren(card);
+
+  document.getElementById("postTitle").value = "";
+
+});
+</script>
   
 </body>
 </html>
