@@ -591,6 +591,96 @@ try {
     "Firebase Error: " + error.message;
 }
 </script>
+
+<script type="module">
+import { getApp }
+from "https://www.gstatic.com/firebasejs/13.3.0/firebase-app.js";
+
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/13.3.0/firebase-firestore.js";
+
+try {
+  const app = getApp();
+  const db = getFirestore(app);
+
+  const postArea = document.getElementById("postResult");
+  const status = document.getElementById("socialStatus");
+
+  if (!postArea) {
+    throw new Error("Post area nahi mila");
+  }
+
+  async function savePost(card) {
+    if (card.dataset.firebaseSaved) return;
+
+    const heading = card.querySelector("h3");
+    if (!heading) return;
+
+    card.dataset.firebaseSaved = "saving";
+
+    const paragraphs = card.querySelectorAll("p");
+    const caption = paragraphs.length > 0
+      ? paragraphs[0].textContent
+      : "";
+
+    const postId = crypto.randomUUID();
+
+    try {
+      await setDoc(doc(db, "Posts", postId), {
+        postId: postId,
+        title: heading.textContent,
+        caption: caption,
+        appName: "DHAAKAD",
+        createdAt: serverTimestamp()
+      });
+
+      card.dataset.firebaseSaved = "yes";
+
+      if (status) {
+        status.textContent =
+          "Post Firebase mein save ho gayi!";
+      }
+
+      console.log("DHAAKAD Post Saved:", postId);
+
+    } catch (error) {
+      card.dataset.firebaseSaved = "error";
+
+      if (status) {
+        status.textContent =
+          "Post Save Error: " + error.message;
+      }
+
+      console.error(error);
+    }
+  }
+
+  const observer = new MutationObserver(function () {
+    Array.from(postArea.children).forEach(savePost);
+  });
+
+  observer.observe(postArea, {
+    childList: true
+  });
+
+  Array.from(postArea.children).forEach(savePost);
+
+  console.log("DHAAKAD Post Save System Ready!");
+
+} catch (error) {
+  console.error("DHAAKAD Firebase Error:", error);
+
+  const status = document.getElementById("socialStatus");
+
+  if (status) {
+    status.textContent = "Firebase Error: " + error.message;
+  }
+}
+</script>
   
 </body>
 </html>
