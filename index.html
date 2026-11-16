@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="hi">
 <head>
@@ -23,11 +24,68 @@ video{max-width:100%;border-radius:9px}
 #postResult{text-align:left}
 .post-card{background:#303030;padding:14px;margin:15px 0;border-radius:12px;border:1px solid #ff6500}
 .post-card h3{color:#ff6500}
-.post-video{width:100%;display:block}
-.reel-actions{display:flex;justify-content:space-around;flex-wrap:wrap;gap:5px;margin-top:10px}
-.reel-actions button{flex:1;min-width:65px}
-.saved-action{display:block;width:100%;margin:10px 0}
-.reel-comments{display:block;margin-top:10px}
+
+/* Instagram-style video area */
+.reel-stage{
+  position:relative;
+  width:100%;
+  overflow:hidden;
+  border-radius:10px;
+  background:#000;
+}
+.post-video{
+  width:100%;
+  height:auto;
+  max-height:75vh;
+  display:block;
+  object-fit:contain;
+  border-radius:10px;
+}
+
+/* Four buttons on the right side */
+.reel-actions{
+  position:absolute;
+  right:8px;
+  bottom:65px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:12px;
+  z-index:5;
+}
+.reel-actions button{
+  width:54px;
+  min-height:54px;
+  padding:7px 3px;
+  margin:0;
+  border-radius:28px;
+  background:rgba(0,0,0,.68);
+  border:1px solid rgba(255,255,255,.35);
+  color:white;
+  font-size:12px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  box-shadow:0 2px 8px rgba(0,0,0,.4);
+}
+.reel-actions button .action-icon{
+  font-size:23px;
+  line-height:25px;
+}
+.reel-actions button .action-label{
+  font-size:10px;
+  line-height:12px;
+}
+.reel-actions button:active{
+  transform:scale(.94);
+}
+.reel-actions .liked{
+  color:#ff4b65;
+  border-color:#ff4b65;
+}
+.reel-comments{display:block;margin-top:12px}
 .reel-comments input{width:100%;margin:5px 0}
 .reel-comments button{width:100%;margin:5px 0}
 .comment-item{background:#444;padding:9px;border-radius:8px;margin:7px 0;overflow-wrap:anywhere}
@@ -241,34 +299,53 @@ footer{text-align:center;padding:20px;color:#999}
 
     card.dataset.socialReady = "yes";
 
+    // Video and four buttons share one stage
+    const stage = document.createElement("div");
+    stage.className = "reel-stage";
+
     const actions = document.createElement("div");
     actions.className = "reel-actions";
 
     let liked = false;
 
+    // LIKE
     const like = document.createElement("button");
-    like.textContent = "🤍 Like 0";
     like.type = "button";
+    like.innerHTML =
+      '<span class="action-icon">🤍</span><span class="action-label">Like 0</span>';
+
     like.onclick = () => {
       liked = !liked;
-      like.textContent = liked ? "❤️ Like 1" : "🤍 Like 0";
+      like.classList.toggle("liked", liked);
+      like.innerHTML = liked
+        ? '<span class="action-icon">❤️</span><span class="action-label">Like 1</span>'
+        : '<span class="action-icon">🤍</span><span class="action-label">Like 0</span>';
     };
 
+    // COMMENT
     const commentBtn = document.createElement("button");
-    commentBtn.textContent = "💬 Comment";
     commentBtn.type = "button";
+    commentBtn.innerHTML =
+      '<span class="action-icon">💬</span><span class="action-label">Comment</span>';
 
+    // SHARE
     const shareBtn = document.createElement("button");
-    shareBtn.textContent = "🔗 Share";
     shareBtn.type = "button";
+    shareBtn.innerHTML =
+      '<span class="action-icon">↗️</span><span class="action-label">Share</span>';
 
-    actions.append(like, commentBtn, shareBtn);
-
+    // SAVE
     const saveBtn = document.createElement("button");
-    saveBtn.className = "saved-action";
     saveBtn.type = "button";
-    saveBtn.textContent = "🔖 Save";
+    saveBtn.innerHTML =
+      '<span class="action-icon">🔖</span><span class="action-label">Save</span>';
 
+    actions.append(like, commentBtn, shareBtn, saveBtn);
+
+    // Move video into the stage and place actions over it
+    stage.append(video, actions);
+
+    // Comments stay below the video
     const comments = document.createElement("div");
     comments.className = "reel-comments";
 
@@ -302,6 +379,7 @@ footer{text-align:center;padding:20px;color:#999}
       commentInput.focus();
     };
 
+    // SAVE VIDEO
     saveBtn.onclick = async () => {
       if (!dbReady || !db) {
         socialStatus.textContent = "वीडियो सेव सिस्टम तैयार नहीं है।";
@@ -332,7 +410,8 @@ footer{text-align:center;padding:20px;color:#999}
           transaction.onabort = () => reject(transaction.error);
         });
 
-        saveBtn.textContent = "✅ Saved";
+        saveBtn.innerHTML =
+          '<span class="action-icon">✅</span><span class="action-label">Saved</span>';
         socialStatus.textContent = "वीडियो Saved Videos में सेव हो गया!";
         await showSavedVideos();
 
@@ -342,6 +421,7 @@ footer{text-align:center;padding:20px;color:#999}
       }
     };
 
+    // SHARE VIDEO
     shareBtn.onclick = async () => {
       const file = card._videoFile;
 
@@ -375,7 +455,7 @@ footer{text-align:center;padding:20px;color:#999}
     socialFooter.textContent = "🔥 DHAAKAD SOCIAL 🔥";
 
     comments.append(commentInput, sendComment, commentList);
-    card.append(actions, saveBtn, comments, socialFooter);
+    card.append(stage, comments, socialFooter);
   }
 
   $("createPost").addEventListener("click", () => {
@@ -568,4 +648,3 @@ try {
 
 </body>
 </html>
-
