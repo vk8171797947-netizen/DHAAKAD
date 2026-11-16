@@ -286,8 +286,13 @@ document.getElementById("createPost").addEventListener("click", function() {
 
 <section style="background:#1c1c1c;padding:18px;margin:20px;border:1px solid #ff6500;border-radius:15px;">
 <h2 style="color:#ff6500;text-align:center;">DHAAKAD SOCIAL</h2>
-<p style="text-align:center;color:white;">LIKE • COMMENT • SHARE</p>
+<p style="text-align:center;color:white;">LIKE • COMMENT • SHARE • SAVE</p>
 <p id="socialStatus" style="color:#ff6500;text-align:center;">अपनी पोस्ट बनाकर टेस्ट करें।</p>
+</section>
+
+<section style="background:#1c1c1c;padding:15px;margin:20px;border:1px solid #ff6500;border-radius:15px;">
+<h2 style="color:#ff6500;">🔖 SAVED VIDEOS</h2>
+<div id="savedVideos" style="color:white;">अभी कोई वीडियो सेव नहीं है।</div>
 </section>
 
 <style>
@@ -306,14 +311,14 @@ document.getElementById("createPost").addEventListener("click", function() {
   bottom: 55px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
 .reel-actions button {
   width: 48px;
   height: 48px;
   border: none;
   border-radius: 50%;
-  background: rgba(0,0,0,.75);
+  background: rgba(0,0,0,.8);
   color: white;
   font-size: 19px;
 }
@@ -338,8 +343,67 @@ document.getElementById("createPost").addEventListener("click", function() {
   const postArea = document.getElementById("postResult");
   const fileInput = document.getElementById("videoFile");
   const status = document.getElementById("socialStatus");
+  const savedArea = document.getElementById("savedVideos");
 
-  if (!postArea || !fileInput || !status) return;
+  if (!postArea || !fileInput || !status || !savedArea) return;
+
+  let db;
+
+  const request = indexedDB.open("DhaakadSavedVideos", 1);
+
+  request.onupgradeneeded = function (event) {
+    db = event.target.result;
+    if (!db.objectStoreNames.contains("videos")) {
+      db.createObjectStore("videos", {
+        keyPath: "id",
+        autoIncrement: true
+      });
+    }
+  };
+
+  request.onsuccess = function (event) {
+    db = event.target.result;
+    showSavedVideos();
+  };
+
+  request.onerror = function () {
+    status.textContent = "Save सिस्टम शुरू नहीं हुआ";
+  };
+
+  function showSavedVideos() {
+    if (!db) return;
+
+    const transaction = db.transaction("videos", "readonly");
+    const store = transaction.objectStore("videos");
+    const getAll = store.getAll();
+
+    getAll.onsuccess = function () {
+      savedArea.replaceChildren();
+
+      if (!getAll.result.length) {
+        savedArea.textContent = "अभी कोई वीडियो सेव नहीं है।";
+        return;
+      }
+
+      getAll.result.forEach(function (item) {
+        const box = document.createElement("div");
+        box.style.cssText =
+          "background:#303030;padding:12px;margin:10px 0;border-radius:10px;";
+
+        const title = document.createElement("p");
+        title.textContent = item.title;
+
+        const video = document.createElement("video");
+        video.src = URL.createObjectURL(item.file);
+        video.controls = true;
+        video.playsInline = true;
+        video.style.width = "100%";
+
+        box.append(title, video);
+        savedArea.appendChild(box);
+      });
+    };
+  }
 
   function addSocialButtons(card) {
     if (!card || card.dataset.socialReady === "yes") return;
@@ -359,13 +423,12 @@ document.getElementById("createPost").addEventListener("click", function() {
     actions.className = "reel-actions";
 
     let liked = false;
+
     const like = document.createElement("button");
     like.textContent = "🤍";
-
     like.onclick = function () {
       liked = !liked;
       like.textContent = liked ? "❤️" : "🤍";
-      status.textContent = liked ? "आपने Like किया!" : "Like हटाया गया";
     };
 
     const commentBtn = document.createElement("button");
@@ -374,7 +437,44 @@ document.getElementById("createPost").addEventListener("click", function() {
     const shareBtn = document.createElement("button");
     shareBtn.textContent = "🔗";
 
-    actions.append(like, commentBtn, shareBtn);
+    const saveBtn = document.createElement("button");
+    saveBtn.textContent = "🔖";
+
+    saveBtn.onclick = function () {
+      const file = fileInput.files && fileInput.files[0];
+
+      if (!file) {
+        status.textContent = "पहले वीडियो चुनें";
+        return;
+      }
+
+      if (!db) {
+        status.textContent = "Save सिस्टम तैयार हो रहा है";
+        return;
+      }
+
+      const heading = card.querySelector("h3");
+      const title = heading ? heading.textContent : "DHAAKAD Video";
+
+      const transaction = db.transaction("videos", "readwrite");
+      transaction.objectStore("videos").add({
+        title: title,
+        file: file,
+        savedAt: Date.now()
+      });
+
+      transaction.oncomplete = function () {
+        saveBtn.textContent = "✅";
+        status.textContent = "वीडियो Saved Videos में सेव हो गया!";
+        showSavedVideos();
+      };
+
+      transaction.onerror = function () {
+        status.textContent = "वीडियो सेव नहीं हो पाया";
+      };
+    };
+
+    actions.append(like, commentBtn, shareBtn, saveBtn);
     wrap.appendChild(actions);
 
     const comments = document.createElement("div");
@@ -397,6 +497,7 @@ document.getElementById("createPost").addEventListener("click", function() {
       item.textContent = "💬 " + value;
       item.style.cssText =
         "background:#333;color:white;padding:10px;border-radius:8px;";
+
       list.appendChild(item);
       input.value = "";
       status.textContent = "कमेंट जुड़ गया!";
@@ -426,7 +527,6 @@ document.getElementById("createPost").addEventListener("click", function() {
             text: "मेरा धाकड़ वीडियो",
             files: [file]
           });
-          status.textContent = "शेयर स्क्रीन खुल गई!";
         } else {
           status.textContent = "इस ब्राउज़र में वीडियो शेयर उपलब्ध नहीं है";
         }
@@ -443,7 +543,6 @@ document.getElementById("createPost").addEventListener("click", function() {
   });
 
   observer.observe(postArea, { childList: true });
-
   Array.from(postArea.children).forEach(addSocialButtons);
 })();
 </script>
