@@ -645,6 +645,696 @@ try {
   status.textContent = "Firebase कनेक्शन में समस्या: " + error.message;
 }
 </script>
+  
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#ff6500">
+<title>DHAAKAD</title>
 
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#101010;color:#fff;font-family:Arial,sans-serif}
+header{background:#000;padding:15px;text-align:center;border-bottom:2px solid #ff6500;position:sticky;top:0;z-index:20}
+header h1{color:#ff6500;margin:0;font-size:29px;font-weight:900}
+header p{margin:5px 0}
+main{max-width:650px;margin:auto;padding:12px}
+.panel{background:#1c1c1c;padding:15px;margin:13px 0;border:1px solid #ff6500;border-radius:13px}
+h2{color:#ff6500;margin-top:0}
+button{background:#ff6500;color:#fff;border:0;padding:11px 15px;border-radius:8px;font-weight:bold;cursor:pointer;margin:4px}
+button:disabled{opacity:.5}
+input,textarea{width:100%;padding:12px;border-radius:8px;border:1px solid #777;background:#fff;color:#111;margin:7px 0;font-size:16px}
+textarea{resize:vertical;min-height:75px}
+.hidden{display:none!important}
+.status{color:#ffad75;font-size:14px}
+#menu{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;background:#181818;padding:10px}
+#menu button{flex:1;min-width:90px}
+.search-row{display:flex;gap:5px}
+.search-row input{flex:1;min-width:0}
+.profile-top{display:flex;align-items:center;gap:15px}
+.avatar{width:85px;height:85px;border-radius:50%;object-fit:cover;background:#444;border:3px solid #ff6500}
+.small-avatar{width:42px;height:42px;border-radius:50%;object-fit:cover;border:2px solid #ff6500}
+.user-row{display:flex;align-items:center;gap:10px;padding:10px;background:#303030;border-radius:10px;margin:8px 0}
+.user-info{flex:1;min-width:0}
+.user-info p{margin:4px 0;color:#bbb;font-size:13px}
+.status-list{display:flex;gap:12px;overflow-x:auto;padding:8px 0}
+.status-circle{min-width:75px;text-align:center;cursor:pointer}
+.status-circle img{width:62px;height:62px;border-radius:50%;object-fit:cover;border:3px solid #ff6500}
+.status-circle p{font-size:12px;overflow-wrap:anywhere;margin:4px}
+.status-card{background:#303030;padding:12px;border-radius:10px;margin:10px 0}
+.status-media{width:100%;max-height:400px;object-fit:contain;background:#000}
+.post-card{background:#303030;padding:13px;margin:12px 0;border-radius:12px;border:1px solid #ff6500}
+.post-card h3{color:#ff6500;margin-bottom:5px}
+.post-video{width:100%;max-height:70vh;object-fit:contain;background:#000;border-radius:9px}
+.post-image{width:100%;max-height:450px;object-fit:contain}
+.menu-panel{background:#222;padding:10px;border-radius:10px;margin-top:8px}
+.empty{text-align:center;color:#aaa;padding:15px}
+footer{text-align:center;padding:20px;color:#999}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🔥 DHAAKAD</h1>
+  <p>अपना हुनर दिखाओ!</p>
+  <p>CREATE • SHARE • EARN</p>
+</header>
+
+<nav id="menu">
+  <button type="button" data-page="home">🏠 Home</button>
+  <button type="button" data-page="search">🔍 Search</button>
+  <button type="button" data-page="profile">👤 Profile</button>
+  <button type="button" data-page="status">🟠 Status</button>
+  <button type="button" id="menuToggle">☰ Menu</button>
+</nav>
+
+<div id="menuPanel" class="menu-panel hidden">
+  <button type="button" data-page="home">Home Feed</button>
+  <button type="button" data-page="search">Search Users</button>
+  <button type="button" data-page="profile">My Profile</button>
+  <button type="button" data-page="status">Status</button>
+  <button type="button" data-page="following">Following</button>
+</div>
+
+<main>
+
+<!-- HOME / VIDEO FEED -->
+<section id="page-home" class="page">
+  <section class="panel">
+    <h2>WELCOME TO DHAAKAD</h2>
+    <p>अपनी प्रतिभा दुनिया को दिखाओ।</p>
+  </section>
+
+  <section class="panel">
+    <h2>🟠 STATUS</h2>
+    <div id="homeStatuses" class="status-list"></div>
+  </section>
+
+  <section class="panel">
+    <h2>🎬 VIDEO FEED</h2>
+    <p>DHAAKAD पर लोगों की पोस्ट देखें।</p>
+    <div id="feed"></div>
+  </section>
+</section>
+
+<!-- SEARCH -->
+<section id="page-search" class="page hidden">
+  <section class="panel">
+    <h2>🔍 SEARCH</h2>
+    <div class="search-row">
+      <input id="searchInput" type="search" placeholder="यूज़र या वीडियो खोजें...">
+      <button id="searchButton" type="button">SEARCH</button>
+    </div>
+    <div id="searchResults"></div>
+  </section>
+</section>
+
+<!-- PROFILE -->
+<section id="page-profile" class="page hidden">
+  <section class="panel">
+    <h2>👤 MY PROFILE</h2>
+
+    <div class="profile-top">
+      <img id="profileAvatar" class="avatar" alt="Profile photo">
+      <div>
+        <h3 id="profileDisplayName">DHAAKAD USER</h3>
+        <p id="profileBioDisplay" class="status">अपना हुनर दिखाओ!</p>
+      </div>
+    </div>
+
+    <hr>
+
+    <label for="profileName">आपका नाम</label>
+    <input id="profileName" maxlength="40" placeholder="अपना नाम लिखें">
+
+    <label for="profileBio">आपके बारे में</label>
+    <textarea id="profileBio" maxlength="160" placeholder="अपने बारे में लिखें..."></textarea>
+
+    <label for="profilePhoto">अपनी DP चुनें</label>
+    <input id="profilePhoto" type="file" accept="image/*">
+    <button id="saveProfile" type="button">SAVE PROFILE</button>
+    <p id="profileMessage" class="status"></p>
+
+    <hr>
+    <p>पोस्ट: <b id="myPostCount">0</b></p>
+    <p>Following: <b id="followingCount">0</b></p>
+  </section>
+
+  <section class="panel">
+    <h2>🎬 CREATE VIDEO POST</h2>
+    <input id="postTitle" maxlength="80" placeholder="वीडियो का नाम">
+    <textarea id="postCaption" maxlength="500" placeholder="वीडियो के बारे में लिखें..."></textarea>
+    <input id="postVideo" type="file" accept="video/*">
+    <button id="publishPost" type="button">PUBLISH POST</button>
+    <p id="postMessage" class="status"></p>
+  </section>
+
+  <section class="panel">
+    <h2>MY POSTS</h2>
+    <div id="myPosts"></div>
+  </section>
+</section>
+
+<!-- STATUS -->
+<section id="page-status" class="page hidden">
+  <section class="panel">
+    <h2>🟠 CREATE STATUS</h2>
+    <textarea id="statusText" maxlength="300" placeholder="आप क्या कर रहे हैं?"></textarea>
+    <label for="statusFile">फोटो या वीडियो चुनें (वैकल्पिक)</label>
+    <input id="statusFile" type="file" accept="image/*,video/*">
+    <button id="publishStatus" type="button">POST STATUS</button>
+    <p id="statusMessage" class="status"></p>
+  </section>
+
+  <section class="panel">
+    <h2>ALL STATUS</h2>
+    <div id="allStatuses"></div>
+  </section>
+</section>
+
+<!-- FOLLOWING -->
+<section id="page-following" class="page hidden">
+  <section class="panel">
+    <h2>➕ FOLLOWING</h2>
+    <div id="followingList"></div>
+  </section>
+</section>
+
+</main>
+
+<footer>© 2026 DHAAKAD</footer>
+
+<script>
+(() => {
+"use strict";
+
+const $ = id => document.getElementById(id);
+const STORAGE_KEY = "dhaakad_six_features_v1";
+const DB_NAME = "DhaakadMediaDB";
+const DB_STORE = "media";
+
+let db = null;
+let profilePhotoURL = "";
+let mediaURLs = [];
+
+let state = {
+  userId: "dhaakad_user",
+  profile: {
+    name: "DHAAKAD USER",
+    bio: "अपना हुनर दिखाओ!",
+    photo: ""
+  },
+  users: [
+    {
+      id: "dhaakad_creator",
+      name: "DHAAKAD CREATOR",
+      bio: "अपना हुनर दिखाओ!",
+      photo: "",
+      isDemo: true
+    }
+  ],
+  following: [],
+  posts: [],
+  statuses: []
+};
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved) return;
+
+    const parsed = JSON.parse(saved);
+    if (!parsed || typeof parsed !== "object") return;
+
+    state = {
+      ...state,
+      ...parsed,
+      profile: {...state.profile, ...(parsed.profile || {})},
+      users: Array.isArray(parsed.users) ? parsed.users : state.users,
+      following: Array.isArray(parsed.following) ? parsed.following : [],
+      posts: Array.isArray(parsed.posts) ? parsed.posts : [],
+      statuses: Array.isArray(parsed.statuses) ? parsed.statuses : []
+    };
+  } catch (error) {
+    console.error("DHAAKAD data load error:", error);
+  }
+}
+
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    return true;
+  } catch (error) {
+    console.error("DHAAKAD save error:", error);
+    return false;
+  }
+}
+
+function makeId() {
+  return "dhaakad_" + Date.now() + "_" + Math.random().toString(36).slice(2);
+}
+
+function escapeText(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  })[char]);
+}
+
+function getInitials(name) {
+  return (name || "D").trim().slice(0, 1).toUpperCase() || "D";
+}
+
+function avatarSource(user) {
+  if (user && user.photo) return user.photo;
+  return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100">
+      <rect width="100%" height="100%" fill="#333"/>
+      <text x="50%" y="56%" font-size="42" text-anchor="middle" fill="#ff6500">${getInitials(user?.name)}</text>
+    </svg>`
+  );
+}
+
+function openPage(page) {
+  document.querySelectorAll(".page").forEach(section => {
+    section.classList.toggle("hidden", section.id !== "page-" + page);
+  });
+
+  $("menuPanel").classList.add("hidden");
+
+  if (page === "home") renderFeed();
+  if (page === "search") renderSearch("");
+  if (page === "profile") renderProfile();
+  if (page === "status") renderStatuses();
+  if (page === "following") renderFollowing();
+
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+document.querySelectorAll("[data-page]").forEach(button => {
+  button.addEventListener("click", () => openPage(button.dataset.page));
+});
+
+$("menuToggle").addEventListener("click", () => {
+  $("menuPanel").classList.toggle("hidden");
+});
+
+/* IndexedDB media storage */
+function openMediaDB() {
+  return new Promise((resolve, reject) => {
+    if (!("indexedDB" in window)) {
+      reject(new Error("इस ब्राउज़र में मीडिया सेव नहीं हो सकता।"));
+      return;
+    }
+
+    const request = indexedDB.open(DB_NAME, 1);
+
+    request.onupgradeneeded = event => {
+      const database = event.target.result;
+      if (!database.objectStoreNames.contains(DB_STORE)) {
+        database.createObjectStore(DB_STORE, {keyPath:"id"});
+      }
+    };
+
+    request.onsuccess = event => resolve(event.target.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+function saveMedia(file) {
+  return new Promise((resolve, reject) => {
+    if (!db) {
+      reject(new Error("मीडिया डेटाबेस तैयार नहीं है।"));
+      return;
+    }
+
+    const id = makeId();
+    const transaction = db.transaction(DB_STORE, "readwrite");
+
+    transaction.objectStore(DB_STORE).put({
+      id,
+      file,
+      type: file.type,
+      name: file.name,
+      createdAt: Date.now()
+    });
+
+    transaction.oncomplete = () => resolve(id);
+    transaction.onerror = () => reject(transaction.error);
+    transaction.onabort = () => reject(transaction.error);
+  });
+}
+
+function getMedia(id) {
+  return new Promise((resolve, reject) => {
+    if (!db) {
+      reject(new Error("मीडिया डेटाबेस तैयार नहीं है।"));
+      return;
+    }
+
+    const request = db.transaction(DB_STORE, "readonly")
+      .objectStore(DB_STORE).get(id);
+
+    request.onsuccess = () => resolve(request.result || null);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+async function mediaURL(id) {
+  const item = await getMedia(id);
+  if (!item || !item.file) return "";
+  const url = URL.createObjectURL(item.file);
+  mediaURLs.push(url);
+  return url;
+}
+
+/* PROFILE + DP */
+function renderProfile() {
+  $("profileName").value = state.profile.name || "";
+  $("profileBio").value = state.profile.bio || "";
+  $("profileDisplayName").textContent = state.profile.name || "DHAAKAD USER";
+  $("profileBioDisplay").textContent = state.profile.bio || "";
+  $("profileAvatar").src = avatarSource(state.profile);
+
+  $("myPostCount").textContent = state.posts.filter(
+    post => post.userId === state.userId
+  ).length;
+
+  $("followingCount").textContent = state.following.length;
+
+  renderMyPosts();
+}
+
+$("profilePhoto").addEventListener("change", event => {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  if (!file.type.startsWith("image/")) {
+    $("profileMessage").textContent = "कृपया फोटो चुनें।";
+    return;
+  }
+
+  if (file.size > 3 * 1024 * 1024) {
+    $("profileMessage").textContent = "DP का आकार 3 MB से कम रखें।";
+    event.target.value = "";
+    return;
+  }
+
+  if (profilePhotoURL) URL.revokeObjectURL(profilePhotoURL);
+  profilePhotoURL = URL.createObjectURL(file);
+  $("profileAvatar").src = profilePhotoURL;
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    state.profile.photo = reader.result;
+  };
+  reader.onerror = () => {
+    $("profileMessage").textContent = "फोटो पढ़ने में समस्या हुई।";
+  };
+  reader.readAsDataURL(file);
+});
+
+$("saveProfile").addEventListener("click", () => {
+  const name = $("profileName").value.trim();
+  const bio = $("profileBio").value.trim();
+
+  if (!name) {
+    $("profileMessage").textContent = "पहले अपना नाम लिखें।";
+    return;
+  }
+
+  state.profile.name = name;
+  state.profile.bio = bio;
+
+  const ownUser = state.users.find(user => user.id === state.userId);
+  if (ownUser) {
+    ownUser.name = name;
+    ownUser.bio = bio;
+    ownUser.photo = state.profile.photo;
+  }
+
+  if (!saveState()) {
+    $("profileMessage").textContent = "स्टोरेज भर गया है। छोटी फोटो इस्तेमाल करें।";
+    return;
+  }
+
+  $("profileMessage").textContent = "✅ प्रोफाइल सेव हो गई!";
+  renderProfile();
+  renderSearch($("searchInput").value);
+  renderFeed();
+});
+
+/* FOLLOW SYSTEM */
+function isFollowing(userId) {
+  return state.following.includes(userId);
+}
+
+function toggleFollow(userId) {
+  if (!userId || userId === state.userId) return;
+
+  if (isFollowing(userId)) {
+    state.following = state.following.filter(id => id !== userId);
+  } else {
+    state.following.push(userId);
+  }
+
+  saveState();
+  renderSearch($("searchInput").value);
+  renderFollowing();
+  renderProfile();
+}
+
+function renderFollowing() {
+  const area = $("followingList");
+  area.replaceChildren();
+
+  const followedUsers = state.users.filter(user =>
+    state.following.includes(user.id)
+  );
+
+  if (!followedUsers.length) {
+    area.innerHTML = '<p class="empty">अभी आपने किसी को Follow नहीं किया है।</p>';
+    return;
+  }
+
+  followedUsers.forEach(user => {
+    const row = document.createElement("div");
+    row.className = "user-row";
+
+    const img = document.createElement("img");
+    img.className = "small-avatar";
+    img.src = avatarSource(user);
+
+    const info = document.createElement("div");
+    info.className = "user-info";
+
+    const name = document.createElement("b");
+    name.textContent = user.name;
+
+    const bio = document.createElement("p");
+    bio.textContent = user.bio || "";
+
+    const button = document.createElement("button");
+    button.textContent = "Following";
+    button.addEventListener("click", () => toggleFollow(user.id));
+
+    info.append(name, bio);
+    row.append(img, info, button);
+    area.appendChild(row);
+  });
+}
+
+/* SEARCH USERS AND POSTS */
+function renderSearch(query) {
+  const area = $("searchResults");
+  area.replaceChildren();
+
+  const term = String(query || "").trim().toLowerCase();
+
+  const users = state.users.filter(user =>
+    user.id !== state.userId &&
+    (!term || user.name.toLowerCase().includes(term) ||
+      (user.bio || "").toLowerCase().includes(term))
+  );
+
+  const posts = state.posts.filter(post =>
+    !term ||
+    (post.title || "").toLowerCase().includes(term) ||
+    (post.caption || "").toLowerCase().includes(term) ||
+    (post.userName || "").toLowerCase().includes(term)
+  );
+
+  const userHeading = document.createElement("h3");
+  userHeading.textContent = "👤 USERS";
+  area.appendChild(userHeading);
+
+  if (!users.length) {
+    const empty = document.createElement("p");
+    empty.className = "empty";
+    empty.textContent = "कोई यूज़र नहीं मिला।";
+    area.appendChild(empty);
+  }
+
+  users.forEach(user => {
+    const row = document.createElement("div");
+    row.className = "user-row";
+
+    const img = document.createElement("img");
+    img.className = "small-avatar";
+    img.src = avatarSource(user);
+
+    const info = document.createElement("div");
+    info.className = "user-info";
+
+    const name = document.createElement("b");
+    name.textContent = user.name;
+
+    const bio = document.createElement("p");
+    bio.textContent = user.bio || "";
+
+    const follow = document.createElement("button");
+    follow.textContent = isFollowing(user.id) ? "Following" : "Follow";
+    follow.addEventListener("click", () => toggleFollow(user.id));
+
+    info.append(name, bio);
+    row.append(img, info, follow);
+    area.appendChild(row);
+  });
+
+  const postHeading = document.createElement("h3");
+  postHeading.textContent = "🎬 VIDEOS";
+  area.appendChild(postHeading);
+
+  if (!posts.length) {
+    const empty = document.createElement("p");
+    empty.className = "empty";
+    empty.textContent = "कोई वीडियो नहीं मिला।";
+    area.appendChild(empty);
+  }
+
+  posts.forEach(post => {
+    const item = document.createElement("div");
+    item.className = "post-card";
+
+    const title = document.createElement("h3");
+    title.textContent = post.title;
+
+    const owner = document.createElement("p");
+    owner.textContent = "By " + post.userName;
+
+    const open = document.createElement("button");
+    open.textContent = "VIEW VIDEO";
+    open.addEventListener("click", () => {
+      openPage("home");
+      setTimeout(() => {
+        const target = document.getElementById("post-" + post.id);
+        if (target) target.scrollIntoView({behavior:"smooth"});
+      }, 100);
+    });
+
+    item.append(title, owner, open);
+    area.appendChild(item);
+  });
+}
+
+$("searchButton").addEventListener("click", () => {
+  renderSearch($("searchInput").value);
+});
+
+$("searchInput").addEventListener("input", () => {
+  renderSearch($("searchInput").value);
+});
+
+/* VIDEO POST CREATION */
+$("publishPost").addEventListener("click", async () => {
+  const title = $("postTitle").value.trim();
+  const caption = $("postCaption").value.trim();
+  const file = $("postVideo").files[0];
+
+  if (!title) {
+    $("postMessage").textContent = "वीडियो का नाम लिखें।";
+    return;
+  }
+
+  if (!file || !file.type.startsWith("video/")) {
+    $("postMessage").textContent = "पहले वीडियो चुनें।";
+    return;
+  }
+
+  if (file.size > 100 * 1024 * 1024) {
+    $("postMessage").textContent = "वीडियो 100 MB से छोटा रखें।";
+    return;
+  }
+
+  $("publishPost").disabled = true;
+  $("postMessage").textContent = "वीडियो तैयार हो रहा है...";
+
+  try {
+    const mediaId = await saveMedia(file);
+
+    const post = {
+      id: makeId(),
+      mediaId,
+      title,
+      caption,
+      userId: state.userId,
+      userName: state.profile.name,
+      createdAt: Date.now()
+    };
+
+    state.posts.unshift(post);
+
+    if (!saveState()) {
+      state.posts = state.posts.filter(item => item.id !== post.id);
+      throw new Error("स्टोरेज भर गया है।");
+    }
+
+    $("postTitle").value = "";
+    $("postCaption").value = "";
+    $("postVideo").value = "";
+    $("postMessage").textContent = "✅ पोस्ट बन गई!";
+
+    renderFeed();
+    renderMyPosts();
+    renderProfile();
+
+  } catch (error) {
+    $("postMessage").textContent = "पोस्ट नहीं बन पाई: " + error.message;
+  } finally {
+    $("publishPost").disabled = false;
+  }
+});
+
+async function makePostCard(post) {
+  const card = document.createElement("article");
+  card.className = "post-card";
+  card.id = "post-" + post.id;
+
+  const owner = state.users.find(user => user.id === post.userId) ||
+    (post.userId === state.userId ? state.profile : null);
+
+  const top = document.createElement("div");
+  top.className = "profile-top";
+
+  const img = document.createElement("img");
+  img.className = "small-avatar";
+  img.src = avatarSource(owner || {name:post.userName});
+
+  const name = document.createElement("b");
+  name.textContent = post.userName || "DHAAKAD USER";
+
+  top.append(img, name);
+
+  const title = document.createElement("h3");
+  title.textContent = post.title;
+
+  const caption = document.createElement("p");
+  caption.textContent = post.caption ||
 </body>
 </html>
