@@ -322,7 +322,10 @@ function addStory(){
  picker.onchange=function(){
   let file=picker.files[0];
   if(!file)return;
-  if(file.size>1500000){alert("1.5 MB se chhoti file chunein");return}
+  if(file.size>40*1024*1024){
+ alert("वीडियो 40 MB से छोटी चुनें");
+ return;
+  }
   let reader=new FileReader();
   reader.onload=function(){
    stories.push({
