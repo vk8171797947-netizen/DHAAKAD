@@ -4,74 +4,72 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#080808">
 <title>DHAAKAD</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#080808;color:#fff;font-family:Arial,sans-serif}
+body{margin:0;background:#080808;color:white;font-family:Arial,sans-serif}
 button,input,textarea{font:inherit}
 button{cursor:pointer}
-header{
- position:sticky;top:0;z-index:10;
- background:#080808;border-bottom:1px solid #292929;
- padding:14px 16px;display:flex;
- align-items:center;justify-content:space-between
-}
+header{position:sticky;top:0;z-index:10;background:#080808;border-bottom:1px solid #292929;padding:13px 16px;display:flex;justify-content:space-between;align-items:center}
 .logo{font-size:27px;font-weight:900;color:#ff6500;letter-spacing:1px}
 .head-actions{display:flex;gap:18px}
-.head-actions button{background:none;border:0;color:white;font-size:23px}
-.stories{display:flex;gap:14px;overflow-x:auto;padding:15px;border-bottom:1px solid #292929}
-.story{min-width:67px;text-align:center;font-size:12px;color:#ddd}
-.story-ring{width:64px;height:64px;border-radius:50%;padding:3px;background:linear-gradient(45deg,#ff6500,#ffbd00,#ff2d55);margin:auto auto 6px}
-.story-ring img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:3px solid #080808}
-.story-add{background:#222;display:grid;place-items:center;font-size:30px;color:#ff6500}
-.feed{max-width:600px;margin:auto;padding-bottom:75px}
+.head-actions button{background:none;border:0;color:white;font-size:24px}
+.page{display:none;max-width:600px;margin:auto;padding:16px 14px 90px}
+.page.active{display:block}
+#home{padding:0 0 90px}
+.stories{display:flex;gap:13px;overflow-x:auto;padding:14px;border-bottom:1px solid #292929}
+.story{min-width:66px;text-align:center;font-size:12px;color:#ddd;cursor:pointer}
+.story-ring{width:63px;height:63px;border-radius:50%;padding:3px;background:linear-gradient(45deg,#ff6500,#ffbd00,#ff2d55);margin:0 auto 6px}
+.story-ring img{width:100%;height:100%;object-fit:cover;border-radius:50%;border:3px solid #080808}
+.story-add{background:#222;display:grid;place-items:center;color:#ff6500;font-size:29px}
+.feed{max-width:600px;margin:auto}
 .post{border-bottom:1px solid #292929;margin-bottom:12px}
 .post-head{display:flex;align-items:center;gap:10px;padding:12px}
-.avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(45deg,#ff6500,#ffbd00);display:grid;place-items:center;font-weight:bold;color:#000}
+.avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(45deg,#ff6500,#ffbd00);display:grid;place-items:center;color:#000;font-weight:bold}
 .username{font-weight:bold}
 .time{font-size:11px;color:#888;margin-top:4px}
-.post-image{min-height:260px;display:grid;place-items:center;text-align:center;padding:30px;background:linear-gradient(135deg,#171717,#42200d,#111);font-size:28px;font-weight:900}
-.post-image img,.post-image video{max-width:100%;max-height:520px;object-fit:contain}
-.post-image img{width:100%}
-.post-image video{width:100%}
-.post-actions{display:flex;align-items:center;gap:19px;padding:12px 14px}
-.post-actions button{border:0;background:none;color:white;font-size:24px;padding:0}
+.post-image{min-height:180px;display:grid;place-items:center;text-align:center;padding:15px;background:#171717;font-size:24px;font-weight:bold;overflow:hidden}
+.post-image img,.post-image video{width:100%;max-height:520px;object-fit:contain}
+.post-actions{display:flex;align-items:center;gap:20px;padding:12px 14px}
+.post-actions button{border:0;background:none;color:white;font-size:25px;padding:0}
 .post-actions .liked{color:#ff4b35}
+.post-actions .saved{color:#ff6500}
 .post-actions .save{margin-left:auto}
 .likes,.caption{padding:0 14px 9px;font-size:14px}
 .caption b{margin-right:5px}
-.comments{padding:0 14px 12px;color:#aaa;font-size:13px}
+.comments{padding:0 14px 10px;color:#aaa;font-size:13px}
 .comment-box{display:flex;gap:8px;padding:0 14px 12px}
-.comment-box input{flex:1;background:#181818;border:1px solid #333;border-radius:20px;padding:10px;color:white;min-width:0}
+.comment-box input{flex:1;min-width:0;background:#181818;border:1px solid #333;border-radius:20px;padding:10px;color:white}
 .comment-box button,.primary{background:#ff6500;color:#000;border:0;border-radius:20px;padding:9px 15px;font-weight:bold}
-.bottom{
- position:fixed;bottom:0;left:0;right:0;z-index:20;
- background:#080808;border-top:1px solid #292929;
- display:flex;justify-content:space-around;padding:11px 4px calc(11px + env(safe-area-inset-bottom))
-}
-.bottom button{background:none;border:0;color:#aaa;font-size:23px;display:grid;gap:3px;justify-items:center}
+.bottom{position:fixed;bottom:0;left:0;right:0;z-index:20;background:#080808;border-top:1px solid #292929;display:flex;justify-content:space-around;padding:10px 4px calc(10px + env(safe-area-inset-bottom))}
+.bottom button{background:none;border:0;color:#aaa;font-size:22px;display:grid;gap:3px;justify-items:center}
 .bottom button.active{color:#ff6500}
 .bottom small{font-size:10px}
-.page{display:none;max-width:600px;margin:auto;padding:18px 15px 90px}
-.page.active{display:block}
-.page h2{color:#ff6500}
-.searchbox,.field{width:100%;padding:13px;background:#1a1a1a;border:1px solid #333;color:white;border-radius:10px;margin:8px 0}
-textarea.field{min-height:110px;resize:vertical}
+h2{color:#ff6500}
+.field,.searchbox{width:100%;padding:13px;background:#1a1a1a;border:1px solid #333;color:white;border-radius:10px;margin:8px 0}
+textarea.field{min-height:100px;resize:vertical}
 .create-card{background:#151515;border:1px solid #333;padding:16px;border-radius:14px;margin:15px 0}
-.profile-top{display:flex;align-items:center;gap:20px;padding:20px 0}
-.profile-avatar{width:85px;height:85px;border-radius:50%;background:#ff6500;color:#000;display:grid;place-items:center;font-size:30px;font-weight:bold}
+.profile-top{display:flex;align-items:center;gap:18px;padding:15px 0}
+.profile-avatar{width:80px;height:80px;border-radius:50%;background:#ff6500;color:#000;display:grid;place-items:center;font-size:29px;font-weight:bold}
 .stats{display:flex;justify-content:space-around;text-align:center;padding:15px 0;border-top:1px solid #333;border-bottom:1px solid #333}
 .stats b{display:block;font-size:19px}
 .grid-posts{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin-top:15px}
-.grid-posts div{aspect-ratio:1;background:#302015;display:grid;place-items:center;text-align:center;overflow:hidden;font-size:12px;padding:6px}
-.reel{background:linear-gradient(135deg,#231307,#080808);min-height:360px;margin:15px 0;border-radius:12px;display:grid;place-items:center;text-align:center;padding:20px;font-size:25px;font-weight:bold}
-.empty{text-align:center;color:#888;padding:40px 10px}
-.modal{display:none;position:fixed;inset:0;background:#000b;z-index:50;align-items:center;justify-content:center;padding:18px}
+.grid-posts div{aspect-ratio:1;background:#302015;display:grid;place-items:center;overflow:hidden;text-align:center;font-size:12px;padding:5px}
+.grid-posts img,.grid-posts video{width:100%;height:100%;object-fit:cover}
+.reel{background:#171717;min-height:300px;margin:15px 0;border-radius:12px;display:grid;place-items:center;text-align:center;padding:15px}
+.reel video{width:100%;max-height:500px}
+.empty{text-align:center;color:#888;padding:35px 10px}
+.modal{display:none;position:fixed;inset:0;background:#000c;z-index:50;align-items:center;justify-content:center;padding:18px}
 .modal.show{display:flex}
-.modal-card{background:#171717;border:1px solid #444;border-radius:15px;padding:18px;width:100%;max-width:420px}
+.modal-card{background:#171717;border:1px solid #444;border-radius:15px;padding:18px;width:100%;max-width:420px;max-height:80vh;overflow:auto}
 .modal-card h3{color:#ff6500}
-.close{float:right;background:none;color:white;border:0;font-size:24px}
+.close{float:right;background:none;color:white;border:0;font-size:25px}
+.comment-item{padding:8px 0;border-bottom:1px solid #333}
+.story-view{position:fixed;inset:0;background:#000;z-index:60;display:none;align-items:center;justify-content:center;flex-direction:column;padding:25px;text-align:center}
+.story-view.show{display:flex}
+.story-view button{position:absolute;right:20px;top:20px;background:none;color:white;border:0;font-size:30px}
+.story-view img,.story-view video{max-width:100%;max-height:75vh}
 </style>
 </head>
 <body>
@@ -79,22 +77,18 @@ textarea.field{min-height:110px;resize:vertical}
 <header>
  <div class="logo">DHAAKAD</div>
  <div class="head-actions">
-  <button onclick="openCreate()" aria-label="Create">＋</button>
-  <button onclick="showPage('profile')" aria-label="Profile">♙</button>
+  <button onclick="showPage('saved')">♧</button>
+  <button onclick="openCreate()">＋</button>
+  <button onclick="showPage('profile')">♙</button>
  </div>
 </header>
 
 <main>
-<section id="home" class="page active" style="padding:0 0 80px">
+<section id="home" class="page active">
  <div class="stories" id="stories">
   <div class="story" onclick="addStory()">
-   <div class="story-ring story-add">＋</div>
-   Your Story
+   <div class="story-ring story-add">＋</div>Your Story
   </div>
-  <div class="story"><div class="story-ring"><img src="https://i.pravatar.cc/100?img=12"></div>Rahul</div>
-  <div class="story"><div class="story-ring"><img src="https://i.pravatar.cc/100?img=32"></div>Aman</div>
-  <div class="story"><div class="story-ring"><img src="https://i.pravatar.cc/100?img=45"></div>Neha</div>
-  <div class="story"><div class="story-ring"><img src="https://i.pravatar.cc/100?img=15"></div>Vikas</div>
  </div>
  <div class="feed" id="feed"></div>
 </section>
@@ -122,8 +116,8 @@ textarea.field{min-height:110px;resize:vertical}
 
 <section id="profile" class="page">
  <div class="profile-top">
-  <div class="profile-avatar">D</div>
-  <div><h2 style="margin:0;color:white" id="profileName">DHAAKAD User</h2><p style="color:#aaa">Welcome to DHAAKAD</p></div>
+  <div class="profile-avatar" id="profileAvatar">D</div>
+  <div><h2 id="profileName" style="margin:0;color:white">DHAAKAD User</h2><p style="color:#aaa">Welcome to DHAAKAD</p></div>
  </div>
  <div class="stats">
   <div><b id="postCount">0</b>Posts</div>
@@ -136,6 +130,11 @@ textarea.field{min-height:110px;resize:vertical}
  </div>
  <h3>मेरी पोस्ट</h3>
  <div class="grid-posts" id="myPosts"></div>
+ </section>
+
+<section id="saved" class="page">
+ <h2>Saved Posts</h2>
+ <div id="savedPosts"></div>
 </section>
 </main>
 
@@ -157,17 +156,34 @@ textarea.field{min-height:110px;resize:vertical}
  </div>
 </div>
 
+<div class="story-view" id="storyView">
+ <button onclick="closeStory()">×</button>
+ <div id="storyContent"></div>
+</div>
+
 <script>
-const KEY="dhaakad_posts_v1";
+const KEY="dhaakad_posts_v2";
+const STORYKEY="dhaakad_stories_v2";
 let currentCommentId=null;
-let posts=JSON.parse(localStorage.getItem(KEY)||"null")||[
- {id:1,user:"DHAAKAD",text:"स्वागत है आपका DHAAKAD पर! 🔥 अपनी पहचान बनाओ।",likes:0,liked:false,comments:[],type:"text",mine:false},
- {id:2,user:"Rahul",text:"हौसला रखो, मेहनत कभी बेकार नहीं जाती। 💪",likes:3,liked:false,comments:[],type:"text",mine:false}
-];
+let posts=[];
+let stories=[];
 let username=localStorage.getItem("dhaakad_name")||"DHAAKAD User";
 
-function save(){localStorage.setItem(KEY,JSON.stringify(posts))}
-function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function loadData(){
+ try{posts=JSON.parse(localStorage.getItem(KEY)||"[]");if(!Array.isArray(posts))posts=[]}catch(e){posts=[]}
+ try{stories=JSON.parse(localStorage.getItem(STORYKEY)||"[]");if(!Array.isArray(stories))stories=[]}catch(e){stories=[]}
+}
+function save(){
+ try{localStorage.setItem(KEY,JSON.stringify(posts));return true}
+ catch(e){alert("मोबाइल स्टोरेज भर गया है। छोटी फाइल चुनें।");return false}
+}
+function saveStories(){
+ try{localStorage.setItem(STORYKEY,JSON.stringify(stories));return true}
+ catch(e){alert("स्टोरी सेव नहीं हो सकी।");return false}
+}
+function esc(s){
+ return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
 function showPage(id){
  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
  document.getElementById(id).classList.add("active");
@@ -175,74 +191,86 @@ function showPage(id){
  if(id==="profile")renderProfile();
  if(id==="reels")renderReels();
  if(id==="search")searchPosts();
+ if(id==="saved")renderSaved();
  window.scrollTo(0,0);
 }
 function render(){
- const feed=document.getElementById("feed");
- feed.innerHTML=posts.map(p=>`
+ document.getElementById("feed").innerHTML=posts.map(p=>`
  <article class="post">
   <div class="post-head">
-   <div class="avatar">${esc(p.user.charAt(0).toUpperCase())}</div>
-   <div><div class="username">${esc(p.user)}</div><div class="time">DHAAKAD · Just now</div></div>
+   <div class="avatar">${esc((p.user||"?").charAt(0).toUpperCase())}</div>
+   <div><div class="username">${esc(p.user)}</div><div class="time">DHAAKAD · ${esc(p.date||"अभी")}</div></div>
+   ${p.mine?`<button style="margin-left:auto;background:none;color:#aaa;border:0" onclick="deletePost(${p.id})">⋮</button>`:""}
   </div>
-  ${p.media?`<div class="post-image">${p.type==="video"?`<video src="${p.media}" controls playsinline></video>`:`<img src="${p.media}" alt="Post image">`}</div>`:
-  `<div class="post-image">${esc(p.text||"DHAAKAD 🔥")}</div>`}
+  ${p.media?`<div class="post-image">${p.type==="video"?`<video src="${p.media}" controls playsinline></video>`:`<img src="${p.media}" alt="Post image">`}</div>`:`<div class="post-image">${esc(p.text||"DHAAKAD 🔥")}</div>`}
   <div class="post-actions">
    <button class="${p.liked?"liked":""}" onclick="toggleLike(${p.id})">${p.liked?"♥":"♡"}</button>
    <button onclick="openComments(${p.id})">♧</button>
    <button onclick="sharePost(${p.id})">➤</button>
-   <button class="save" onclick="alert('Save feature coming soon')">♧</button>
+   <button class="save ${p.saved?"saved":""}" onclick="toggleSave(${p.id})">${p.saved?"🔖":"♧"}</button>
   </div>
   <div class="likes"><b>${p.likes||0} likes</b></div>
   <div class="caption"><b>${esc(p.user)}</b>${esc(p.text||"")}</div>
-  <div class="comments">${p.comments.length?`View ${p.comments.length} comments`:"No comments yet"}</div>
+  <div class="comments" onclick="openComments(${p.id})">${p.comments?.length?`View all ${p.comments.length} comments`:"Add a comment..."}</div>
   <div class="comment-box">
    <input id="comment-${p.id}" placeholder="Add a comment...">
    <button onclick="addComment(${p.id})">Post</button>
   </div>
- </article>`).join("");
+ </article>`).join("")||'<div class="empty">अभी कोई पोस्ट नहीं है। पहली पोस्ट आप करें! 🔥</div>';
 }
 function toggleLike(id){
  const p=posts.find(x=>x.id===id);if(!p)return;
  p.liked=!p.liked;p.likes=Math.max(0,(p.likes||0)+(p.liked?1:-1));
- save();render();
+ if(save())render();
+}
+function toggleSave(id){
+ const p=posts.find(x=>x.id===id);if(!p)return;
+ p.saved=!p.saved;if(save())render();
 }
 function addComment(id){
  const p=posts.find(x=>x.id===id);
  const input=document.getElementById("comment-"+id);
+ if(!p||!input)return;
  const val=input.value.trim();if(!val)return;
- p.comments.push({user:username,text:val});save();render();
+ p.comments=p.comments||[];
+ p.comments.push({user:username,text:val});
+ if(save())render();
 }
 function openComments(id){
  currentCommentId=id;
- const p=posts.find(x=>x.id===id);
- document.getElementById("commentList").innerHTML=p.comments.map(c=>`<p><b>${esc(c.user)}</b> ${esc(c.text)}</p>`).join("")||"<p>अभी कोई कमेंट नहीं है।</p>";
+ const p=posts.find(x=>x.id===id);if(!p)return;
+ document.getElementById("commentList").innerHTML=(p.comments||[]).map(c=>`<div class="comment-item"><b>${esc(c.user)}</b> ${esc(c.text)}</div>`).join("")||"<p>अभी कोई कमेंट नहीं है।</p>";
  document.getElementById("commentModal").classList.add("show");
 }
 function closeComments(){document.getElementById("commentModal").classList.remove("show")}
 function sendModalComment(){
  const input=document.getElementById("modalComment");
  const val=input.value.trim();if(!val)return;
- const p=posts.find(x=>x.id===currentCommentId);
- p.comments.push({user:username,text:val});input.value="";
- save();openComments(currentCommentId);render();
+ const p=posts.find(x=>x.id===currentCommentId);if(!p)return;
+ p.comments=p.comments||[];
+ p.comments.push({user:username,text:val});
+ if(save()){input.value="";openComments(currentCommentId);render()}
 }
 async function sharePost(id){
- const p=posts.find(x=>x.id===id);
- const content=p.user+": "+p.text;
- if(navigator.share){try{await navigator.share({title:"DHAAKAD",text:content})}catch(e){}}
- else if(navigator.clipboard){await navigator.clipboard.writeText(content);alert("पोस्ट का टेक्स्ट कॉपी हो गया।")}
- else alert(content);
+ const p=posts.find(x=>x.id===id);if(!p)return;
+ const content=(p.user||"DHAAKAD")+": "+(p.text||"DHAAKAD पोस्ट");
+ try{
+  if(navigator.share)await navigator.share({title:"DHAAKAD",text:content});
+  else if(navigator.clipboard){await navigator.clipboard.writeText(content);alert("पोस्ट कॉपी हो गई!")}
+  else prompt("पोस्ट कॉपी करें:",content);
+ }catch(e){}
 }
 function openCreate(){showPage("create")}
 function publishPost(){
  const text=document.getElementById("postText").value.trim();
  const file=document.getElementById("postFile").files[0];
  if(!text&&!file){alert("कुछ लिखें या फोटो/वीडियो चुनें");return}
- if(file&&file.size>3*1024*1024){alert("डेमो में 3 MB से छोटी फाइल चुनें");return}
+ if(file&&file.size>2*1024*1024){alert("अभी 2 MB से छोटी फाइल चुनें");return}
+ if(file&&!(/^(image|video)\//.test(file.type))){alert("सिर्फ फोटो या वीडियो चुनें");return}
  const add=media=>{
-  posts.unshift({id:Date.now(),user:username,text,likes:0,liked:false,comments:[],media,type:file&&file.type.startsWith("video")?"video":"image",mine:true});
-  try{save()}catch(e){alert("स्टोरेज भर गया है। छोटी फाइल चुनें।");posts.shift();return}
+  const p={id:Date.now(),user:username,text,likes:0,liked:false,saved:false,comments:[],media,type:file?(file.type.startsWith("video")?"video":"image"):"text",mine:true,date:new Date().toLocaleString("hi-IN")};
+  posts.unshift(p);
+  if(!save()){posts.shift();return}
   document.getElementById("postText").value="";
   document.getElementById("postFile").value="";
   render();showPage("home");
@@ -250,38 +278,66 @@ function publishPost(){
  if(file){
   const reader=new FileReader();
   reader.onload=()=>add(reader.result);
+  reader.onerror=()=>alert("फाइल पढ़ी नहीं जा सकी");
   reader.readAsDataURL(file);
  }else add(null);
 }
-function addStory(){
- const s=prompt("अपनी स्टोरी लिखें:");
- if(!s)return;
- const el=document.createElement("div");el.className="story";
- el.innerHTML=`<div class="story-ring story-add">★</div>${esc(s.slice(0,12))}`;
- document.getElementById("stories").appendChild(el);
+function deletePost(id){
+ if(!confirm("क्या आप यह पोस्ट हटाना चाहते हैं?"))return;
+ const old=posts;
+ posts=posts.filter(p=>p.id!==id);
+ if(!save()){posts=old;return}
+ render();renderProfile();
 }
+function addStory(){
+ const text=prompt("अपनी स्टोरी लिखें:");
+ if(!text||!text.trim())return;
+ stories.unshift({id:Date.now(),user:username,text:text.trim(),date:Date.now()});
+ stories=stories.filter(s=>Date.now()-s.date<86400000);
+ if(saveStories())renderStories();
+}
+function renderStories(){
+ stories=stories.filter(s=>Date.now()-s.date<86400000);
+ saveStories();
+ const box=document.getElementById("stories");
+ box.innerHTML=`<div class="story" onclick="addStory()"><div class="story-ring story-add">＋</div>Your Story</div>`+
+ stories.map(s=>`<div class="story" onclick="viewStory(${s.id})"><div class="story-ring story-add">★</div>${esc(s.user)}</div>`).join("");
+}
+function viewStory(id){
+ const s=stories.find(x=>x.id===id);if(!s)return;
+ document.getElementById("storyContent").innerHTML=`<h2>${esc(s.user)}</h2><div style="font-size:25px">${esc(s.text)}</div>`;
+ document.getElementById("storyView").classList.add("show");
+}
+function closeStory(){document.getElementById("storyView").classList.remove("show")}
 function searchPosts(){
- const q=(document.getElementById("searchInput")?.value||"").toLowerCase();
- const results=posts.filter(p=>(p.text+" "+p.user).toLowerCase().includes(q));
- document.getElementById("searchResults").innerHTML=results.map(p=>`<div class="create-card"><b>${esc(p.user)}</b><p>${esc(p.text)}</p></div>`).join("")||"<div class='empty'>कोई पोस्ट नहीं मिली</div>";
+ const q=(document.getElementById("searchInput")?.value||"").toLowerCase().trim();
+ const results=posts.filter(p=>((p.text||"")+" "+(p.user||"")).toLowerCase().includes(q));
+ document.getElementById("searchResults").innerHTML=results.map(p=>`<div class="create-card"><b>${esc(p.user)}</b><p>${esc(p.text)}</p></div>`).join("")||'<div class="empty">कोई पोस्ट नहीं मिली</div>';
 }
 function renderReels(){
- const list=document.getElementById("reelList");
  const reels=posts.filter(p=>p.type==="video");
- list.innerHTML=reels.map(p=>`<div class="reel"><div>${p.media?`<video src="${p.media}" controls style="max-width:100%;max-height:450px"></video>`:""}<p>${esc(p.text)}</p><small>${esc(p.user)}</small></div></div>`).join("")||"<div class='empty'>अभी कोई Reel नहीं है। Create में वीडियो अपलोड करें।</div>";
+ document.getElementById("reelList").innerHTML=reels.map(p=>`<div class="reel"><div><video src="${p.media}" controls playsinline></video><p>${esc(p.text)}</p><b>${esc(p.user)}</b><div><button class="primary" onclick="toggleLike(${p.id})">${p.liked?"♥":"♡"} ${p.likes||0}</button></div></div></div>`).join("")||'<div class="empty">अभी कोई Reel नहीं है। Create में वीडियो अपलोड करें।</div>';
 }
 function renderProfile(){
  document.getElementById("profileName").textContent=username;
+ document.getElementById("profileAvatar").textContent=username.charAt(0).toUpperCase();
  const mine=posts.filter(p=>p.mine);
  document.getElementById("postCount").textContent=mine.length;
- document.getElementById("myPosts").innerHTML=mine.map(p=>`<div>${esc(p.text||"DHAAKAD")}</div>`).join("");
+ document.getElementById("myPosts").innerHTML=mine.map(p=>`<div>${p.media?(p.type==="video"?'<span>▶ VIDEO</span>':`<img src="${p.media}">`):esc(p.text||"DHAAKAD")}</div>`).join("");
+}
+function renderSaved(){
+ const saved=posts.filter(p=>p.saved);
+ document.getElementById("savedPosts").innerHTML=saved.map(p=>`<div class="create-card"><b>${esc(p.user)}</b><p>${esc(p.text)}</p></div>`).join("")||'<div class="empty">अभी कोई सेव पोस्ट नहीं है।</div>';
 }
 function saveName(){
  const n=document.getElementById("nameInput").value.trim();
  if(!n)return alert("अपना नाम लिखें");
- username=n;localStorage.setItem("dhaakad_name",n);renderProfile();alert("नाम सेव हो गया");
+ username=n;localStorage.setItem("dhaakad_name",n);
+ render();renderProfile();alert("नाम सेव हो गया!");
 }
+loadData();
 render();
+renderStories();
 </script>
 </body>
 </html>
