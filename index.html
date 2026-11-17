@@ -4,1337 +4,147 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#ff6500">
+<meta name="theme-color" content="#000000">
 <title>DHAAKAD</title>
 
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#101010;color:white;font-family:Arial,sans-serif}
-header{background:#000;padding:18px;text-align:center;border-bottom:2px solid #ff6500}
-header h1{color:#ff6500;margin:0;font-size:30px;font-weight:900}
-header p{margin:7px 0 0}
-main{max-width:650px;margin:auto;padding:12px}
-section.panel{background:#1c1c1c;padding:18px;margin:15px 0;border:1px solid #ff6500;border-radius:15px;text-align:center}
-h2{color:#ff6500}
-input,textarea{width:100%;padding:12px;border-radius:8px;border:1px solid #777;margin:8px 0;font-size:16px}
-button{cursor:pointer;background:#ff6500;color:white;border:0;padding:12px 16px;border-radius:8px;font-weight:bold;margin:5px}
-button:disabled{opacity:.55;cursor:not-allowed}
-video{max-width:100%;border-radius:9px}
-#videoPreview{display:none;width:100%;margin-top:12px}
-#postResult{text-align:left}
-.post-card{background:#303030;padding:14px;margin:15px 0;border-radius:12px;border:1px solid #ff6500}
-.post-card h3{color:#ff6500}
-
-/* Instagram-style video area */
-.reel-stage{
-  position:relative;
-  width:100%;
-  overflow:hidden;
-  border-radius:10px;
-  background:#000;
+body{
+ margin:0;
+ background:#000;
+ color:white;
+ font-family:Arial,sans-serif;
 }
-.post-video{
-  width:100%;
-  height:auto;
-  max-height:75vh;
-  display:block;
-  object-fit:contain;
-  border-radius:10px;
+header{
+ height:60px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ padding:0 15px;
+ border-bottom:1px solid #333;
 }
-
-/* Four buttons on the right side */
-.reel-actions{
-  position:absolute;
-  right:8px;
-  bottom:65px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:12px;
-  z-index:5;
+.logo{
+ color:#ff6500;
+ font-size:27px;
+ font-weight:900;
 }
-.reel-actions button{
-  width:54px;
-  min-height:54px;
-  padding:7px 3px;
-  margin:0;
-  border-radius:28px;
-  background:rgba(0,0,0,.68);
-  border:1px solid rgba(255,255,255,.35);
-  color:white;
-  font-size:12px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:3px;
-  box-shadow:0 2px 8px rgba(0,0,0,.4);
+.head-btn{
+ background:none;
+ color:white;
+ border:0;
+ font-size:27px;
 }
-.reel-actions button .action-icon{
-  font-size:23px;
-  line-height:25px;
+main{
+ max-width:600px;
+ margin:auto;
+ padding-bottom:75px;
 }
-.reel-actions button .action-label{
-  font-size:10px;
-  line-height:12px;
+.stories{
+ display:flex;
+ gap:15px;
+ overflow-x:auto;
+ padding:15px 10px;
+ border-bottom:1px solid #333;
 }
-.reel-actions button:active{
-  transform:scale(.94);
+.story{
+ min-width:65px;
+ text-align:center;
+ font-size:12px;
 }
-.reel-actions .liked{
-  color:#ff4b65;
-  border-color:#ff4b65;
+.story-circle{
+ width:62px;
+ height:62px;
+ border:3px solid #ff6500;
+ border-radius:50%;
+ margin:auto auto 5px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-size:25px;
 }
-.reel-comments{display:block;margin-top:12px}
-.reel-comments input{width:100%;margin:5px 0}
-.reel-comments button{width:100%;margin:5px 0}
-.comment-item{background:#444;padding:9px;border-radius:8px;margin:7px 0;overflow-wrap:anywhere}
-.post-social-footer{text-align:center;color:#ff6500;font-weight:bold;border-top:1px solid #ff6500;padding-top:12px;margin-top:15px}
-.firebase-message{font-size:13px;color:#ffb27f;margin-top:10px}
-.saved-item{background:#303030;padding:12px;margin:12px 0;border-radius:10px}
-.saved-item video{width:100%}
-.status{color:#ff9b55;overflow-wrap:anywhere}
-footer{text-align:center;padding:20px;color:#999}
+.feed{
+ padding:15px;
+ text-align:center;
+ color:#aaa;
+}
+nav{
+ position:fixed;
+ bottom:0;
+ left:0;
+ width:100%;
+ height:62px;
+ background:#080808;
+ border-top:1px solid #444;
+ display:flex;
+ justify-content:space-around;
+ align-items:center;
+}
+nav button{
+ background:none;
+ border:0;
+ color:white;
+ font-size:24px;
+ padding:8px;
+}
+nav button.active{
+ color:#ff6500;
+}
 </style>
 </head>
-
 <body>
+
 <header>
-  <h1>DHAAKAD</h1>
-  <p>अपना हुनर दिखाओ!</p>
-  <p>CREATE • SHARE • EARN</p>
+ <button class="head-btn">＋</button>
+ <div class="logo">DHAAKAD</div>
+ <button class="head-btn">♡</button>
 </header>
 
 <main>
-  <section class="panel">
-    <h2>WELCOME TO DHAAKAD</h2>
-    <p>अपनी प्रतिभा दुनिया को दिखाओ।</p>
-  </section>
+ <section class="stories">
+  <div class="story">
+   <div class="story-circle">＋</div>
+   Your Story
+  </div>
+  <div class="story">
+   <div class="story-circle">🔥</div>
+   DHAAKAD
+  </div>
+  <div class="story">
+   <div class="story-circle">😎</div>
+   Creator
+  </div>
+  <div class="story">
+   <div class="story-circle">⭐</div>
+   Star
+  </div>
+  <div class="story">
+   <div class="story-circle">🎬</div>
+   Videos
+  </div>
+ </section>
 
-  <section class="panel">
-    <h2>DHAAKAD VIDEO UPLOAD</h2>
-    <p>अपना वीडियो चुनें और दुनिया को हुनर दिखाएँ!</p>
-    <input type="file" id="videoFile" accept="video/*">
-    <video id="videoPreview" controls playsinline></video>
-    <p id="videoMessage" class="status"></p>
-  </section>
-
-  <section class="panel">
-    <h2>SHARE YOUR TALENT</h2>
-    <textarea id="videoCaption" maxlength="500" placeholder="अपने वीडियो के बारे में कुछ लिखें..."></textarea>
-    <button id="shareVideo" type="button">SHARE VIDEO</button>
-    <p id="shareMessage" class="status"></p>
-  </section>
-
-  <section class="panel">
-    <h2>MY DHAAKAD POST</h2>
-    <input id="postTitle" type="text" maxlength="80" placeholder="अपनी पोस्ट का नाम लिखें...">
-    <button id="createPost" type="button">CREATE POST</button>
-    <div id="postResult"></div>
-  </section>
-
-  <section class="panel">
-    <h2>DHAAKAD SOCIAL</h2>
-    <p>LIKE • COMMENT • SHARE • SAVE</p>
-    <p id="socialStatus" class="status">अपनी पोस्ट बनाकर टेस्ट करें।</p>
-  </section>
-
-  <section class="panel">
-    <h2>🔖 SAVED VIDEOS</h2>
-    <div id="savedVideos">अभी कोई वीडियो सेव नहीं है।</div>
-  </section>
+ <section class="feed">
+  <h2>DHAAKAD FEED</h2>
+  <p>आपकी पोस्ट यहाँ दिखाई देंगी।</p>
+ </section>
 </main>
 
-<footer>© 2026 DHAAKAD</footer>
-
-<script>
-(() => {
-  const $ = id => document.getElementById(id);
-
-  const fileInput = $("videoFile");
-  const preview = $("videoPreview");
-  const videoMessage = $("videoMessage");
-  const captionInput = $("videoCaption");
-  const postTitle = $("postTitle");
-  const postResult = $("postResult");
-  const socialStatus = $("socialStatus");
-  const savedArea = $("savedVideos");
-
-  let previewURL = null;
-  let db = null;
-  let dbReady = false;
-  let savedObjectURLs = [];
-
-  function makeId() {
-    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
-    return "post_" + Date.now() + "_" + Math.random().toString(36).slice(2);
-  }
-
-  function selectedVideo() {
-    const file = fileInput.files && fileInput.files[0];
-    if (!file || !file.type.startsWith("video/")) return null;
-    return file;
-  }
-
-  fileInput.addEventListener("change", () => {
-    const file = selectedVideo();
-
-    if (previewURL) URL.revokeObjectURL(previewURL);
-    previewURL = null;
-    preview.removeAttribute("src");
-    preview.style.display = "none";
-
-    if (!file) {
-      videoMessage.textContent = fileInput.files.length
-        ? "कृपया सही वीडियो चुनें।"
-        : "";
-      return;
-    }
-
-    previewURL = URL.createObjectURL(file);
-    preview.src = previewURL;
-    preview.style.display = "block";
-    videoMessage.textContent = "आपका वीडियो तैयार है!";
-  });
-
-  $("shareVideo").addEventListener("click", async () => {
-    const file = selectedVideo();
-    const message = $("shareMessage");
-    const caption = captionInput.value.trim();
-
-    if (!file) {
-      message.textContent = "पहले अपना वीडियो चुनें!";
-      return;
-    }
-
-    if (!navigator.share || !navigator.canShare ||
-        !navigator.canShare({ files: [file] })) {
-      message.textContent = "इस ब्राउज़र में वीडियो शेयर उपलब्ध नहीं है।";
-      return;
-    }
-
-    try {
-      await navigator.share({
-        title: "DHAAKAD",
-        text: caption || "मेरा हुनर देखिए! DHAAKAD",
-        files: [file]
-      });
-      message.textContent = "शेयर प्रक्रिया पूरी हुई!";
-    } catch (error) {
-      if (error.name !== "AbortError") {
-        message.textContent = "शेयर नहीं हो पाया। दोबारा कोशिश करें।";
-      }
-    }
-  });
-
-  function openDatabase() {
-    return new Promise((resolve, reject) => {
-      if (!("indexedDB" in window)) {
-        reject(new Error("इस ब्राउज़र में वीडियो सेव सुविधा उपलब्ध नहीं है।"));
-        return;
-      }
-
-      const request = indexedDB.open("DhaakadSavedVideos", 1);
-
-      request.onupgradeneeded = event => {
-        const database = event.target.result;
-        if (!database.objectStoreNames.contains("videos")) {
-          database.createObjectStore("videos", { keyPath: "id" });
-        }
-      };
-
-      request.onsuccess = event => resolve(event.target.result);
-      request.onerror = () => reject(request.error || new Error("Database नहीं खुला।"));
-    });
-  }
-
-  async function showSavedVideos() {
-    if (!db) return;
-
-    savedObjectURLs.forEach(url => URL.revokeObjectURL(url));
-    savedObjectURLs = [];
-    savedArea.replaceChildren();
-
-    try {
-      const items = await new Promise((resolve, reject) => {
-        const request = db.transaction("videos", "readonly")
-          .objectStore("videos").getAll();
-        request.onsuccess = () => resolve(request.result || []);
-        request.onerror = () => reject(request.error);
-      });
-
-      if (!items.length) {
-        savedArea.textContent = "अभी कोई वीडियो सेव नहीं है।";
-        return;
-      }
-
-      items.sort((a, b) => (b.savedAt || 0) - (a.savedAt || 0));
-
-      items.forEach(item => {
-        const box = document.createElement("div");
-        box.className = "saved-item";
-
-        const title = document.createElement("p");
-        title.textContent = item.title || "DHAAKAD Video";
-
-        const video = document.createElement("video");
-        video.controls = true;
-        video.playsInline = true;
-        video.src = URL.createObjectURL(item.file);
-        savedObjectURLs.push(video.src);
-
-        box.append(title, video);
-        savedArea.appendChild(box);
-      });
-    } catch (error) {
-      savedArea.textContent = "सेव वीडियो दिखाने में समस्या हुई।";
-    }
-  }
-
-  function addSocialButtons(card) {
-    if (!card || card.dataset.socialReady === "yes") return;
-
-    const video = card.querySelector("video");
-    if (!video) return;
-
-    card.dataset.socialReady = "yes";
-
-    // Video and four buttons share one stage
-    const stage = document.createElement("div");
-    stage.className = "reel-stage";
-
-    const actions = document.createElement("div");
-    actions.className = "reel-actions";
-
-    let liked = false;
-
-    // LIKE
-    const like = document.createElement("button");
-    like.type = "button";
-    like.innerHTML =
-      '<span class="action-icon">🤍</span><span class="action-label">Like 0</span>';
-
-    like.onclick = () => {
-      liked = !liked;
-      like.classList.toggle("liked", liked);
-      like.innerHTML = liked
-        ? '<span class="action-icon">❤️</span><span class="action-label">Like 1</span>'
-        : '<span class="action-icon">🤍</span><span class="action-label">Like 0</span>';
-    };
-
-    // COMMENT
-    const commentBtn = document.createElement("button");
-    commentBtn.type = "button";
-    commentBtn.innerHTML =
-      '<span class="action-icon">💬</span><span class="action-label">Comment</span>';
-
-    // SHARE
-    const shareBtn = document.createElement("button");
-    shareBtn.type = "button";
-    shareBtn.innerHTML =
-      '<span class="action-icon">↗️</span><span class="action-label">Share</span>';
-
-    // SAVE
-    const saveBtn = document.createElement("button");
-    saveBtn.type = "button";
-    saveBtn.innerHTML =
-      '<span class="action-icon">🔖</span><span class="action-label">Save</span>';
-
-    actions.append(like, commentBtn, shareBtn, saveBtn);
-
-    // Move video into the stage and place actions over it
-    stage.append(video, actions);
-
-    // Comments stay below the video
-    const comments = document.createElement("div");
-    comments.className = "reel-comments";
-
-    const commentInput = document.createElement("input");
-    commentInput.type = "text";
-    commentInput.maxLength = 300;
-    commentInput.placeholder = "अपना कमेंट लिखें...";
-
-    const sendComment = document.createElement("button");
-    sendComment.type = "button";
-    sendComment.textContent = "COMMENT";
-
-    const commentList = document.createElement("div");
-
-    sendComment.onclick = () => {
-      const value = commentInput.value.trim();
-      if (!value) {
-        commentInput.focus();
-        return;
-      }
-
-      const item = document.createElement("p");
-      item.className = "comment-item";
-      item.textContent = "💬 " + value;
-      commentList.appendChild(item);
-      commentInput.value = "";
-      socialStatus.textContent = "कमेंट इस डिवाइस पर जुड़ गया।";
-    };
-
-    commentBtn.onclick = () => {
-      commentInput.focus();
-    };
-
-    // SAVE VIDEO
-    saveBtn.onclick = async () => {
-      if (!dbReady || !db) {
-        socialStatus.textContent = "वीडियो सेव सिस्टम तैयार नहीं है।";
-        return;
-      }
-
-      const file = card._videoFile;
-      if (!file) {
-        socialStatus.textContent = "इस पोस्ट की वीडियो फाइल नहीं मिली।";
-        return;
-      }
-
-      saveBtn.disabled = true;
-
-      try {
-        await new Promise((resolve, reject) => {
-          const transaction = db.transaction("videos", "readwrite");
-
-          transaction.objectStore("videos").put({
-            id: card.dataset.localId,
-            title: card.querySelector("h3").textContent,
-            file,
-            savedAt: Date.now()
-          });
-
-          transaction.oncomplete = resolve;
-          transaction.onerror = () => reject(transaction.error);
-          transaction.onabort = () => reject(transaction.error);
-        });
-
-        saveBtn.innerHTML =
-          '<span class="action-icon">✅</span><span class="action-label">Saved</span>';
-        socialStatus.textContent = "वीडियो Saved Videos में सेव हो गया!";
-        await showSavedVideos();
-
-      } catch (error) {
-        socialStatus.textContent = "वीडियो सेव नहीं हो पाया।";
-        saveBtn.disabled = false;
-      }
-    };
-
-    // SHARE VIDEO
-    shareBtn.onclick = async () => {
-      const file = card._videoFile;
-
-      if (!file) {
-        socialStatus.textContent = "इस पोस्ट की वीडियो फाइल नहीं मिली।";
-        return;
-      }
-
-      if (!navigator.share || !navigator.canShare ||
-          !navigator.canShare({ files: [file] })) {
-        socialStatus.textContent = "इस ब्राउज़र में वीडियो शेयर उपलब्ध नहीं है।";
-        return;
-      }
-
-      try {
-        await navigator.share({
-          title: card.querySelector("h3").textContent,
-          text: "मेरा धाकड़ वीडियो!",
-          files: [file]
-        });
-        socialStatus.textContent = "शेयर प्रक्रिया पूरी हुई!";
-      } catch (error) {
-        if (error.name !== "AbortError") {
-          socialStatus.textContent = "शेयर नहीं हो पाया।";
-        }
-      }
-    };
-
-    const socialFooter = document.createElement("div");
-    socialFooter.className = "post-social-footer";
-    socialFooter.textContent = "🔥 DHAAKAD SOCIAL 🔥";
-
-    comments.append(commentInput, sendComment, commentList);
-    card.append(stage, comments, socialFooter);
-  }
-
-  $("createPost").addEventListener("click", () => {
-    const title = postTitle.value.trim();
-    const caption = captionInput.value.trim();
-    const file = selectedVideo();
-
-    if (!title) {
-      alert("पहले पोस्ट का नाम लिखें!");
-      return;
-    }
-
-    if (!file) {
-      alert("पहले वीडियो चुनें!");
-      return;
-    }
-
-    const card = document.createElement("article");
-    card.className = "post-card";
-    card.dataset.localId = makeId();
-    card._videoFile = file;
-
-    const heading = document.createElement("h3");
-    heading.textContent = title;
-
-    const description = document.createElement("p");
-    description.textContent = caption || "DHAAKAD पर मेरा हुनर!";
-
-    const video = document.createElement("video");
-    video.className = "post-video";
-    video.src = URL.createObjectURL(file);
-    video.controls = true;
-    video.playsInline = true;
-
-    card.append(heading, description, video);
-    postResult.prepend(card);
-
-    addSocialButtons(card);
-
-    postTitle.value = "";
-    socialStatus.textContent = "आपकी पोस्ट बन गई है!";
-
-    window.dispatchEvent(new CustomEvent("dhaakad:new-post", {
-      detail: { card }
-    }));
-  });
-
-  openDatabase()
-    .then(database => {
-      db = database;
-      dbReady = true;
-      showSavedVideos();
-    })
-    .catch(error => {
-      socialStatus.textContent = "Save सिस्टम: " + error.message;
-    });
-
-  window.addEventListener("beforeunload", () => {
-    if (previewURL) URL.revokeObjectURL(previewURL);
-    savedObjectURLs.forEach(url => URL.revokeObjectURL(url));
-  });
-})();
-</script>
-
-<script type="module">
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/13.3.0/firebase-app.js";
-
-import {
-  getFirestore,
-  doc,
-  setDoc,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/13.3.0/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBahbShOGBzd6TYyKh0-njxVCxpO6OVIOU",
-  authDomain: "dhaakad-7b801.firebaseapp.com",
-  projectId: "dhaakad-7b801",
-  storageBucket: "dhaakad-7b801.firebasestorage.app",
-  messagingSenderId: "928208033292",
-  appId: "1:928208033292:web:5c48779b192cc2ea1b0029"
-};
-
-const status = document.getElementById("socialStatus");
-const postArea = document.getElementById("postResult");
-
-let firestore = null;
-
-function getStablePostId(card) {
-  if (!card.dataset.firebasePostId) {
-    card.dataset.firebasePostId = card.dataset.localId ||
-      ("post_" + Date.now() + "_" + Math.random().toString(36).slice(2));
-  }
-  return card.dataset.firebasePostId;
-}
-
-async function savePost(card) {
-  if (!firestore || !card || card.dataset.firebaseSaved === "yes" ||
-      card.dataset.firebaseSaved === "saving") return;
-
-  const heading = card.querySelector("h3");
-  const description = card.querySelector("p");
-
-  if (!heading) return;
-
-  const postId = getStablePostId(card);
-  card.dataset.firebaseSaved = "saving";
-
-  let message = card.querySelector(".firebase-message");
-  if (!message) {
-    message = document.createElement("p");
-    message.className = "firebase-message";
-    card.appendChild(message);
-  }
-
-  let retry = card.querySelector(".firebase-retry");
-  if (retry) retry.remove();
-
-  message.textContent = "Firebase में पोस्ट सेव हो रही है...";
-
-  try {
-    await setDoc(doc(firestore, "Posts", postId), {
-      postId,
-      title: heading.textContent,
-      caption: description ? description.textContent : "",
-      appName: "DHAAKAD",
-      createdAt: serverTimestamp()
-    });
-
-    card.dataset.firebaseSaved = "yes";
-    message.textContent = "✅ पोस्ट Firebase में सेव हो गई!";
-    status.textContent = "Firebase कनेक्शन और पोस्ट सेव सफल!";
-
-  } catch (error) {
-    card.dataset.firebaseSaved = "error";
-    message.textContent = "पोस्ट Firebase में सेव नहीं हुई: " + error.message;
-
-    retry = document.createElement("button");
-    retry.type = "button";
-    retry.className = "firebase-retry";
-    retry.textContent = "RETRY";
-    retry.onclick = () => savePost(card);
-    card.appendChild(retry);
-
-    status.textContent = "Firebase पोस्ट सेव में समस्या हुई। Retry दबाएँ।";
-    console.error("DHAAKAD Firestore save error:", error);
-  }
-}
-
-try {
-  const app = initializeApp(firebaseConfig);
-  firestore = getFirestore(app);
-
-  await setDoc(doc(firestore, "AppStatus", "connection"), {
-    connected: true,
-    appName: "DHAAKAD",
-    updatedAt: serverTimestamp()
-  });
-
-  status.textContent = "DHAAKAD Firebase से कनेक्ट हो गया!";
-
-  Array.from(postArea.children).forEach(savePost);
-
-  const observer = new MutationObserver(records => {
-    records.forEach(record => {
-      record.addedNodes.forEach(node => {
-        if (node.nodeType === 1 && node.parentElement === postArea) {
-          savePost(node);
-        }
-      });
-    });
-  });
-
-  observer.observe(postArea, { childList: true });
-
-  window.addEventListener("dhaakad:new-post", event => {
-    if (event.detail && event.detail.card) {
-      savePost(event.detail.card);
-    }
-  });
-
-  console.log("DHAAKAD Firebase Ready");
-
-} catch (error) {
-  console.error("DHAAKAD Firebase connection error:", error);
-  status.textContent = "Firebase कनेक्शन में समस्या: " + error.message;
-}
-</script>
-  
-<!DOCTYPE html>
-<html lang="hi">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#ff6500">
-<title>DHAAKAD</title>
-
-<style>
-*{box-sizing:border-box}
-body{margin:0;background:#101010;color:#fff;font-family:Arial,sans-serif}
-header{background:#000;padding:15px;text-align:center;border-bottom:2px solid #ff6500;position:sticky;top:0;z-index:20}
-header h1{color:#ff6500;margin:0;font-size:29px;font-weight:900}
-header p{margin:5px 0}
-main{max-width:650px;margin:auto;padding:12px}
-.panel{background:#1c1c1c;padding:15px;margin:13px 0;border:1px solid #ff6500;border-radius:13px}
-h2{color:#ff6500;margin-top:0}
-button{background:#ff6500;color:#fff;border:0;padding:11px 15px;border-radius:8px;font-weight:bold;cursor:pointer;margin:4px}
-button:disabled{opacity:.5}
-input,textarea{width:100%;padding:12px;border-radius:8px;border:1px solid #777;background:#fff;color:#111;margin:7px 0;font-size:16px}
-textarea{resize:vertical;min-height:75px}
-.hidden{display:none!important}
-.status{color:#ffad75;font-size:14px}
-#menu{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;background:#181818;padding:10px}
-#menu button{flex:1;min-width:90px}
-.search-row{display:flex;gap:5px}
-.search-row input{flex:1;min-width:0}
-.profile-top{display:flex;align-items:center;gap:15px}
-.avatar{width:85px;height:85px;border-radius:50%;object-fit:cover;background:#444;border:3px solid #ff6500}
-.small-avatar{width:42px;height:42px;border-radius:50%;object-fit:cover;border:2px solid #ff6500}
-.user-row{display:flex;align-items:center;gap:10px;padding:10px;background:#303030;border-radius:10px;margin:8px 0}
-.user-info{flex:1;min-width:0}
-.user-info p{margin:4px 0;color:#bbb;font-size:13px}
-.status-list{display:flex;gap:12px;overflow-x:auto;padding:8px 0}
-.status-circle{min-width:75px;text-align:center;cursor:pointer}
-.status-circle img{width:62px;height:62px;border-radius:50%;object-fit:cover;border:3px solid #ff6500}
-.status-circle p{font-size:12px;overflow-wrap:anywhere;margin:4px}
-.status-card{background:#303030;padding:12px;border-radius:10px;margin:10px 0}
-.status-media{width:100%;max-height:400px;object-fit:contain;background:#000}
-.post-card{background:#303030;padding:13px;margin:12px 0;border-radius:12px;border:1px solid #ff6500}
-.post-card h3{color:#ff6500;margin-bottom:5px}
-.post-video{width:100%;max-height:70vh;object-fit:contain;background:#000;border-radius:9px}
-.post-image{width:100%;max-height:450px;object-fit:contain}
-.menu-panel{background:#222;padding:10px;border-radius:10px;margin-top:8px}
-.empty{text-align:center;color:#aaa;padding:15px}
-footer{text-align:center;padding:20px;color:#999}
-</style>
-</head>
-
-<body>
-
-<header>
-  <h1>🔥 DHAAKAD</h1>
-  <p>अपना हुनर दिखाओ!</p>
-  <p>CREATE • SHARE • EARN</p>
-</header>
-
-<nav id="menu">
-  <button type="button" data-page="home">🏠 Home</button>
-  <button type="button" data-page="search">🔍 Search</button>
-  <button type="button" data-page="profile">👤 Profile</button>
-  <button type="button" data-page="status">🟠 Status</button>
-  <button type="button" id="menuToggle">☰ Menu</button>
+<nav>
+ <button class="active" onclick="showTab('Home',this)">⌂</button>
+ <button onclick="showTab('Reels',this)">▶</button>
+ <button onclick="showTab('Messages',this)">✉</button>
+ <button onclick="showTab('Search',this)">⌕</button>
+ <button onclick="showTab('Profile',this)">●</button>
 </nav>
 
-<div id="menuPanel" class="menu-panel hidden">
-  <button type="button" data-page="home">Home Feed</button>
-  <button type="button" data-page="search">Search Users</button>
-  <button type="button" data-page="profile">My Profile</button>
-  <button type="button" data-page="status">Status</button>
-  <button type="button" data-page="following">Following</button>
-</div>
-
-<main>
-
-<!-- HOME / VIDEO FEED -->
-<section id="page-home" class="page">
-  <section class="panel">
-    <h2>WELCOME TO DHAAKAD</h2>
-    <p>अपनी प्रतिभा दुनिया को दिखाओ।</p>
-  </section>
-
-  <section class="panel">
-    <h2>🟠 STATUS</h2>
-    <div id="homeStatuses" class="status-list"></div>
-  </section>
-
-  <section class="panel">
-    <h2>🎬 VIDEO FEED</h2>
-    <p>DHAAKAD पर लोगों की पोस्ट देखें।</p>
-    <div id="feed"></div>
-  </section>
-</section>
-
-<!-- SEARCH -->
-<section id="page-search" class="page hidden">
-  <section class="panel">
-    <h2>🔍 SEARCH</h2>
-    <div class="search-row">
-      <input id="searchInput" type="search" placeholder="यूज़र या वीडियो खोजें...">
-      <button id="searchButton" type="button">SEARCH</button>
-    </div>
-    <div id="searchResults"></div>
-  </section>
-</section>
-
-<!-- PROFILE -->
-<section id="page-profile" class="page hidden">
-  <section class="panel">
-    <h2>👤 MY PROFILE</h2>
-
-    <div class="profile-top">
-      <img id="profileAvatar" class="avatar" alt="Profile photo">
-      <div>
-        <h3 id="profileDisplayName">DHAAKAD USER</h3>
-        <p id="profileBioDisplay" class="status">अपना हुनर दिखाओ!</p>
-      </div>
-    </div>
-
-    <hr>
-
-    <label for="profileName">आपका नाम</label>
-    <input id="profileName" maxlength="40" placeholder="अपना नाम लिखें">
-
-    <label for="profileBio">आपके बारे में</label>
-    <textarea id="profileBio" maxlength="160" placeholder="अपने बारे में लिखें..."></textarea>
-
-    <label for="profilePhoto">अपनी DP चुनें</label>
-    <input id="profilePhoto" type="file" accept="image/*">
-    <button id="saveProfile" type="button">SAVE PROFILE</button>
-    <p id="profileMessage" class="status"></p>
-
-    <hr>
-    <p>पोस्ट: <b id="myPostCount">0</b></p>
-    <p>Following: <b id="followingCount">0</b></p>
-  </section>
-
-  <section class="panel">
-    <h2>🎬 CREATE VIDEO POST</h2>
-    <input id="postTitle" maxlength="80" placeholder="वीडियो का नाम">
-    <textarea id="postCaption" maxlength="500" placeholder="वीडियो के बारे में लिखें..."></textarea>
-    <input id="postVideo" type="file" accept="video/*">
-    <button id="publishPost" type="button">PUBLISH POST</button>
-    <p id="postMessage" class="status"></p>
-  </section>
-
-  <section class="panel">
-    <h2>MY POSTS</h2>
-    <div id="myPosts"></div>
-  </section>
-</section>
-
-<!-- STATUS -->
-<section id="page-status" class="page hidden">
-  <section class="panel">
-    <h2>🟠 CREATE STATUS</h2>
-    <textarea id="statusText" maxlength="300" placeholder="आप क्या कर रहे हैं?"></textarea>
-    <label for="statusFile">फोटो या वीडियो चुनें (वैकल्पिक)</label>
-    <input id="statusFile" type="file" accept="image/*,video/*">
-    <button id="publishStatus" type="button">POST STATUS</button>
-    <p id="statusMessage" class="status"></p>
-  </section>
-
-  <section class="panel">
-    <h2>ALL STATUS</h2>
-    <div id="allStatuses"></div>
-  </section>
-</section>
-
-<!-- FOLLOWING -->
-<section id="page-following" class="page hidden">
-  <section class="panel">
-    <h2>➕ FOLLOWING</h2>
-    <div id="followingList"></div>
-  </section>
-</section>
-
-</main>
-
-<footer>© 2026 DHAAKAD</footer>
-
 <script>
-(() => {
-"use strict";
-
-const $ = id => document.getElementById(id);
-const STORAGE_KEY = "dhaakad_six_features_v1";
-const DB_NAME = "DhaakadMediaDB";
-const DB_STORE = "media";
-
-let db = null;
-let profilePhotoURL = "";
-let mediaURLs = [];
-
-let state = {
-  userId: "dhaakad_user",
-  profile: {
-    name: "DHAAKAD USER",
-    bio: "अपना हुनर दिखाओ!",
-    photo: ""
-  },
-  users: [
-    {
-      id: "dhaakad_creator",
-      name: "DHAAKAD CREATOR",
-      bio: "अपना हुनर दिखाओ!",
-      photo: "",
-      isDemo: true
-    }
-  ],
-  following: [],
-  posts: [],
-  statuses: []
-};
-
-function loadState() {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (!saved) return;
-
-    const parsed = JSON.parse(saved);
-    if (!parsed || typeof parsed !== "object") return;
-
-    state = {
-      ...state,
-      ...parsed,
-      profile: {...state.profile, ...(parsed.profile || {})},
-      users: Array.isArray(parsed.users) ? parsed.users : state.users,
-      following: Array.isArray(parsed.following) ? parsed.following : [],
-      posts: Array.isArray(parsed.posts) ? parsed.posts : [],
-      statuses: Array.isArray(parsed.statuses) ? parsed.statuses : []
-    };
-  } catch (error) {
-    console.error("DHAAKAD data load error:", error);
-  }
+function showTab(name,button){
+ document.querySelectorAll('nav button')
+ .forEach(b=>b.classList.remove('active'));
+ button.classList.add('active');
+ alert(name+' अभी तैयार किया जाएगा।');
 }
+</script>
 
-function saveState() {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    return true;
-  } catch (error) {
-    console.error("DHAAKAD save error:", error);
-    return false;
-  }
-}
-
-function makeId() {
-  return "dhaakad_" + Date.now() + "_" + Math.random().toString(36).slice(2);
-}
-
-function escapeText(value) {
-  return String(value ?? "").replace(/[&<>"']/g, char => ({
-    "&":"&amp;",
-    "<":"&lt;",
-    ">":"&gt;",
-    '"':"&quot;",
-    "'":"&#39;"
-  })[char]);
-}
-
-function getInitials(name) {
-  return (name || "D").trim().slice(0, 1).toUpperCase() || "D";
-}
-
-function avatarSource(user) {
-  if (user && user.photo) return user.photo;
-  return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(
-    `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100">
-      <rect width="100%" height="100%" fill="#333"/>
-      <text x="50%" y="56%" font-size="42" text-anchor="middle" fill="#ff6500">${getInitials(user?.name)}</text>
-    </svg>`
-  );
-}
-
-function openPage(page) {
-  document.querySelectorAll(".page").forEach(section => {
-    section.classList.toggle("hidden", section.id !== "page-" + page);
-  });
-
-  $("menuPanel").classList.add("hidden");
-
-  if (page === "home") renderFeed();
-  if (page === "search") renderSearch("");
-  if (page === "profile") renderProfile();
-  if (page === "status") renderStatuses();
-  if (page === "following") renderFollowing();
-
-  window.scrollTo({top:0, behavior:"smooth"});
-}
-
-document.querySelectorAll("[data-page]").forEach(button => {
-  button.addEventListener("click", () => openPage(button.dataset.page));
-});
-
-$("menuToggle").addEventListener("click", () => {
-  $("menuPanel").classList.toggle("hidden");
-});
-
-/* IndexedDB media storage */
-function openMediaDB() {
-  return new Promise((resolve, reject) => {
-    if (!("indexedDB" in window)) {
-      reject(new Error("इस ब्राउज़र में मीडिया सेव नहीं हो सकता।"));
-      return;
-    }
-
-    const request = indexedDB.open(DB_NAME, 1);
-
-    request.onupgradeneeded = event => {
-      const database = event.target.result;
-      if (!database.objectStoreNames.contains(DB_STORE)) {
-        database.createObjectStore(DB_STORE, {keyPath:"id"});
-      }
-    };
-
-    request.onsuccess = event => resolve(event.target.result);
-    request.onerror = () => reject(request.error);
-  });
-}
-
-function saveMedia(file) {
-  return new Promise((resolve, reject) => {
-    if (!db) {
-      reject(new Error("मीडिया डेटाबेस तैयार नहीं है।"));
-      return;
-    }
-
-    const id = makeId();
-    const transaction = db.transaction(DB_STORE, "readwrite");
-
-    transaction.objectStore(DB_STORE).put({
-      id,
-      file,
-      type: file.type,
-      name: file.name,
-      createdAt: Date.now()
-    });
-
-    transaction.oncomplete = () => resolve(id);
-    transaction.onerror = () => reject(transaction.error);
-    transaction.onabort = () => reject(transaction.error);
-  });
-}
-
-function getMedia(id) {
-  return new Promise((resolve, reject) => {
-    if (!db) {
-      reject(new Error("मीडिया डेटाबेस तैयार नहीं है।"));
-      return;
-    }
-
-    const request = db.transaction(DB_STORE, "readonly")
-      .objectStore(DB_STORE).get(id);
-
-    request.onsuccess = () => resolve(request.result || null);
-    request.onerror = () => reject(request.error);
-  });
-}
-
-async function mediaURL(id) {
-  const item = await getMedia(id);
-  if (!item || !item.file) return "";
-  const url = URL.createObjectURL(item.file);
-  mediaURLs.push(url);
-  return url;
-}
-
-/* PROFILE + DP */
-function renderProfile() {
-  $("profileName").value = state.profile.name || "";
-  $("profileBio").value = state.profile.bio || "";
-  $("profileDisplayName").textContent = state.profile.name || "DHAAKAD USER";
-  $("profileBioDisplay").textContent = state.profile.bio || "";
-  $("profileAvatar").src = avatarSource(state.profile);
-
-  $("myPostCount").textContent = state.posts.filter(
-    post => post.userId === state.userId
-  ).length;
-
-  $("followingCount").textContent = state.following.length;
-
-  renderMyPosts();
-}
-
-$("profilePhoto").addEventListener("change", event => {
-  const file = event.target.files && event.target.files[0];
-  if (!file) return;
-
-  if (!file.type.startsWith("image/")) {
-    $("profileMessage").textContent = "कृपया फोटो चुनें।";
-    return;
-  }
-
-  if (file.size > 3 * 1024 * 1024) {
-    $("profileMessage").textContent = "DP का आकार 3 MB से कम रखें।";
-    event.target.value = "";
-    return;
-  }
-
-  if (profilePhotoURL) URL.revokeObjectURL(profilePhotoURL);
-  profilePhotoURL = URL.createObjectURL(file);
-  $("profileAvatar").src = profilePhotoURL;
-
-  const reader = new FileReader();
-  reader.onload = () => {
-    state.profile.photo = reader.result;
-  };
-  reader.onerror = () => {
-    $("profileMessage").textContent = "फोटो पढ़ने में समस्या हुई।";
-  };
-  reader.readAsDataURL(file);
-});
-
-$("saveProfile").addEventListener("click", () => {
-  const name = $("profileName").value.trim();
-  const bio = $("profileBio").value.trim();
-
-  if (!name) {
-    $("profileMessage").textContent = "पहले अपना नाम लिखें।";
-    return;
-  }
-
-  state.profile.name = name;
-  state.profile.bio = bio;
-
-  const ownUser = state.users.find(user => user.id === state.userId);
-  if (ownUser) {
-    ownUser.name = name;
-    ownUser.bio = bio;
-    ownUser.photo = state.profile.photo;
-  }
-
-  if (!saveState()) {
-    $("profileMessage").textContent = "स्टोरेज भर गया है। छोटी फोटो इस्तेमाल करें।";
-    return;
-  }
-
-  $("profileMessage").textContent = "✅ प्रोफाइल सेव हो गई!";
-  renderProfile();
-  renderSearch($("searchInput").value);
-  renderFeed();
-});
-
-/* FOLLOW SYSTEM */
-function isFollowing(userId) {
-  return state.following.includes(userId);
-}
-
-function toggleFollow(userId) {
-  if (!userId || userId === state.userId) return;
-
-  if (isFollowing(userId)) {
-    state.following = state.following.filter(id => id !== userId);
-  } else {
-    state.following.push(userId);
-  }
-
-  saveState();
-  renderSearch($("searchInput").value);
-  renderFollowing();
-  renderProfile();
-}
-
-function renderFollowing() {
-  const area = $("followingList");
-  area.replaceChildren();
-
-  const followedUsers = state.users.filter(user =>
-    state.following.includes(user.id)
-  );
-
-  if (!followedUsers.length) {
-    area.innerHTML = '<p class="empty">अभी आपने किसी को Follow नहीं किया है।</p>';
-    return;
-  }
-
-  followedUsers.forEach(user => {
-    const row = document.createElement("div");
-    row.className = "user-row";
-
-    const img = document.createElement("img");
-    img.className = "small-avatar";
-    img.src = avatarSource(user);
-
-    const info = document.createElement("div");
-    info.className = "user-info";
-
-    const name = document.createElement("b");
-    name.textContent = user.name;
-
-    const bio = document.createElement("p");
-    bio.textContent = user.bio || "";
-
-    const button = document.createElement("button");
-    button.textContent = "Following";
-    button.addEventListener("click", () => toggleFollow(user.id));
-
-    info.append(name, bio);
-    row.append(img, info, button);
-    area.appendChild(row);
-  });
-}
-
-/* SEARCH USERS AND POSTS */
-function renderSearch(query) {
-  const area = $("searchResults");
-  area.replaceChildren();
-
-  const term = String(query || "").trim().toLowerCase();
-
-  const users = state.users.filter(user =>
-    user.id !== state.userId &&
-    (!term || user.name.toLowerCase().includes(term) ||
-      (user.bio || "").toLowerCase().includes(term))
-  );
-
-  const posts = state.posts.filter(post =>
-    !term ||
-    (post.title || "").toLowerCase().includes(term) ||
-    (post.caption || "").toLowerCase().includes(term) ||
-    (post.userName || "").toLowerCase().includes(term)
-  );
-
-  const userHeading = document.createElement("h3");
-  userHeading.textContent = "👤 USERS";
-  area.appendChild(userHeading);
-
-  if (!users.length) {
-    const empty = document.createElement("p");
-    empty.className = "empty";
-    empty.textContent = "कोई यूज़र नहीं मिला।";
-    area.appendChild(empty);
-  }
-
-  users.forEach(user => {
-    const row = document.createElement("div");
-    row.className = "user-row";
-
-    const img = document.createElement("img");
-    img.className = "small-avatar";
-    img.src = avatarSource(user);
-
-    const info = document.createElement("div");
-    info.className = "user-info";
-
-    const name = document.createElement("b");
-    name.textContent = user.name;
-
-    const bio = document.createElement("p");
-    bio.textContent = user.bio || "";
-
-    const follow = document.createElement("button");
-    follow.textContent = isFollowing(user.id) ? "Following" : "Follow";
-    follow.addEventListener("click", () => toggleFollow(user.id));
-
-    info.append(name, bio);
-    row.append(img, info, follow);
-    area.appendChild(row);
-  });
-
-  const postHeading = document.createElement("h3");
-  postHeading.textContent = "🎬 VIDEOS";
-  area.appendChild(postHeading);
-
-  if (!posts.length) {
-    const empty = document.createElement("p");
-    empty.className = "empty";
-    empty.textContent = "कोई वीडियो नहीं मिला।";
-    area.appendChild(empty);
-  }
-
-  posts.forEach(post => {
-    const item = document.createElement("div");
-    item.className = "post-card";
-
-    const title = document.createElement("h3");
-    title.textContent = post.title;
-
-    const owner = document.createElement("p");
-    owner.textContent = "By " + post.userName;
-
-    const open = document.createElement("button");
-    open.textContent = "VIEW VIDEO";
-    open.addEventListener("click", () => {
-      openPage("home");
-      setTimeout(() => {
-        const target = document.getElementById("post-" + post.id);
-        if (target) target.scrollIntoView({behavior:"smooth"});
-      }, 100);
-    });
-
-    item.append(title, owner, open);
-    area.appendChild(item);
-  });
-}
-
-$("searchButton").addEventListener("click", () => {
-  renderSearch($("searchInput").value);
-});
-
-$("searchInput").addEventListener("input", () => {
-  renderSearch($("searchInput").value);
-});
-
-/* VIDEO POST CREATION */
-$("publishPost").addEventListener("click", async () => {
-  const title = $("postTitle").value.trim();
-  const caption = $("postCaption").value.trim();
-  const file = $("postVideo").files[0];
-
-  if (!title) {
-    $("postMessage").textContent = "वीडियो का नाम लिखें।";
-    return;
-  }
-
-  if (!file || !file.type.startsWith("video/")) {
-    $("postMessage").textContent = "पहले वीडियो चुनें।";
-    return;
-  }
-
-  if (file.size > 100 * 1024 * 1024) {
-    $("postMessage").textContent = "वीडियो 100 MB से छोटा रखें।";
-    return;
-  }
-
-  $("publishPost").disabled = true;
-  $("postMessage").textContent = "वीडियो तैयार हो रहा है...";
-
-  try {
-    const mediaId = await saveMedia(file);
-
-    const post = {
-      id: makeId(),
-      mediaId,
-      title,
-      caption,
-      userId: state.userId,
-      userName: state.profile.name,
-      createdAt: Date.now()
-    };
-
-    state.posts.unshift(post);
-
-    if (!saveState()) {
-      state.posts = state.posts.filter(item => item.id !== post.id);
-      throw new Error("स्टोरेज भर गया है।");
-    }
-
-    $("postTitle").value = "";
-    $("postCaption").value = "";
-    $("postVideo").value = "";
-    $("postMessage").textContent = "✅ पोस्ट बन गई!";
-
-    renderFeed();
-    renderMyPosts();
-    renderProfile();
-
-  } catch (error) {
-    $("postMessage").textContent = "पोस्ट नहीं बन पाई: " + error.message;
-  } finally {
-    $("publishPost").disabled = false;
-  }
-});
-
-async function makePostCard(post) {
-  const card = document.createElement("article");
-  card.className = "post-card";
-  card.id = "post-" + post.id;
-
-  const owner = state.users.find(user => user.id === post.userId) ||
-    (post.userId === state.userId ? state.profile : null);
-
-  const top = document.createElement("div");
-  top.className = "profile-top";
-
-  const img = document.createElement("img");
-  img.className = "small-avatar";
-  img.src = avatarSource(owner || {name:post.userName});
-
-  const name = document.createElement("b");
-  name.textContent = post.userName || "DHAAKAD USER";
-
-  top.append(img, name);
-
-  const title = document.createElement("h3");
-  title.textContent = post.title;
-
-  const caption = document.createElement("p");
-  caption.textContent = post.caption ||
 </body>
 </html>
