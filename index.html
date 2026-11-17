@@ -3,146 +3,255 @@
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#000000">
 <title>DHAAKAD</title>
 
 <style>
 *{box-sizing:border-box}
-body{
- margin:0;
- background:#000;
- color:white;
- font-family:Arial,sans-serif;
-}
+body{margin:0;background:#000;color:#fff;font-family:Arial}
 header{
- height:60px;
- display:flex;
- align-items:center;
- justify-content:space-between;
- padding:0 15px;
+ position:sticky;top:0;z-index:10;
+ height:60px;background:#080808;
  border-bottom:1px solid #333;
+ display:flex;align-items:center;
+ justify-content:space-between;padding:0 15px
 }
-.logo{
- color:#ff6500;
- font-size:27px;
- font-weight:900;
-}
-.head-btn{
- background:none;
- color:white;
- border:0;
- font-size:27px;
-}
-main{
- max-width:600px;
- margin:auto;
- padding-bottom:75px;
-}
+.logo{font-size:27px;font-weight:900;color:#ff6500}
+.headbtn{background:none;border:0;color:white;font-size:27px}
+main{max-width:600px;margin:auto;padding-bottom:75px}
+.page{display:none;min-height:75vh;padding:12px}
+.page.active{display:block}
 .stories{
- display:flex;
- gap:15px;
- overflow-x:auto;
- padding:15px 10px;
- border-bottom:1px solid #333;
+ display:flex;gap:14px;overflow-x:auto;
+ padding:14px 8px;border-bottom:1px solid #333
 }
-.story{
- min-width:65px;
- text-align:center;
- font-size:12px;
-}
-.story-circle{
- width:62px;
- height:62px;
+.story{min-width:65px;text-align:center;font-size:12px}
+.circle{
+ width:62px;height:62px;border-radius:50%;
  border:3px solid #ff6500;
- border-radius:50%;
- margin:auto auto 5px;
- display:flex;
- align-items:center;
- justify-content:center;
- font-size:25px;
+ display:grid;place-items:center;
+ font-size:26px;margin:auto auto 5px
 }
-.feed{
- padding:15px;
- text-align:center;
- color:#aaa;
+.post{
+ background:#151515;margin:14px 0;
+ border:1px solid #333;border-radius:12px;overflow:hidden
+}
+.posthead{padding:12px;font-weight:bold;color:#ff6500}
+.post img,.post video{width:100%;display:block;max-height:500px;object-fit:contain}
+.caption{padding:10px}
+.actions{display:flex;gap:18px;padding:10px}
+.actions button{background:none;border:0;color:white;font-size:23px}
+.actions button.liked{color:#ff4165}
+.post p{padding:0 10px}
+input,textarea{
+ width:100%;padding:12px;margin:8px 0;
+ border-radius:8px;border:1px solid #555;
+ background:#222;color:white;font-size:16px
+}
+.primary{
+ background:#ff6500;color:white;border:0;
+ padding:12px 18px;border-radius:8px;font-weight:bold
 }
 nav{
- position:fixed;
- bottom:0;
- left:0;
- width:100%;
- height:62px;
- background:#080808;
+ position:fixed;bottom:0;left:0;width:100%;
+ height:65px;background:#080808;
  border-top:1px solid #444;
- display:flex;
- justify-content:space-around;
- align-items:center;
+ display:flex;justify-content:space-around;align-items:center;
+ z-index:20
 }
 nav button{
- background:none;
- border:0;
- color:white;
- font-size:24px;
- padding:8px;
+ background:none;border:0;color:#fff;
+ font-size:25px;padding:10px
 }
-nav button.active{
- color:#ff6500;
-}
+nav button.active{color:#ff6500}
+h2{color:#ff6500}
+.comment{padding:7px 12px;color:#ddd;overflow-wrap:anywhere}
 </style>
 </head>
+
 <body>
 
 <header>
- <button class="head-btn">＋</button>
+ <button class="headbtn" onclick="openPage('create')">＋</button>
  <div class="logo">DHAAKAD</div>
- <button class="head-btn">♡</button>
+ <button class="headbtn" onclick="openPage('notifications')">♡</button>
 </header>
 
 <main>
- <section class="stories">
-  <div class="story">
-   <div class="story-circle">＋</div>
-   Your Story
-  </div>
-  <div class="story">
-   <div class="story-circle">🔥</div>
-   DHAAKAD
-  </div>
-  <div class="story">
-   <div class="story-circle">😎</div>
-   Creator
-  </div>
-  <div class="story">
-   <div class="story-circle">⭐</div>
-   Star
-  </div>
-  <div class="story">
-   <div class="story-circle">🎬</div>
-   Videos
-  </div>
- </section>
 
- <section class="feed">
-  <h2>DHAAKAD FEED</h2>
-  <p>आपकी पोस्ट यहाँ दिखाई देंगी।</p>
- </section>
+<section id="home" class="page active">
+ <div class="stories">
+  <div class="story"><div class="circle">＋</div>Your Story</div>
+  <div class="story"><div class="circle">🔥</div>Dhakad</div>
+  <div class="story"><div class="circle">😎</div>Creator</div>
+  <div class="story"><div class="circle">⭐</div>Star</div>
+  <div class="story"><div class="circle">🎬</div>Videos</div>
+ </div>
+ <div id="feed"></div>
+ <p id="empty">अभी कोई पोस्ट नहीं है। ＋ दबाकर पहली पोस्ट बनाएँ।</p>
+</section>
+
+<section id="reels" class="page">
+ <h2>▶ DHAAKAD REELS</h2>
+ <div id="reelFeed">अभी कोई Reel नहीं है।</div>
+</section>
+
+<section id="messages" class="page">
+ <h2>✉ Messages</h2>
+ <p>DHAAKAD Messages</p>
+ <input id="messageInput" placeholder="अपना संदेश लिखें">
+ <button class="primary" onclick="sendMessage()">SEND</button>
+ <div id="messageList"></div>
+</section>
+
+<section id="search" class="page">
+ <h2>⌕ Search</h2>
+ <input id="searchInput" placeholder="पोस्ट खोजें..." oninput="searchPosts()">
+ <div id="searchResults"></div>
+</section>
+
+<section id="profile" class="page">
+ <h2>● My Profile</h2>
+ <div class="circle">😎</div>
+ <h3>DHAAKAD Creator</h3>
+ <p id="postCount">0 Posts</p>
+ <p>अपना हुनर दुनिया को दिखाओ!</p>
+</section>
+
+<section id="create" class="page">
+ <h2>＋ Create Post</h2>
+ <input id="mediaFile" type="file" accept="image/*,video/*">
+ <textarea id="caption" placeholder="कुछ लिखें..."></textarea>
+ <button class="primary" onclick="createPost()">SHARE POST</button>
+ <button onclick="openPage('home')">CANCEL</button>
+ <p id="createStatus"></p>
+</section>
+
+<section id="notifications" class="page">
+ <h2>♡ Notifications</h2>
+ <p>अभी कोई नई Notification नहीं है।</p>
+</section>
+
 </main>
 
 <nav>
- <button class="active" onclick="showTab('Home',this)">⌂</button>
- <button onclick="showTab('Reels',this)">▶</button>
- <button onclick="showTab('Messages',this)">✉</button>
- <button onclick="showTab('Search',this)">⌕</button>
- <button onclick="showTab('Profile',this)">●</button>
+ <button class="active" onclick="openPage('home',this)">⌂</button>
+ <button onclick="openPage('reels',this)">▶</button>
+ <button onclick="openPage('messages',this)">✉</button>
+ <button onclick="openPage('search',this)">⌕</button>
+ <button onclick="openPage('profile',this)">●</button>
 </nav>
 
 <script>
-function showTab(name,button){
- document.querySelectorAll('nav button')
- .forEach(b=>b.classList.remove('active'));
- button.classList.add('active');
- alert(name+' अभी तैयार किया जाएगा।');
+const $=id=>document.getElementById(id);
+let posts=[];
+
+function openPage(name,button){
+ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+ $(name).classList.add('active');
+ document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+ if(button)button.classList.add('active');
+ else{
+  const names=['home','reels','messages','search','profile'];
+  const index=names.indexOf(name);
+  if(index>=0)document.querySelectorAll('nav button')[index].classList.add('active');
+ }
+}
+
+function createPost(){
+ const file=$('mediaFile').files[0];
+ const caption=$('caption').value.trim();
+ if(!file){$('createStatus').textContent='पहले फोटो या वीडियो चुनें।';return}
+ const url=URL.createObjectURL(file);
+ const post={id:Date.now(),url,type:file.type,caption,liked:false,comments:[]};
+ posts.unshift(post);
+ renderPosts();
+ $('mediaFile').value='';
+ $('caption').value='';
+ $('createStatus').textContent='पोस्ट बन गई!';
+ openPage('home');
+}
+
+function renderPosts(){
+ $('feed').replaceChildren();
+ $('reelFeed').replaceChildren();
+ $('empty').style.display=posts.length?'none':'block';
+ posts.forEach(post=>{
+  const card=document.createElement('article');
+  card.className='post';
+  const heading=document.createElement('div');
+  heading.className='posthead';
+  heading.textContent='🟠 DHAAKAD';
+  const media=post.type.startsWith('video/')?
+   document.createElement('video'):document.createElement('img');
+  media.src=post.url;
+  if(media.tagName==='VIDEO'){media.controls=true;media.playsInline=true}
+  const caption=document.createElement('div');
+  caption.className='caption';
+  caption.textContent=post.caption;
+  const actions=document.createElement('div');
+  actions.className='actions';
+  const like=document.createElement('button');
+  like.textContent=post.liked?'❤️':'🤍';
+  if(post.liked)like.classList.add('liked');
+  like.onclick=()=>{post.liked=!post.liked;renderPosts()};
+  const comment=document.createElement('button');
+  comment.textContent='💬';
+  comment.onclick=()=>input.focus();
+  const share=document.createElement('button');
+  share.textContent='↗';
+  share.onclick=async()=>{
+   try{
+    if(navigator.share)await navigator.share({title:'DHAAKAD',text:post.caption,url:location.href});
+    else alert('इस फोन में Share सुविधा उपलब्ध नहीं है।');
+   }catch(e){}
+  };
+  actions.append(like,comment,share);
+  const input=document.createElement('input');
+  input.placeholder='कमेंट लिखें...';
+  const send=document.createElement('button');
+  send.className='primary';
+  send.textContent='SEND';
+  const comments=document.createElement('div');
+  post.comments.forEach(c=>{
+   const p=document.createElement('div');
+   p.className='comment';
+   p.textContent='💬 '+c;
+   comments.append(p);
+  });
+  send.onclick=()=>{
+   if(!input.value.trim())return;
+   post.comments.push(input.value.trim());
+   renderPosts();
+  };
+  card.append(heading,media,caption,actions,input,send,comments);
+  $('feed').append(card);
+  if(post.type.startsWith('video/')){
+   const reel=card.cloneNode(true);
+   $('reelFeed').append(reel);
+  }
+ });
+ $('postCount').textContent=posts.length+' Posts';
+}
+
+function searchPosts(){
+ const q=$('searchInput').value.toLowerCase();
+ $('searchResults').replaceChildren();
+ posts.filter(p=>p.caption.toLowerCase().includes(q)).forEach(p=>{
+  const item=document.createElement('p');
+  item.textContent='DHAAKAD: '+p.caption;
+  $('searchResults').append(item);
+ });
+}
+
+function sendMessage(){
+ const value=$('messageInput').value.trim();
+ if(!value)return;
+ const p=document.createElement('p');
+ p.textContent='आप: '+value;
+ $('messageList').append(p);
+ $('messageInput').value='';
 }
 </script>
 
