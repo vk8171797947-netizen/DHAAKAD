@@ -3,460 +3,387 @@
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#080808">
-<meta name="description" content="DHAAKAD Social App">
 <title>DHAAKAD</title>
+
 <style>
-:root{--bg:#080808;--panel:#151515;--line:#303030;--orange:#ff6500;--muted:#aaa}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:white;font-family:Arial,sans-serif;padding-bottom:65px}
-button,input,textarea{font:inherit}
+body{
+ margin:0;
+ background:#080808;
+ color:white;
+ font-family:Arial,sans-serif;
+ padding-bottom:65px;
+}
+header{
+ height:58px;
+ background:#080808;
+ border-bottom:1px solid #292929;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ padding:0 15px;
+ position:sticky;
+ top:0;
+ z-index:10;
+}
+.logo{
+ color:#ff6500;
+ font-size:25px;
+ font-weight:900;
+}
 button{cursor:pointer}
-header{height:58px;position:sticky;top:0;z-index:10;background:#080808;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 14px}
-.logo{font-size:26px;font-weight:900;color:var(--orange)}
-header button,.icon-btn{background:none;border:0;color:white;font-size:23px}
-main{max-width:650px;margin:auto}
-.page{display:none;padding:12px}
+.topbtn{
+ background:none;
+ border:0;
+ color:white;
+ font-size:23px;
+}
+.stories{
+ display:flex;
+ gap:14px;
+ overflow-x:auto;
+ padding:15px 10px;
+ border-bottom:1px solid #292929;
+}
+.story{
+ min-width:65px;
+ text-align:center;
+ font-size:12px;
+}
+.story img{
+ width:60px;
+ height:60px;
+ border-radius:50%;
+ object-fit:cover;
+ padding:3px;
+ border:3px solid #ff6500;
+}
+.story-add{
+ width:60px;
+ height:60px;
+ border-radius:50%;
+ border:2px solid #ff6500;
+ color:#ff6500;
+ font-size:32px;
+ display:grid;
+ place-items:center;
+}
+.post{
+ border-bottom:8px solid #171717;
+}
+.posthead{
+ display:flex;
+ align-items:center;
+ gap:10px;
+ padding:12px;
+}
+.avatar{
+ width:38px;
+ height:38px;
+ border-radius:50%;
+ background:#ff6500;
+ display:grid;
+ place-items:center;
+ font-weight:bold;
+}
+.postmedia{
+ width:100%;
+ max-height:600px;
+ object-fit:contain;
+ background:#000;
+}
+.actions{
+ display:flex;
+ gap:20px;
+ padding:10px 13px;
+}
+.actions button{
+ background:none;
+ border:0;
+ color:white;
+ font-size:25px;
+}
+.caption{padding:0 13px 12px}
+.bottom{
+ position:fixed;
+ bottom:0;
+ left:0;
+ right:0;
+ height:62px;
+ background:#080808;
+ border-top:1px solid #292929;
+ display:flex;
+ justify-content:space-around;
+ align-items:center;
+ z-index:20;
+}
+.bottom button{
+ background:none;
+ border:0;
+ color:white;
+ font-size:23px;
+}
+.bottom button.active{color:#ff6500}
+.page{display:none}
 .page.active{display:block}
-h2{font-size:21px}
-input,textarea{width:100%;background:#191919;color:white;border:1px solid #444;border-radius:8px;padding:12px;margin:7px 0}
-textarea{min-height:80px}
-.primary{background:var(--orange);color:white;border:0;border-radius:8px;padding:12px 16px;font-weight:bold}
-.secondary{background:#292929;color:white;border:1px solid #444;border-radius:8px;padding:10px 14px}
-.full{width:100%}
-.muted{color:var(--muted);font-size:13px}
-.bottom{position:fixed;bottom:0;left:0;right:0;height:60px;background:#080808;border-top:1px solid var(--line);display:flex;justify-content:space-around;align-items:center;z-index:20}
-.bottom button{background:none;border:0;color:#ddd;font-size:23px}
-.bottom button.active{color:var(--orange)}
-.stories{display:flex;gap:12px;overflow-x:auto;padding:12px 0;border-bottom:1px solid var(--line)}
-.story{min-width:66px;text-align:center;font-size:12px;cursor:pointer}
-.ring{width:60px;height:60px;border-radius:50%;padding:3px;background:linear-gradient(45deg,#ff6500,#ffb000);margin:auto auto 5px}
-.ring img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid black}
-.post{margin:14px 0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#111}
-.post-head{display:flex;align-items:center;gap:10px;padding:10px}
-.avatar{width:40px;height:40px;border-radius:50%;background:var(--orange);display:grid;place-items:center;font-weight:bold;overflow:hidden;flex-shrink:0}
-.avatar img{width:100%;height:100%;object-fit:cover}
-.username{font-weight:bold;flex:1;cursor:pointer}
-.media{display:block;width:100%;max-height:600px;object-fit:contain;background:#000}
-.actions{display:flex;gap:18px;padding:10px 12px}
-.actions button{background:none;border:0;color:white;font-size:23px}
-.actions .liked{color:#ff3158}
-.caption{padding:0 12px 12px;overflow-wrap:anywhere;line-height:1.5}
-.empty{text-align:center;color:var(--muted);padding:30px 10px}
-.profile-head{display:flex;align-items:center;gap:18px;padding:18px 0}
-.profile-avatar{width:78px;height:78px;border-radius:50%;background:var(--orange);display:grid;place-items:center;font-size:28px;overflow:hidden}
-.profile-avatar img{width:100%;height:100%;object-fit:cover}
-.stats{display:flex;gap:18px;text-align:center;font-size:13px}
-.stats b{font-size:18px}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
-.grid img,.grid video{width:100%;aspect-ratio:1;object-fit:cover}
-.item{padding:12px;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center}
-.item .username{flex:1}
-.modal{display:none;position:fixed;inset:0;background:#000d;z-index:50;align-items:center;justify-content:center;padding:14px}
-.modal.show{display:flex}
-.modal-box{width:100%;max-width:480px;max-height:90vh;overflow:auto;background:#171717;border:1px solid #444;border-radius:12px;padding:15px}
-.modal-head{display:flex;justify-content:space-between;align-items:center}
-.modal-head button{background:none;border:0;color:white;font-size:24px}
-.chat-area{height:50vh;overflow:auto;background:#101010;padding:10px}
-.bubble{background:#303030;padding:9px 12px;border-radius:12px;margin:7px 0;max-width:80%;overflow-wrap:anywhere}
-.bubble.mine{background:#9c4200;margin-left:auto}
-.chat-send{display:flex;gap:6px}
-.chat-send input{margin:6px 0}
-.comment{padding:10px;border-bottom:1px solid var(--line)}
-.story-screen{width:100%;max-width:440px;height:85vh;background:#000;display:flex;align-items:center;justify-content:center;position:relative}
-.story-screen img,.story-screen video{max-width:100%;max-height:100%;object-fit:contain}
-.story-screen button{position:absolute;right:10px;top:10px}
-@media(min-width:700px){.bottom{max-width:650px;left:50%;transform:translateX(-50%)}}
+.panel{padding:18px}
+input,textarea{
+ width:100%;
+ padding:13px;
+ margin:8px 0;
+ background:#202020;
+ border:1px solid #444;
+ border-radius:8px;
+ color:white;
+}
+.primary{
+ background:#ff6500;
+ color:white;
+ border:0;
+ border-radius:8px;
+ padding:12px 18px;
+ font-weight:bold;
+}
 </style>
 </head>
+
 <body>
 
 <header>
  <div class="logo">DHAAKAD</div>
  <div>
-  <button onclick="showPage('create')">＋</button>
-  <button onclick="showPage('notifications')">♡</button>
-  <button onclick="showPage('messages')">✉</button>
+  <button class="topbtn" onclick="showPage('messages')">✉</button>
+  <button class="topbtn" onclick="showPage('notifications')">♡</button>
  </div>
 </header>
 
-<main>
-<section id="auth" class="page active">
- <h2>DHAAKAD में आपका स्वागत है</h2>
- <div id="authForm">
-  <input id="email" type="email" placeholder="ईमेल">
-  <input id="password" type="password" placeholder="पासवर्ड">
-  <input id="signupName" placeholder="नाम (नया अकाउंट बनाते समय)">
-  <button class="primary full" onclick="signUp()">नया अकाउंट बनाएँ</button>
-  <button class="secondary full" onclick="signIn()">लॉगिन करें</button>
+<section id="home" class="page active">
+ <div class="stories" id="stories">
+  <div class="story" onclick="addStory()">
+   <div class="story-add">＋</div>
+   Your Story
+  </div>
  </div>
- <p id="authStatus" class="muted"></p>
-</section>
-
-<section id="home" class="page">
- <div class="stories" id="stories"></div>
  <div id="feed"></div>
 </section>
 
 <section id="search" class="page">
- <h2>Search</h2>
- <input id="searchInput" placeholder="यूज़र का नाम खोजें" oninput="searchUsers()">
- <div id="searchResults"></div>
+ <div class="panel">
+  <h2>Search</h2>
+  <input id="searchInput" placeholder="Search people and posts">
+  <div id="searchResults"></div>
+ </div>
 </section>
 
 <section id="reels" class="page">
- <h2>Reels</h2>
+ <div class="panel"><h2>Reels</h2></div>
  <div id="reelFeed"></div>
 </section>
 
 <section id="create" class="page">
- <h2>नई पोस्ट</h2>
- <input id="postFile" type="file" accept="image/*,video/*">
- <textarea id="caption" maxlength="1500" placeholder="कुछ लिखें..."></textarea>
- <button class="primary full" onclick="createPost()">पोस्ट शेयर करें</button>
- <hr>
- <h2>स्टोरी लगाएँ</h2>
- <input id="storyFile" type="file" accept="image/*,video/*">
- <button class="primary full" onclick="createStory()">स्टोरी शेयर करें</button>
+ <div class="panel">
+  <h2>Create Post</h2>
+  <input id="postFile" type="file" accept="image/*,video/*">
+  <textarea id="caption" placeholder="Write a caption..."></textarea>
+  <button class="primary" onclick="createPost()">Share Post</button>
+ </div>
 </section>
 
 <section id="profile" class="page">
- <div class="profile-head">
-  <div class="profile-avatar" id="profileAvatar">D</div>
-  <div style="flex:1">
-   <h2 id="profileName">Profile</h2>
-   <div class="stats">
-    <div><b id="postCount">0</b><br>Posts</div>
-    <div><b id="followerCount">0</b><br>Followers</div>
-    <div><b id="followingCount">0</b><br>Following</div>
-   </div>
-  </div>
+ <div class="panel">
+  <h2 id="profileName">DHAAKAD User</h2>
+  <p>Posts　Followers　Following</p>
+  <button class="primary" onclick="editProfile()">Edit Profile</button>
+  <div id="myPosts"></div>
  </div>
- <input id="editName" placeholder="अपना नाम">
- <input id="editBio" placeholder="अपना परिचय">
- <input id="avatarFile" type="file" accept="image/*">
- <button class="primary full" onclick="updateProfile()">प्रोफाइल सेव करें</button>
- <button class="secondary full" onclick="signOutUser()">लॉगआउट</button>
- <div id="profilePosts" class="grid"></div>
-</section>
-
-<section id="notifications" class="page">
- <h2>Notifications</h2>
- <div id="notificationList"></div>
 </section>
 
 <section id="messages" class="page">
- <h2>Messages</h2>
- <input id="chatSearch" placeholder="यूज़र का ईमेल लिखें">
- <button class="primary full" onclick="startChat()">चैट शुरू करें</button>
- <div id="chatList"></div>
+ <div class="panel"><h2>Messages</h2></div>
 </section>
 
-<section id="chat" class="page">
- <h2 id="chatTitle">Chat</h2>
- <div class="chat-area" id="chatMessages"></div>
- <div class="chat-send">
-  <input id="chatInput" placeholder="संदेश लिखें">
-  <button class="primary" onclick="sendMessage()">भेजें</button>
- </div>
+<section id="notifications" class="page">
+ <div class="panel"><h2>Notifications</h2></div>
 </section>
-
-<section id="comments" class="page">
- <h2>Comments</h2>
- <div id="commentList"></div>
- <div class="chat-send">
-  <input id="commentInput" maxlength="500" placeholder="कमेंट लिखें">
-  <button class="primary" onclick="sendComment()">भेजें</button>
- </div>
-</section>
-</main>
 
 <nav class="bottom">
- <button data-page="home" onclick="showPage('home',this)">⌂</button>
- <button data-page="search" onclick="showPage('search',this)">⌕</button>
- <button data-page="reels" onclick="showPage('reels',this)">▶</button>
- <button data-page="create" onclick="showPage('create',this)">＋</button>
- <button data-page="profile" onclick="showPage('profile',this)">◉</button>
+ <button class="active" onclick="showPage('home',this)">⌂</button>
+ <button onclick="showPage('search',this)">⌕</button>
+ <button onclick="showPage('reels',this)">▶</button>
+ <button onclick="showPage('create',this)">＋</button>
+ <button onclick="showPage('profile',this)">◉</button>
 </nav>
 
-<div class="modal" id="storyModal">
- <div class="story-screen" id="storyContent">
-  <button onclick="closeStory()">✕</button>
- </div>
-</div>
+<script>
+let posts=JSON.parse(localStorage.getItem("dhaakad_posts")||"[]");
+let stories=JSON.parse(localStorage.getItem("dhaakad_stories")||"[]");
+let username=localStorage.getItem("dhaakad_user")||"DHAAKAD User";
 
-<script type="module">
-import {initializeApp} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-import {
- getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,
- onAuthStateChanged,signOut,updateProfile as updateAuthProfile
-} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
-import {
- getFirestore,collection,doc,setDoc,getDoc,addDoc,deleteDoc,
- updateDoc,query,where,orderBy,limit,onSnapshot,serverTimestamp,
- arrayUnion,arrayRemove,getDocs
-} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
-import {
- getStorage,ref,uploadBytes,getDownloadURL
-} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-storage.js";
-
-const firebaseConfig={
- apiKey:"PASTE_YOUR_FIREBASE_API_KEY",
- authDomain:"dhaakad-7b801.firebaseapp.com",
- projectId:"dhaakad-7b801",
- storageBucket:"PASTE_YOUR_STORAGE_BUCKET",
- messagingSenderId:"PASTE_YOUR_MESSAGING_SENDER_ID",
- appId:"PASTE_YOUR_FIREBASE_APP_ID"
-};
-
-const $=id=>document.getElementById(id);
-const app=initializeApp(firebaseConfig);
-const auth=getAuth(app);
-const db=getFirestore(app);
-const storage=getStorage(app);
-
-let user=null;
-let profile={};
-let posts=[];
-let stories=[];
-let activePost=null;
-let activeChat=null;
-let unsubscribers=[];
-let stopFeed=null;
-let stopStories=null;
-let stopNotifications=null;
-let stopChat=null;
-
-function status(message){$("authStatus").textContent=message}
-function escapeText(s){
- return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-}
-function showPage(id,button){
+function showPage(id,btn){
  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
- $(id).classList.add("active");
+ document.getElementById(id).classList.add("active");
  document.querySelectorAll(".bottom button").forEach(b=>b.classList.remove("active"));
- const b=button||document.querySelector(`[data-page="${id}"]`);
- if(b)b.classList.add("active");
- if(id==="profile")loadProfilePosts();
- if(id==="messages")loadChatList();
- window.scrollTo(0,0);
+ if(btn)btn.classList.add("active");
 }
-function requireUser(){
- if(!user){showPage("auth");status("पहले लॉगिन करें");return false}
- return true;
-}
-function clearListeners(){
- if(stopFeed)stopFeed();
- if(stopStories)stopStories();
- if(stopNotifications)stopNotifications();
- if(stopChat)stopChat();
- stopFeed=stopStories=stopNotifications=stopChat=null;
-}
-window.signUp=async()=>{
- try{
-  const name=$("signupName").value.trim();
-  const email=$("email").value.trim();
-  const password=$("password").value;
-  if(!name||!email||password.length<6){status("नाम, सही ईमेल और कम से कम 6 अक्षर का पासवर्ड भरें");return}
-  const cred=await createUserWithEmailAndPassword(auth,email,password);
-  await updateAuthProfile(cred.user,{displayName:name});
-  await setDoc(doc(db,"users",cred.user.uid),{
-   uid:cred.user.uid,name,email,bio:"",photoURL:"",createdAt:serverTimestamp()
-  });
-  status("अकाउंट बन गया");
- }catch(e){status(e.message)}
-};
-window.signIn=async()=>{
- try{
-  await signInWithEmailAndPassword(auth,$("email").value.trim(),$("password").value);
-  status("लॉगिन सफल");
- }catch(e){status(e.message)}
-};
-window.signOutUser=async()=>{
- await signOut(auth);
-};
-onAuthStateChanged(auth,async current=>{
- clearListeners();
- user=current;
- if(!user){
-  showPage("auth");
-  return;
- }
- const snap=await getDoc(doc(db,"users",user.uid));
- profile=snap.exists()?snap.data():{
-  uid:user.uid,name:user.displayName||"DHAAKAD User",email:user.email,bio:"",photoURL:""
- };
- if(!snap.exists())await setDoc(doc(db,"users",user.uid),profile);
- $("profileName").textContent=profile.name;
- $("editName").value=profile.name;
- $("editBio").value=profile.bio||"";
- $("profileAvatar").innerHTML=profile.photoURL?`<img src="${escapeText(profile.photoURL)}">`:escapeText(profile.name.charAt(0).toUpperCase());
- showPage("home");
- listenFeed();
- listenStories();
- listenNotifications();
-});
 
-async function uploadFile(file,path){
- if(!file)throw new Error("फाइल चुनें");
- if(file.size>50*1024*1024)throw new Error("फाइल 50 MB से छोटी चुनें");
- const storageRef=ref(storage,path);
- await uploadBytes(storageRef,file);
- return await getDownloadURL(storageRef);
+function savePosts(){
+ localStorage.setItem("dhaakad_posts",JSON.stringify(posts));
 }
-window.createPost=async()=>{
- if(!requireUser())return;
- try{
-  const file=$("postFile").files[0];
-  const caption=$("caption").value.trim();
-  if(!file)throw new Error("फोटो या वीडियो चुनें");
-  if(!file.type.startsWith("image/")&&!file.type.startsWith("video/"))throw new Error("सही फोटो या वीडियो चुनें");
-  const mediaURL=await uploadFile(file,`posts/${user.uid}/${Date.now()}_${file.name}`);
-  await addDoc(collection(db,"posts"),{
-   uid:user.uid,username:profile.name,caption,mediaURL,
-   mediaType:file.type.startsWith("video/")?"video":"image",
-   createdAt:serverTimestamp(),likes:[]
+
+function createPost(){
+ let file=document.getElementById("postFile").files[0];
+ let caption=document.getElementById("caption").value;
+ if(!file){alert("Photo ya video chunein");return}
+ if(file.size>1500000){alert("1.5 MB se chhoti file chunein");return}
+ let reader=new FileReader();
+ reader.onload=function(){
+  posts.unshift({
+   id:Date.now(),
+   media:reader.result,
+   type:file.type.startsWith("video")?"video":"image",
+   caption:caption,
+   likes:[],
+   comments:[]
   });
-  $("postFile").value="";$("caption").value="";
+  savePosts();
+  renderPosts();
+  document.getElementById("postFile").value="";
+  document.getElementById("caption").value="";
   showPage("home");
- }catch(e){alert(e.message)}
-};
-window.createStory=async()=>{
- if(!requireUser())return;
- try{
-  const file=$("storyFile").files[0];
-  if(!file)throw new Error("स्टोरी फाइल चुनें");
-  const mediaURL=await uploadFile(file,`stories/${user.uid}/${Date.now()}_${file.name}`);
-  const expiresAt=new Date(Date.now()+24*60*60*1000);
-  await addDoc(collection(db,"stories"),{
-   uid:user.uid,username:profile.name,mediaURL,
-   mediaType:file.type.startsWith("video/")?"video":"image",
-   createdAt:serverTimestamp(),expiresAt
-  });
-  $("storyFile").value="";
-  alert("स्टोरी शेयर हो गई");
- }catch(e){alert(e.message)}
-};
-function listenFeed(){
- stopFeed=onSnapshot(query(collection(db,"posts"),orderBy("createdAt","desc"),limit(60)),snap=>{
-  posts=snap.docs.map(d=>({id:d.id,...d.data()}));
-  renderFeed();
- },e=>alert("पोस्ट लोड नहीं हुई: "+e.message));
+ };
+ reader.readAsDataURL(file);
 }
-function renderFeed(){
- $("feed").innerHTML=posts.length?posts.map(p=>`
- <article class="post">
-  <div class="post-head">
-   <div class="avatar">${escapeText((p.username||"D").charAt(0).toUpperCase())}</div>
-   <div class="username" onclick="openUser('${p.uid}')">${escapeText(p.username)}</div>
-   ${p.uid===user?.uid?`<button onclick="deletePost('${p.id}')">⋮</button>`:""}
-  </div>
-  ${p.mediaType==="video"?`<video class="media" src="${escapeText(p.mediaURL)}" controls playsinline></video>`:`<img class="media" src="${escapeText(p.mediaURL)}" alt="Post">`}
-  <div class="actions">
-   <button class="${(p.likes||[]).includes(user.uid)?"liked":""}" onclick="toggleLike('${p.id}')">${(p.likes||[]).includes(user.uid)?"♥":"♡"}</button>
-   <button onclick="openComments('${p.id}')">▢</button>
-   <button onclick="sharePost('${p.id}')">➤</button>
-  </div>
-  <div class="caption"><b>${(p.likes||[]).length} likes</b><br><b>${escapeText(p.username)}</b> ${escapeText(p.caption)}
-  </div>
- </article>`).join(""):'<div class="empty">अभी कोई पोस्ट नहीं है।</div>';
- $("reelFeed").innerHTML=posts.filter(p=>p.mediaType==="video").map(p=>`
- <article class="post"><video class="media" src="${escapeText(p.mediaURL)}" controls playsinline></video>
- <div class="caption"><b>${escapeText(p.username)}</b> ${escapeText(p.caption)}</div></article>`).join("")||'<div class="empty">अभी कोई Reel नहीं है।</div>';
-}
-window.toggleLike=async id=>{
- try{
-  const p=posts.find(x=>x.id===id);if(!p)return;
-  const liked=(p.likes||[]).includes(user.uid);
-  await updateDoc(doc(db,"posts",id),{likes:liked?arrayRemove(user.uid):arrayUnion(user.uid)});
- }catch(e){alert(e.message)}
-};
-window.deletePost=async id=>{
- if(!confirm("क्या यह पोस्ट हटानी है?"))return;
- try{
-  const p=posts.find(x=>x.id===id);
-  if(!p||p.uid!==user.uid)return;
-  await deleteDoc(doc(db,"posts",id));
- }catch(e){alert(e.message)}
-};
-window.sharePost=async id=>{
- const p=posts.find(x=>x.id===id);if(!p)return;
- const data={title:"DHAAKAD",text:p.caption||"DHAAKAD पोस्ट",url:location.href};
- try{
-  if(navigator.share)await navigator.share(data);
-  else if(navigator.clipboard){await navigator.clipboard.writeText(data.text+" "+data.url);alert("लिंक कॉपी हुआ")}
- }catch(e){}
-};
-window.openComments=id=>{
- activePost=id;
- showPage("comments");
- loadComments();
-};
-async function loadComments(){
- const list=$("commentList");
- list.innerHTML='<div class="empty">कमेंट लोड हो रहे हैं...</div>';
- try{
-  const snap=await getDocs(query(collection(db,"posts",activePost,"comments"),orderBy("createdAt","asc")));
-  list.innerHTML=snap.empty?'<div class="empty">अभी कोई कमेंट नहीं है।</div>':snap.docs.map(d=>{
-   const c=d.data();return `<div class="comment"><b>${escapeText(c.username)}</b><p>${escapeText(c.text)}</p></div>`;
-  }).join("");
- }catch(e){list.textContent=e.message}
-}
-window.sendComment=async()=>{
- try{
-  const text=$("commentInput").value.trim();if(!text||!activePost)return;
-  await addDoc(collection(db,"posts",activePost,"comments"),{
-   uid:user.uid,username:profile.name,text,createdAt:serverTimestamp()
-  });
-  $("commentInput").value="";loadComments();
- }catch(e){alert(e.message)}
-};
-function listenStories(){
- stopStories=onSnapshot(query(collection(db,"stories"),orderBy("createdAt","desc"),limit(50)),snap=>{
-  stories=snap.docs.map(d=>({id:d.id,...d.data()})).filter(s=>s.expiresAt?.toDate?.()>new Date());
-  renderStories();
+
+function renderPosts(){
+ let feed=document.getElementById("feed");
+ let myPosts=document.getElementById("myPosts");
+ feed.innerHTML="";
+ myPosts.innerHTML="";
+ posts.forEach(p=>{
+  let media=p.type==="video"
+   ?`<video class="postmedia" src="${p.media}" controls></video>`
+   :`<img class="postmedia" src="${p.media}">`;
+  let post=document.createElement("article");
+  post.className="post";
+  post.innerHTML=`
+   <div class="posthead">
+    <div class="avatar">D</div>
+    <b>${username}</b>
+   </div>
+   ${media}
+   <div class="actions">
+    <button onclick="likePost(${p.id})">♥</button>
+    <button onclick="commentPost(${p.id})">💬</button>
+    <button onclick="sharePost(${p.id})">↗</button>
+   </div>
+   <div class="caption">
+    <b>${p.likes.length} likes</b><br>
+    ${p.caption}
+    <div>${p.comments.map(c=>"<p>"+c+"</p>").join("")}</div>
+   </div>`;
+  feed.appendChild(post);
+  myPosts.appendChild(post.cloneNode(true));
  });
 }
+
+function likePost(id){
+ let p=posts.find(x=>x.id===id);
+ if(!p)return;
+ p.likes.push("like");
+ savePosts();
+ renderPosts();
+}
+
+function commentPost(id){
+ let c=prompt("Comment likhein:");
+ if(!c)return;
+ let p=posts.find(x=>x.id===id);
+ p.comments.push(c);
+ savePosts();
+ renderPosts();
+}
+
+function sharePost(id){
+ let link=location.href+"#post-"+id;
+ if(navigator.share){
+  navigator.share({title:"DHAAKAD",url:link});
+ }else{
+  navigator.clipboard.writeText(link);
+  alert("Link copy ho gaya");
+ }
+}
+
+function addStory(){
+ let picker=document.createElement("input");
+ picker.type="file";
+ picker.accept="image/*,video/*";
+ picker.onchange=function(){
+  let file=picker.files[0];
+  if(!file)return;
+  if(file.size>1500000){alert("1.5 MB se chhoti file chunein");return}
+  let reader=new FileReader();
+  reader.onload=function(){
+   stories.push({
+    id:Date.now(),
+    media:reader.result,
+    type:file.type.startsWith("video")?"video":"image",
+    time:Date.now()
+   });
+   localStorage.setItem("dhaakad_stories",JSON.stringify(stories));
+   renderStories();
+  };
+  reader.readAsDataURL(file);
+ };
+ picker.click();
+}
+
 function renderStories(){
- $("stories").innerHTML=`<div class="story" onclick="showPage('create')"><div class="ring"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23222'/%3E%3Ctext x='50' y='70' text-anchor='middle' font-size='70' fill='%23ff6500'%3E%2B%3C/text%3E%3C/svg%3E"></div>आपकी स्टोरी</div>`+
- stories.map(s=>`<div class="story" onclick="viewStory('${s.id}')"><div class="ring"><img src="${escapeText(s.mediaURL)}"></div>${escapeText(s.username)}</div>`).join("");
+ stories=stories.filter(s=>Date.now()-s.time<86400000);
+ localStorage.setItem("dhaakad_stories",JSON.stringify(stories));
+ let box=document.getElementById("stories");
+ box.querySelectorAll(".userStory").forEach(x=>x.remove());
+ stories.forEach(s=>{
+  let item=document.createElement("div");
+  item.className="story userStory";
+  let media=document.createElement(s.type==="video"?"video":"img");
+  media.src=s.media;
+  item.appendChild(media);
+  item.innerHTML+="<div>"+username+"</div>";
+  item.onclick=()=>viewStory(s);
+  box.appendChild(item);
+ });
 }
-window.viewStory=id=>{
- const s=stories.find(x=>x.id===id);if(!s)return;
- $("storyContent").innerHTML=`<button onclick="closeStory()">✕</button>${s.mediaType==="video"?`<video src="${escapeText(s.mediaURL)}" controls autoplay playsinline></video>`:`<img src="${escapeText(s.mediaURL)}">`}`;
- $("storyModal").classList.add("show");
-};
-window.closeStory=()=>$("storyModal").classList.remove("show");
-window.updateProfile=async()=>{
- try{
-  const name=$("editName").value.trim();
-  if(!name)throw new Error("नाम लिखें");
-  let photoURL=profile.photoURL||"";
-  const file=$("avatarFile").files[0];
-  if(file)photoURL=await uploadFile(file,`avatars/${user.uid}/${Date.now()}_${file.name}`);
-  profile={...profile,name,bio:$("editBio").value.trim(),photoURL};
-  await setDoc(doc(db,"users",user.uid),profile,{merge:true});
-  await updateAuthProfile(user,{displayName:name,photoURL});
-  $("profileName").textContent=name;
-  $("profileAvatar").innerHTML=photoURL?`<img src="${escapeText(photoURL)}">`:escapeText(name.charAt(0).toUpperCase());
-  alert("प्रोफाइल अपडेट हो गई");
- }catch(e){alert(e.message)}
-};
-async function loadProfilePosts(){
- if(!user)return;
- const snap=await getDocs(query(collection(db,"posts"),where("uid","==",user.uid),limit(60)));
- const mine=snap.docs.map(d=>({id:d.id,...d.data()}));
- $("postCount").textContent=mine.length;
- $("profilePosts").innerHTML=mine.map(p=>p.mediaType==="video"?`<video src="${escapeText(p.mediaURL)}" controls></video>`:`<img src="${escapeText(p.mediaURL)}">`).join("");
- const followers=await getDocs(collection(db,"users",user.uid,"followers"));
- const following=await getDocs(collection(db,"users",user.uid,"following"));
- $("followerCount").textContent=followers.size;
- $("followingCount").textContent=following.size;
+
+function viewStory(s){
+ let w=window.open("","_blank");
+ if(!w){alert("Story dekhne ke liye popup allow karein");return}
+ w.document.write(s.type==="video"
+  ?`<video src="${s.media}" controls autoplay style="max-width:100%"></video>`
+  :`<img src="${s.media}" style="max-width:100%">`);
 }
-window.searchUsers=async()=>{
- const term=$("searchInput").value.trim().toLowerCase();
- if(term.length<2){$("searchResults").innerHTML="";return}
- try{
-  const snap=await getDocs(query(collection(db,"users"),orderBy("name"),limit(100)));
-  const found=snap.docs.map(d=>d.data(
+
+function editProfile(){
+ let n=prompt("Username likhein",username);
+ if(!n)return;
+ username=n;
+ localStorage.setItem("dhaakad_user",username);
+ document.getElementById("profileName").textContent=username;
+ renderPosts();
+}
+
+document.getElementById("searchInput").addEventListener("input",e=>{
+ let q=e.target.value.toLowerCase();
+ document.getElementById("searchResults").innerHTML=
+ posts.filter(p=>p.caption.toLowerCase().includes(q))
+ .map(p=>"<p>"+p.caption+"</p>").join("");
+});
+
+document.getElementById("profileName").textContent=username;
+renderPosts();
+renderStories();
+</script>
+
+</body>
+</html>
