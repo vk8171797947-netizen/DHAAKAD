@@ -339,5 +339,28 @@ loadData();
 render();
 renderStories();
 </script>
+ 
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBahbShOGBzd6TYyKh0-njxVCxpO6OVIOU",
+  authDomain: "dhaakad-7b801.firebaseapp.com",
+  projectId: "dhaakad-7b801",
+  storageBucket: "dhaakad-7b801.firebasestorage.app",
+  messagingSenderId: "928208033292",
+  appId: "1:928208033292:web:5c48779b192cc2ea1b0029"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+console.log("DHAAKAD Firebase Connected!");
+</script>
+ 
 </body>
 </html>
