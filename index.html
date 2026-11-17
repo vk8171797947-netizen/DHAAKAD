@@ -13,7 +13,7 @@ body{
  background:#080808;
  color:white;
  font-family:Arial,sans-serif;
- padding-bottom:70px;
+ padding-bottom:65px;
 }
 header{
  height:58px;
@@ -31,7 +31,7 @@ header{
  color:#ff6500;
  font-size:25px;
  font-weight:900;
- letter-spacing:1px;
+ cursor:pointer;
 }
 button{cursor:pointer}
 .topbtn{
@@ -49,7 +49,7 @@ button{cursor:pointer}
  border-bottom:1px solid #292929;
 }
 .story{
- min-width:68px;
+ min-width:65px;
  text-align:center;
  font-size:12px;
  cursor:pointer;
@@ -68,7 +68,7 @@ button{cursor:pointer}
  width:60px;
  height:60px;
  border-radius:50%;
- border:2px dashed #ff6500;
+ border:2px solid #ff6500;
  color:#ff6500;
  font-size:32px;
  display:grid;
@@ -97,18 +97,16 @@ button{cursor:pointer}
  display:grid;
  place-items:center;
  font-weight:bold;
- text-transform:uppercase;
 }
-.delete-btn{
+.del-btn{
  background:none;
  border:0;
  color:#888;
- font-size:18px;
+ font-size:16px;
 }
-.delete-btn:hover{color:#ff4444}
 .postmedia{
  width:100%;
- max-height:550px;
+ max-height:600px;
  object-fit:contain;
  background:#000;
  display:block;
@@ -122,17 +120,17 @@ button{cursor:pointer}
  background:none;
  border:0;
  color:white;
- font-size:24px;
+ font-size:25px;
  padding:0;
 }
 .actions button.liked{
  color:#ff3b30;
 }
-.caption{padding:0 13px 14px; line-height:1.4;}
-.comments-list p{
+.caption{padding:0 13px 12px}
+.comment-item{
  margin:4px 0;
  font-size:14px;
- color:#ccc;
+ color:#ddd;
 }
 .bottom{
  position:fixed;
@@ -151,7 +149,7 @@ button{cursor:pointer}
  background:none;
  border:0;
  color:white;
- font-size:24px;
+ font-size:23px;
 }
 .bottom button.active{color:#ff6500}
 .page{display:none}
@@ -165,7 +163,6 @@ input,textarea{
  border:1px solid #444;
  border-radius:8px;
  color:white;
- font-size:15px;
 }
 .primary{
  background:#ff6500;
@@ -174,45 +171,41 @@ input,textarea{
  border-radius:8px;
  padding:12px 18px;
  font-weight:bold;
- font-size:15px;
+ width:100%;
+ margin-top:8px;
 }
-.empty-msg{
- text-align:center;
- color:#777;
- padding:30px 10px;
-}
-/* In-App Story Modal */
-#storyModal{
+.story-modal{
  display:none;
  position:fixed;
  inset:0;
  background:rgba(0,0,0,0.95);
  z-index:100;
  flex-direction:column;
- align-items:center;
  justify-content:center;
+ align-items:center;
 }
-#storyModal .close-modal{
+.story-modal.open{display:flex}
+.story-modal-close{
  position:absolute;
- top:15px;
+ top:20px;
  right:20px;
- background:none;
- border:0;
+ background:#ff6500;
  color:white;
- font-size:32px;
- z-index:101;
+ border:0;
+ border-radius:50%;
+ width:36px;
+ height:36px;
+ font-size:20px;
 }
-#storyContent img, #storyContent video{
+.story-modal-content img, .story-modal-content video{
  max-width:95vw;
  max-height:85vh;
  border-radius:10px;
 }
-/* Chat & Notification Items */
-.list-item{
- background:#171717;
- padding:12px;
- border-radius:8px;
- margin-bottom:10px;
+.empty-msg{
+ text-align:center;
+ color:#777;
+ padding:40px 20px;
 }
 </style>
 </head>
@@ -220,7 +213,7 @@ input,textarea{
 <body>
 
 <header>
- <div class="logo">DHAAKAD</div>
+ <div class="logo" onclick="showPage('home', document.querySelector('.bottom button'))">DHAAKAD</div>
  <div>
   <button class="topbtn" onclick="showPage('messages')">✉</button>
   <button class="topbtn" onclick="showPage('notifications')">♡</button>
@@ -231,7 +224,7 @@ input,textarea{
  <div class="stories" id="stories">
   <div class="story" onclick="addStory()">
    <div class="story-add">＋</div>
-   <div>Your Story</div>
+   Your Story
   </div>
  </div>
  <div id="feed"></div>
@@ -240,7 +233,7 @@ input,textarea{
 <section id="search" class="page">
  <div class="panel">
   <h2>Search</h2>
-  <input id="searchInput" placeholder="Caption ya post khojein...">
+  <input id="searchInput" placeholder="Search posts by caption...">
   <div id="searchResults"></div>
  </div>
 </section>
@@ -254,20 +247,15 @@ input,textarea{
  <div class="panel">
   <h2>Create Post</h2>
   <input id="postFile" type="file" accept="image/*,video/*">
-  <textarea id="caption" rows="3" placeholder="Apne post ke baare mein likhein..."></textarea>
+  <textarea id="caption" rows="3" placeholder="Write a caption..."></textarea>
   <button class="primary" onclick="createPost()">Share Post</button>
  </div>
 </section>
 
 <section id="profile" class="page">
  <div class="panel">
-  <div style="display:flex;align-items:center;gap:15px;margin-bottom:15px;">
-   <div class="avatar" id="profileAvatar" style="width:60px;height:60px;font-size:24px;">D</div>
-   <div>
-    <h2 id="profileName" style="margin:0 0 5px 0;">DHAAKAD User</h2>
-    <p id="profileStats" style="margin:0;color:#aaa;font-size:14px;">0 Posts • 120 Followers • 85 Following</p>
-   </div>
-  </div>
+  <h2 id="profileName">DHAAKAD User</h2>
+  <p id="profileStats">0 Posts · 120 Followers · 85 Following</p>
   <button class="primary" onclick="editProfile()">Edit Profile</button>
  </div>
  <div id="myPosts"></div>
@@ -276,81 +264,67 @@ input,textarea{
 <section id="messages" class="page">
  <div class="panel">
   <h2>Messages</h2>
-  <div id="chatBox" style="max-height:55vh;overflow-y:auto;margin-bottom:10px;"></div>
-  <div style="display:flex;gap:8px;">
-   <input id="chatInput" placeholder="Message likhein..." style="margin:0;">
-   <button class="primary" onclick="sendMessage()">Send</button>
-  </div>
+  <div class="empty-msg">Abhi koi naya message nahi hai.</div>
  </div>
 </section>
 
 <section id="notifications" class="page">
  <div class="panel">
   <h2>Notifications</h2>
-  <div id="notifList"></div>
+  <div class="empty-msg">DHAAKAD par aapka swagat hai!</div>
  </div>
 </section>
 
-<!-- Fullscreen Story Modal -->
-<div id="storyModal">
- <button class="close-modal" onclick="closeStory()">✕</button>
- <div id="storyContent"></div>
+<div id="storyModal" class="story-modal" onclick="closeStory()">
+ <button class="story-modal-close" onclick="closeStory()">✕</button>
+ <div id="storyModalContent" class="story-modal-content" onclick="event.stopPropagation()"></div>
 </div>
 
 <nav class="bottom">
- <button id="nav-home" class="active" onclick="showPage('home',this)">⌂</button>
- <button id="nav-search" onclick="showPage('search',this)">⌕</button>
- <button id="nav-reels" onclick="showPage('reels',this)">▶</button>
- <button id="nav-create" onclick="showPage('create',this)">＋</button>
- <button id="nav-profile" onclick="showPage('profile',this)">◉</button>
+ <button class="active" onclick="showPage('home',this)">⌂</button>
+ <button onclick="showPage('search',this)">⌕</button>
+ <button onclick="showPage('reels',this)">▶</button>
+ <button onclick="showPage('create',this)">＋</button>
+ <button onclick="showPage('profile',this)">◉</button>
 </nav>
 
 <script>
 let posts = JSON.parse(localStorage.getItem("dhaakad_posts") || "[]");
 let stories = JSON.parse(localStorage.getItem("dhaakad_stories") || "[]");
-let notifications = JSON.parse(localStorage.getItem("dhaakad_notifs") || "[]");
-let messages = JSON.parse(localStorage.getItem("dhaakad_msgs") || '["DHAAKAD Team: App mein aapka swagat hai!"]');
 let username = localStorage.getItem("dhaakad_user") || "DHAAKAD User";
 
-// Safe text helper to prevent XSS
 function escapeHTML(str) {
- let div = document.createElement("div");
- div.textContent = str;
- return div.innerHTML;
+ return str.replace(/[&<>'"]/g, tag => ({
+  '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+ }[tag]));
 }
 
 function showPage(id, btn) {
  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
  document.getElementById(id).classList.add("active");
- document.querySelectorAll(".bottom button").forEach(b => b.classList.remove("active"));
  if (btn) {
+  document.querySelectorAll(".bottom button").forEach(b => b.classList.remove("active"));
   btn.classList.add("active");
- } else {
-  let navBtn = document.getElementById("nav-" + id);
-  if (navBtn) navBtn.classList.add("active");
  }
 }
 
-function saveAll() {
+function savePosts() {
  try {
   localStorage.setItem("dhaakad_posts", JSON.stringify(posts));
-  localStorage.setItem("dhaakad_notifs", JSON.stringify(notifications));
+  return true;
  } catch (e) {
-  alert("Storage full ho gaya hai! Purani posts delete karein.");
+  alert("Storage full ho gaya hai! Purani posts delete karein ya chhoti file chunein.");
+  return false;
  }
-}
-
-function addNotification(text) {
- notifications.unshift(text);
- if (notifications.length > 20) notifications.pop();
- renderNotifications();
 }
 
 function createPost() {
- let file = document.getElementById("postFile").files[0];
+ let fileInput = document.getElementById("postFile");
+ let file = fileInput.files[0];
  let caption = document.getElementById("caption").value.trim();
- if (!file) { alert("Kripya photo ya video chunein"); return; }
- if (file.size > 1500000) { alert("1.5 MB se chhoti file chunein"); return; }
+
+ if (!file) { alert("Photo ya video chunein"); return; }
+ if (file.size > 2000000) { alert("2 MB se chhoti file chunein"); return; }
 
  let reader = new FileReader();
  reader.onload = function() {
@@ -359,46 +333,47 @@ function createPost() {
    media: reader.result,
    type: file.type.startsWith("video") ? "video" : "image",
    caption: caption,
-   likedByMe: false,
+   liked: false,
    likeCount: 0,
    comments: []
   });
-  saveAll();
-  renderPosts();
-  document.getElementById("postFile").value = "";
-  document.getElementById("caption").value = "";
-  showPage("home");
+  if (savePosts()) {
+   renderPosts();
+   fileInput.value = "";
+   document.getElementById("caption").value = "";
+   showPage("home", document.querySelector(".bottom button"));
+  } else {
+   posts.shift();
+  }
  };
  reader.readAsDataURL(file);
 }
 
-function buildPostElement(p) {
- let mediaHTML = p.type === "video"
+function createPostElement(p) {
+ let media = p.type === "video"
   ? `<video class="postmedia" src="${p.media}" controls playsinline></video>`
-  : `<img class="postmedia" src="${p.media}" alt="Post media">`;
+  : `<img class="postmedia" src="${p.media}" alt="post">`;
 
  let post = document.createElement("article");
  post.className = "post";
  post.innerHTML = `
   <div class="posthead">
    <div class="user-info">
-    <div class="avatar">${escapeHTML(username.charAt(0))}</div>
+    <div class="avatar">${escapeHTML(username.charAt(0).toUpperCase())}</div>
     <b>${escapeHTML(username)}</b>
    </div>
-   <button class="delete-btn" title="Delete Post" onclick="deletePost(${p.id})">🗑</button>
+   <button class="del-btn" onclick="deletePost(${p.id})" title="Delete">🗑</button>
   </div>
-  ${mediaHTML}
+  ${media}
   <div class="actions">
-   <button class="${p.likedByMe ? 'liked' : ''}" onclick="toggleLike(${p.id})">${p.likedByMe ? '♥' : '♡'}</button>
+   <button class="${p.liked ? 'liked' : ''}" onclick="likePost(${p.id})">${p.liked ? '♥' : '♡'}</button>
    <button onclick="commentPost(${p.id})">💬</button>
    <button onclick="sharePost(${p.id})">↗</button>
   </div>
   <div class="caption">
    <b>${p.likeCount} likes</b><br>
    <span>${escapeHTML(p.caption)}</span>
-   <div class="comments-list">
-    ${p.comments.map(c => `<p><b>${escapeHTML(username)}:</b> ${escapeHTML(c)}</p>`).join("")}
-   </div>
+   <div>${p.comments.map(c => `<p class="comment-item"><b>${escapeHTML(username)}:</b> ${escapeHTML(c)}</p>`).join("")}</div>
   </div>`;
  return post;
 }
@@ -412,8 +387,56 @@ function renderPosts() {
  myPosts.innerHTML = "";
  reelFeed.innerHTML = "";
 
- document.getElementById("profileStats").textContent = `${posts.length} Posts • 120 Followers • 85 Following`;
+ document.getElementById("profileStats").textContent = `${posts.length} Posts · 120 Followers · 85 Following`;
 
  if (posts.length === 0) {
-  feed.innerHTML = `<div class="empty-msg">Abhi koi post nahi hai. Neeche '＋' daba kar pehli post daalein!</div>`;
- 
+  feed.innerHTML = `<div class="empty-msg">Abhi koi post nahi hai. Niche '+' dabakar pehli post daalein!</div>`;
+ }
+
+ let hasReels = false;
+ posts.forEach(p => {
+  feed.appendChild(createPostElement(p));
+  myPosts.appendChild(createPostElement(p));
+  if (p.type === "video") {
+   reelFeed.appendChild(createPostElement(p));
+   hasReels = true;
+  }
+ });
+
+ if (!hasReels) {
+  reelFeed.innerHTML = `<div class="empty-msg">Abhi koi video reel nahi hai.</div>`;
+ }
+}
+
+function likePost(id) {
+ let p = posts.find(x => x.id === id);
+ if (!p) return;
+ p.liked = !p.liked;
+ p.likeCount = (p.likeCount || 0) + (p.liked ? 1 : -1);
+ savePosts();
+ renderPosts();
+}
+
+function commentPost(id) {
+ let c = prompt("Comment likhein:");
+ if (!c || !c.trim()) return;
+ let p = posts.find(x => x.id === id);
+ if (!p) return;
+ p.comments.push(c.trim());
+ savePosts();
+ renderPosts();
+}
+
+function deletePost(id) {
+ if (!confirm("Kya aap is post ko delete karna chahte hain?")) return;
+ posts = posts.filter(x => x.id !== id);
+ savePosts();
+ renderPosts();
+}
+
+function sharePost(id) {
+ let link = location.href.split("#")[0] + "#post-" + id;
+ </script>
+
+</body>
+</html>
