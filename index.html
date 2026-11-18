@@ -1,18 +1,225 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Instagram Clone</title>
+    <meta name="theme-color" content="#000000">
+    <title>DHAAKAD</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            background: #000;
+            border-bottom: 1px solid #292929;
+            padding: 12px 0;
+        }
+
+        .nav-container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 0 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .logo {
+            color: #ff7900;
+            font-size: 26px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .search-bar {
+            background: #1c1c1c;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 10px;
+            color: white;
+            outline: none;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 22px;
+            font-size: 21px;
+        }
+
+        .nav-icons i {
+            cursor: pointer;
+        }
+
+        .nav-icons i:hover,
+        .post-icons i:hover {
+            color: #ff7900;
+        }
+
+        .main-content {
+            max-width: 1000px;
+            margin: 25px auto;
+            padding: 0 15px;
+            display: flex;
+            justify-content: center;
+            gap: 35px;
+        }
+
+        .feed {
+            width: 600px;
+            max-width: 100%;
+        }
+
+        .stories {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding: 15px;
+            background: #111;
+            border: 1px solid #292929;
+            border-radius: 10px;
+        }
+
+        .story-circle {
+            min-width: 65px;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .inner-circle,
+        .mini-profile {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff7900, #ffb000);
+            margin: 0 auto 7px;
+            border: 3px solid #000;
+            outline: 2px solid #ff7900;
+        }
+
+        .post {
+            margin-top: 20px;
+            background: #111;
+            border: 1px solid #292929;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .post-header {
+            padding: 15px;
+        }
+
+        .username {
+            color: #ff7900;
+            font-weight: bold;
+        }
+
+        .post-img {
+            width: 100%;
+            min-height: 250px;
+            background: #1b1b1b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .placeholder-img {
+            color: #aaa;
+        }
+
+        .post-footer {
+            padding: 15px;
+        }
+
+        .post-icons {
+            display: flex;
+            gap: 20px;
+            font-size: 23px;
+        }
+
+        .post-icons i {
+            cursor: pointer;
+        }
+
+        .likes {
+            font-weight: bold;
+        }
+
+        .caption {
+            color: #ddd;
+        }
+
+        .sidebar {
+            width: 250px;
+        }
+
+        .profile-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .mini-profile {
+            min-width: 45px;
+            width: 45px;
+            height: 45px;
+        }
+
+        .user-id {
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .user-name {
+            color: #999;
+            margin-top: 0;
+        }
+
+        @media(max-width: 750px) {
+            .sidebar {
+                display: none;
+            }
+
+            .nav-container {
+                flex-wrap: wrap;
+            }
+
+            .search-bar {
+                width: 100%;
+                order: 3;
+            }
+
+            .nav-icons {
+                gap: 15px;
+            }
+
+            .main-content {
+                margin-top: 15px;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    <!-- Navbar -->
+
     <div class="navbar">
         <div class="nav-container">
-            <h2 class="logo">Instagram</h2>
+            <h2 class="logo">DHAAKAD</h2>
+
             <input type="text" placeholder="Search" class="search-bar">
+
             <div class="nav-icons">
                 <i class="fa-solid fa-house"></i>
                 <i class="fa-regular fa-paper-plane"></i>
@@ -23,49 +230,78 @@
         </div>
     </div>
 
-    <!-- Main Content -->
     <div class="main-content">
-        <!-- Feed Section -->
+
         <div class="feed">
-            <!-- Stories -->
+
             <div class="stories">
-                <div class="story-circle"><div class="inner-circle"></div><span>Your Story</span></div>
-                <div class="story-circle"><div class="inner-circle"></div><span>user_1</span></div>
-                <div class="story-circle"><div class="inner-circle"></div><span>user_2</span></div>
-                <div class="story-circle"><div class="inner-circle"></div><span>user_3</span></div>
+                <div class="story-circle">
+                    <div class="inner-circle"></div>
+                    <span>Your Story</span>
+                </div>
+
+                <div class="story-circle">
+                    <div class="inner-circle"></div>
+                    <span>user_1</span>
+                </div>
+
+                <div class="story-circle">
+                    <div class="inner-circle"></div>
+                    <span>user_2</span>
+                </div>
+
+                <div class="story-circle">
+                    <div class="inner-circle"></div>
+                    <span>user_3</span>
+                </div>
             </div>
 
-            <!-- Post -->
             <div class="post">
+
                 <div class="post-header">
-                    <span class="username">coding_page</span>
+                    <span class="username">DHAAKAD_USER</span>
                 </div>
+
                 <div class="post-img">
-                    <div class="placeholder-img">Post Image Here</div>
+                    <div class="placeholder-img">
+                        Post Image Here
+                    </div>
                 </div>
+
                 <div class="post-footer">
+
                     <div class="post-icons">
                         <i class="fa-regular fa-heart"></i>
                         <i class="fa-regular fa-comment"></i>
                         <i class="fa-regular fa-paper-plane"></i>
                     </div>
+
                     <p class="likes">1,245 likes</p>
-                    <p class="caption"><b>coding_page</b> Learning web development is fun!</p>
+
+                    <p class="caption">
+                        <b>DHAAKAD_USER</b>
+                        Welcome to DHAAKAD!
+                    </p>
+
                 </div>
             </div>
         </div>
 
-        <!-- Sidebar -->
         <div class="sidebar">
+
             <div class="profile-section">
+
                 <div class="mini-profile"></div>
+
                 <div>
                     <p class="user-id">my_username</p>
-                    <p class="user-name">Welcome User</p>
+                    <p class="user-name">Welcome to DHAAKAD</p>
                 </div>
+
             </div>
         </div>
+
     </div>
+
 </body>
 </html>
-
