@@ -300,6 +300,37 @@
         .profile-edit-box { display: flex; gap: 8px; margin-bottom: 15px; }
         .profile-edit-box input { flex: 1; padding: 10px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-color); border-radius: 6px; }
         .profile-edit-box button { background: #ff7900; color: #000; border: none; padding: 10px 15px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+            // Profile Page Toggle & Logic
+        const profileBtn = document.createElement('button'); // (या HTML में बटन जोड़ चुके हैं तो नीचे लॉजिक सेट करें)
+        
+        document.getElementById('profileBtn').addEventListener('click', () => {
+            document.getElementById('feed').style.display = 'none';
+            document.getElementById('profileSection').style.display = 'block';
+            showToast('प्रोफाइल पेज खुल गया 👤');
+        });
+
+        document.getElementById('backToHomeBtn').addEventListener('click', () => {
+            document.getElementById('profileSection').style.display = 'none';
+            document.getElementById('feed').style.display = 'block';
+        });
+
+        // Username Change Logic with LocalStorage
+        const savedName = localStorage.getItem('dhaakad_username');
+        if (savedName) {
+            document.getElementById('displayUsername').innerText = savedName;
+        }
+
+        document.getElementById('saveUsernameBtn').addEventListener('click', () => {
+            const newName = document.getElementById('newUsernameInput').value.trim();
+            if (newName) {
+                document.getElementById('displayUsername').innerText = newName;
+                localStorage.setItem('dhaakad_username', newName);
+                document.getElementById('newUsernameInput').value = '';
+                showToast('नाम बदल गया! ✅');
+            } else {
+                showToast('कृपया सही नाम लिखें! ⚠️');
+            }
+        });
     
 </body>
 </html>
