@@ -18,7 +18,6 @@
             color: #ffffff;
         }
 
-        /* Navbar */
         .navbar {
             background: #111111;
             border-bottom: 1px solid #292929;
@@ -35,8 +34,6 @@
             justify-content: space-between;
             align-items: center;
             padding: 0 15px;
-            flex-wrap: wrap;
-            gap: 10px;
         }
 
         .logo {
@@ -74,11 +71,6 @@
             outline: none;
         }
 
-        .search-bar:focus {
-            border-color: #ff7900;
-        }
-
-        /* Main Layout */
         .main-content {
             max-width: 935px;
             margin: 20px auto;
@@ -93,7 +85,6 @@
             max-width: 470px;
         }
 
-        /* Stories */
         .stories {
             background: #111111;
             border: 1px solid #292929;
@@ -129,7 +120,6 @@
             outline: 2px solid #ff7900;
         }
 
-        /* Posts */
         .post {
             background: #111111;
             border: 1px solid #292929;
@@ -156,13 +146,6 @@
             background: linear-gradient(45deg, #ff7900, #ffb000);
         }
 
-        .post-img img {
-            width: 100%;
-            max-height: 450px;
-            object-fit: cover;
-            display: block;
-        }
-
         .placeholder-img {
             width: 100%;
             height: 350px;
@@ -172,6 +155,13 @@
             justify-content: center;
             color: #aaaaaa;
             font-size: 16px;
+        }
+
+        .post-img img {
+            width: 100%;
+            max-height: 450px;
+            object-fit: cover;
+            display: block;
         }
 
         .post-footer {
@@ -188,36 +178,27 @@
 
         .post-icons i {
             cursor: pointer;
-            transition: transform 0.15s, color 0.2s;
-        }
-
-        .post-icons i:hover {
-            color: #ff7900;
         }
 
         .liked {
             color: #ff3b30 !important;
-            transform: scale(1.15);
         }
 
         .likes {
             font-size: 14px;
             font-weight: bold;
             margin-bottom: 6px;
-            color: #ffffff;
         }
 
         .caption {
             font-size: 14px;
             color: #eeeeee;
-            line-height: 1.4;
         }
 
         .caption b {
             color: #ff7900;
         }
 
-        /* Sidebar */
         .sidebar {
             width: 293px;
         }
@@ -250,7 +231,6 @@
             font-size: 13px;
         }
 
-        /* Create Post Modal */
         .modal {
             display: none;
             position: fixed;
@@ -311,49 +291,36 @@
             color: #fff;
         }
 
-        /* Mobile Responsive */
         @media (max-width: 768px) {
-            .sidebar {
-                display: none;
-            }
-            .search-bar {
-                max-width: 100%;
-                order: 3;
-            }
+            .sidebar { display: none; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Navbar -->
     <div class="navbar">
         <div class="nav-container">
             <div class="logo">DHAAKAD</div>
             <input type="text" placeholder="Search" class="search-bar">
             <div class="nav-icons">
-                <i class="fa-solid fa-house" title="Home"></i>
-                <i class="fa-regular fa-paper-plane" title="Messages"></i>
-                <i class="fa-regular fa-square-plus" title="New Post" onclick="openModal()"></i>
-                <i class="fa-regular fa-compass" title="Explore"></i>
-                <i class="fa-regular fa-heart" title="Notifications"></i>
+                <i class="fa-solid fa-house"></i>
+                <i class="fa-regular fa-paper-plane"></i>
+                <i class="fa-regular fa-square-plus" id="addPostBtn"></i>
+                <i class="fa-regular fa-compass"></i>
+                <i class="fa-regular fa-heart"></i>
             </div>
         </div>
     </div>
 
-    <!-- Main Content -->
     <div class="main-content">
-        <!-- Feed Section -->
         <div class="feed" id="feed-container">
-            <!-- Stories -->
             <div class="stories">
                 <div class="story-circle"><div class="inner-circle"></div><span>Your Story</span></div>
                 <div class="story-circle"><div class="inner-circle"></div><span>user_1</span></div>
                 <div class="story-circle"><div class="inner-circle"></div><span>user_2</span></div>
                 <div class="story-circle"><div class="inner-circle"></div><span>user_3</span></div>
-                <div class="story-circle"><div class="inner-circle"></div><span>dhaakad_pro</span></div>
             </div>
 
-            <!-- Default Post -->
             <div class="post">
                 <div class="post-header">
                     <div class="avatar-small"></div>
@@ -364,7 +331,7 @@
                 </div>
                 <div class="post-footer">
                     <div class="post-icons">
-                        <i class="fa-regular fa-heart" onclick="toggleLike(this)"></i>
+                        <i class="fa-regular fa-heart like-btn"></i>
                         <i class="fa-regular fa-comment"></i>
                         <i class="fa-regular fa-paper-plane"></i>
                     </div>
@@ -374,7 +341,6 @@
             </div>
         </div>
 
-        <!-- Sidebar (Desktop) -->
         <div class="sidebar">
             <div class="profile-section">
                 <div class="mini-profile"></div>
@@ -386,52 +352,60 @@
         </div>
     </div>
 
-    <!-- New Post Modal -->
     <div class="modal" id="postModal">
         <div class="modal-box">
             <h3>Create New Post</h3>
             <input type="file" id="imageInput" accept="image/*">
             <textarea id="captionInput" rows="3" placeholder="Write a caption..."></textarea>
             <div class="modal-btns">
-                <button class="btn btn-gray" onclick="closeModal()">Cancel</button>
-                <button class="btn btn-orange" onclick="addPost()">Post</button>
+                <button class="btn btn-gray" id="cancelBtn">Cancel</button>
+                <button class="btn btn-orange" id="submitPostBtn">Post</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Like button functionality
-        function toggleLike(icon) {
-            const postFooter = icon.closest('.post-footer');
-            const countSpan = postFooter.querySelector('.like-count');
-            let count = parseInt(countSpan.innerText);
+        // DOM Elements
+        const modal = document.getElementById('postModal');
+        const addPostBtn = document.getElementById('addPostBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const submitPostBtn = document.getElementById('submitPostBtn');
+        const feedContainer = document.getElementById('feed-container');
 
-            if (icon.classList.contains('fa-regular')) {
-                icon.classList.remove('fa-regular');
-                icon.classList.add('fa-solid', 'liked');
-                countSpan.innerText = count + 1;
-            } else {
-                icon.classList.remove('fa-solid', 'liked');
-                icon.classList.add('fa-regular');
-                countSpan.innerText = count - 1;
+        // Open Modal
+        addPostBtn.addEventListener('click', () => {
+            modal.style.display = 'flex';
+        });
+
+        // Close Modal
+        cancelBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        // Like Button Functionality (Using Event Delegation for all posts)
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('like-btn')) {
+                const footer = e.target.closest('.post-footer');
+                const countSpan = footer.querySelector('.like-count');
+                let count = parseInt(countSpan.innerText);
+
+                if (e.target.classList.contains('fa-regular')) {
+                    e.target.classList.remove('fa-regular', 'fa-heart');
+                    e.target.classList.add('fa-solid', 'fa-heart', 'liked');
+                    countSpan.innerText = count + 1;
+                } else {
+                    e.target.classList.remove('fa-solid', 'fa-heart', 'liked');
+                    e.target.classList.add('fa-regular', 'fa-heart');
+                    countSpan.innerText = count - 1;
+                }
             }
-        }
+        });
 
-        // Open & Close Create Post Modal
-        function openModal() {
-            document.getElementById('postModal').style.display = 'flex';
-        }
-
-        function closeModal() {
-            document.getElementById('postModal').style.display = 'none';
-        }
-
-        // Add New Post with Photo from Gallery
-        function addPost() {
+        // Add Post Functionality
+        submitPostBtn.addEventListener('click', () => {
             const fileInput = document.getElementById('imageInput');
             const caption = document.getElementById('captionInput').value || "New DHAAKAD Post!";
-            const feed = document.getElementById('feed-container');
-            const stories = feed.querySelector('.stories');
+            const stories = feedContainer.querySelector('.stories');
 
             if (fileInput.files && fileInput.files[0]) {
                 const reader = new FileReader();
@@ -447,7 +421,7 @@
                             </div>
                             <div class="post-footer">
                                 <div class="post-icons">
-                                    <i class="fa-regular fa-heart" onclick="toggleLike(this)"></i>
+                                    <i class="fa-regular fa-heart like-btn"></i>
                                     <i class="fa-regular fa-comment"></i>
                                     <i class="fa-regular fa-paper-plane"></i>
                                 </div>
@@ -459,13 +433,13 @@
                     stories.insertAdjacentHTML('afterend', postHTML);
                     fileInput.value = '';
                     document.getElementById('captionInput').value = '';
-                    closeModal();
+                    modal.style.display = 'none';
                 };
                 reader.readAsDataURL(fileInput.files[0]);
             } else {
-                alert("Pehle koi photo select karein!");
+                alert("कृपया पहले एक फोटो चुनें!");
             }
-        }
+        });
     </script>
 </body>
 </html>
