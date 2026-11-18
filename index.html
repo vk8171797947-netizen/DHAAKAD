@@ -1,525 +1,471 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#000000">
     <title>DHAAKAD</title>
-    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <style>
         * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            margin: 0;
-            background: #000;
-            color: #fff;
-            font-family: Arial, sans-serif;
+            background-color: #000000;
+            color: #ffffff;
         }
 
+        /* Navbar */
         .navbar {
-            background: #000;
+            background: #111111;
             border-bottom: 1px solid #292929;
+            position: sticky;
+            top: 0;
+            z-index: 100;
             padding: 12px 0;
         }
 
         .nav-container {
-            max-width: 1100px;
-            margin: auto;
-            padding: 0 15px;
+            max-width: 935px;
+            margin: 0 auto;
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            gap: 15px;
+            align-items: center;
+            padding: 0 15px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .logo {
+            font-size: 24px;
+            font-weight: 800;
             color: #ff7900;
-            font-size: 26px;
-            font-weight: bold;
-            margin: 0;
-        }
-
-        .search-bar {
-            background: #1c1c1c;
-            border: 1px solid #333;
-            border-radius: 8px;
-            padding: 10px;
-            color: white;
-            outline: none;
+            letter-spacing: 1px;
         }
 
         .nav-icons {
             display: flex;
-            gap: 22px;
-            font-size: 21px;
+            align-items: center;
+            gap: 18px;
         }
 
         .nav-icons i {
+            font-size: 21px;
+            color: #ffffff;
             cursor: pointer;
+            transition: color 0.2s;
         }
 
-        .nav-icons i:hover,
-        .post-icons i:hover {
+        .nav-icons i:hover {
             color: #ff7900;
         }
 
+        .search-bar {
+            background-color: #1c1c1c;
+            border: 1px solid #333333;
+            color: #ffffff;
+            padding: 8px 14px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 300px;
+            outline: none;
+        }
+
+        .search-bar:focus {
+            border-color: #ff7900;
+        }
+
+        /* Main Layout */
         .main-content {
-            max-width: 1000px;
-            margin: 25px auto;
-            padding: 0 15px;
+            max-width: 935px;
+            margin: 20px auto;
             display: flex;
             justify-content: center;
-            gap: 35px;
+            gap: 30px;
+            padding: 0 12px;
         }
 
         .feed {
-            width: 600px;
-            max-width: 100%;
+            width: 100%;
+            max-width: 470px;
         }
 
+        /* Stories */
         .stories {
-            display: flex;
-            gap: 20px;
-            overflow-x: auto;
-            padding: 15px;
-            background: #111;
+            background: #111111;
             border: 1px solid #292929;
             border-radius: 10px;
+            padding: 14px;
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+
+        .stories::-webkit-scrollbar {
+            display: none;
         }
 
         .story-circle {
-            min-width: 65px;
-            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             font-size: 12px;
+            gap: 6px;
+            color: #ffffff;
+            cursor: pointer;
+            flex-shrink: 0;
         }
 
-        .inner-circle,
-        .mini-profile {
-            width: 55px;
-            height: 55px;
+        .inner-circle {
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             background: linear-gradient(45deg, #ff7900, #ffb000);
-            margin: 0 auto 7px;
-            border: 3px solid #000;
+            border: 2px solid #000;
             outline: 2px solid #ff7900;
         }
 
+        /* Posts */
         .post {
-            margin-top: 20px;
-            background: #111;
+            background: #111111;
             border: 1px solid #292929;
             border-radius: 10px;
+            margin-bottom: 20px;
             overflow: hidden;
         }
 
         .post-header {
-            padding: 15px;
-        }
-
-        .username {
-            color: #ff7900;
+            padding: 12px 15px;
             font-weight: bold;
-        }
-
-        .post-img {
-            width: 100%;
-            min-height: 250px;
-            background: #1b1b1b;
+            font-size: 14px;
+            border-bottom: 1px solid #292929;
+            color: #ff7900;
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 10px;
+        }
+
+        .avatar-small {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff7900, #ffb000);
+        }
+
+        .post-img img {
+            width: 100%;
+            max-height: 450px;
+            object-fit: cover;
+            display: block;
         }
 
         .placeholder-img {
-            color: #aaa;
+            width: 100%;
+            height: 350px;
+            background-color: #1c1c1c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #aaaaaa;
+            font-size: 16px;
         }
 
         .post-footer {
-            padding: 15px;
+            padding: 12px 15px;
         }
 
         .post-icons {
             display: flex;
-            gap: 20px;
-            font-size: 23px;
+            gap: 18px;
+            font-size: 22px;
+            margin-bottom: 10px;
+            color: #ffffff;
         }
 
         .post-icons i {
             cursor: pointer;
+            transition: transform 0.15s, color 0.2s;
+        }
+
+        .post-icons i:hover {
+            color: #ff7900;
+        }
+
+        .liked {
+            color: #ff3b30 !important;
+            transform: scale(1.15);
         }
 
         .likes {
+            font-size: 14px;
             font-weight: bold;
+            margin-bottom: 6px;
+            color: #ffffff;
         }
 
         .caption {
-            color: #ddd;
+            font-size: 14px;
+            color: #eeeeee;
+            line-height: 1.4;
         }
 
+        .caption b {
+            color: #ff7900;
+        }
+
+        /* Sidebar */
         .sidebar {
-            width: 250px;
+            width: 293px;
         }
 
         .profile-section {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 15px;
+            background: #111111;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #292929;
         }
 
         .mini-profile {
-            min-width: 45px;
-            width: 45px;
-            height: 45px;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(45deg, #ff7900, #ffb000);
+            border-radius: 50%;
         }
 
         .user-id {
             font-weight: bold;
-            margin-bottom: 4px;
+            font-size: 14px;
+            color: #ff7900;
         }
 
         .user-name {
-            color: #999;
-            margin-top: 0;
+            color: #999999;
+            font-size: 13px;
         }
 
-        @media(max-width: 750px) {
+        /* Create Post Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 200;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+        }
+
+        .modal-box {
+            background: #161616;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 20px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .modal-box h3 {
+            color: #ff7900;
+            margin-bottom: 15px;
+        }
+
+        .modal-box input, .modal-box textarea {
+            width: 100%;
+            background: #222;
+            border: 1px solid #333;
+            color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            outline: none;
+        }
+
+        .modal-btns {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-orange {
+            background: #ff7900;
+            color: #000;
+        }
+
+        .btn-gray {
+            background: #333;
+            color: #fff;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
             .sidebar {
                 display: none;
             }
-
-            .nav-container {
-                flex-wrap: wrap;
-            }
-
             .search-bar {
-                width: 100%;
+                max-width: 100%;
                 order: 3;
-            }
-
-            .nav-icons {
-                gap: 15px;
-            }
-
-            .main-content {
-                margin-top: 15px;
             }
         }
     </style>
 </head>
-
 <body>
 
+    <!-- Navbar -->
     <div class="navbar">
         <div class="nav-container">
-            <h2 class="logo">DHAAKAD</h2>
-
+            <div class="logo">DHAAKAD</div>
             <input type="text" placeholder="Search" class="search-bar">
-
             <div class="nav-icons">
-                <i class="fa-solid fa-house"></i>
-                <i class="fa-regular fa-paper-plane"></i>
-                <i class="fa-regular fa-square-plus"></i>
-                <i class="fa-regular fa-compass"></i>
-                <i class="fa-regular fa-heart"></i>
+                <i class="fa-solid fa-house" title="Home"></i>
+                <i class="fa-regular fa-paper-plane" title="Messages"></i>
+                <i class="fa-regular fa-square-plus" title="New Post" onclick="openModal()"></i>
+                <i class="fa-regular fa-compass" title="Explore"></i>
+                <i class="fa-regular fa-heart" title="Notifications"></i>
             </div>
         </div>
     </div>
 
+    <!-- Main Content -->
     <div class="main-content">
-
-        <div class="feed">
-
+        <!-- Feed Section -->
+        <div class="feed" id="feed-container">
+            <!-- Stories -->
             <div class="stories">
-                <div class="story-circle">
-                    <div class="inner-circle"></div>
-                    <span>Your Story</span>
-                </div>
-
-                <div class="story-circle">
-                    <div class="inner-circle"></div>
-                    <span>user_1</span>
-                </div>
-
-                <div class="story-circle">
-                    <div class="inner-circle"></div>
-                    <span>user_2</span>
-                </div>
-
-                <div class="story-circle">
-                    <div class="inner-circle"></div>
-                    <span>user_3</span>
-                </div>
+                <div class="story-circle"><div class="inner-circle"></div><span>Your Story</span></div>
+                <div class="story-circle"><div class="inner-circle"></div><span>user_1</span></div>
+                <div class="story-circle"><div class="inner-circle"></div><span>user_2</span></div>
+                <div class="story-circle"><div class="inner-circle"></div><span>user_3</span></div>
+                <div class="story-circle"><div class="inner-circle"></div><span>dhaakad_pro</span></div>
             </div>
 
+            <!-- Default Post -->
             <div class="post">
-
                 <div class="post-header">
-                    <span class="username">DHAAKAD_USER</span>
+                    <div class="avatar-small"></div>
+                    <span>DHAAKAD_USER</span>
                 </div>
-
                 <div class="post-img">
-                    <div class="placeholder-img">
-                        Post Image Here
-                    </div>
+                    <div class="placeholder-img">Post Image Here</div>
                 </div>
-
                 <div class="post-footer">
-
                     <div class="post-icons">
-                        <i class="fa-regular fa-heart"></i>
+                        <i class="fa-regular fa-heart" onclick="toggleLike(this)"></i>
                         <i class="fa-regular fa-comment"></i>
                         <i class="fa-regular fa-paper-plane"></i>
                     </div>
-
-                    <p class="likes">1,245 likes</p>
-
-                    <p class="caption">
-                        <b>DHAAKAD_USER</b>
-                        Welcome to DHAAKAD!
-                    </p>
-
+                    <p class="likes"><span class="like-count">1245</span> likes</p>
+                    <p class="caption"><b>DHAAKAD_USER</b> Welcome to DHAAKAD! 🔥</p>
                 </div>
             </div>
         </div>
 
+        <!-- Sidebar (Desktop) -->
         <div class="sidebar">
-
             <div class="profile-section">
-
                 <div class="mini-profile"></div>
-
                 <div>
-                    <p class="user-id">my_username</p>
-                    <p class="user-name">Welcome to DHAAKAD</p>
+                    <p class="user-id">DHAAKAD_USER</p>
+                    <p class="user-name">Official Creator</p>
                 </div>
-
             </div>
         </div>
-
     </div>
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
-}
+    <!-- New Post Modal -->
+    <div class="modal" id="postModal">
+        <div class="modal-box">
+            <h3>Create New Post</h3>
+            <input type="file" id="imageInput" accept="image/*">
+            <textarea id="captionInput" rows="3" placeholder="Write a caption..."></textarea>
+            <div class="modal-btns">
+                <button class="btn btn-gray" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-orange" onclick="addPost()">Post</button>
+            </div>
+        </div>
+    </div>
 
-body {
-    background-color: #000000;
-    color: #ffffff;
-}
+    <script>
+        // Like button functionality
+        function toggleLike(icon) {
+            const postFooter = icon.closest('.post-footer');
+            const countSpan = postFooter.querySelector('.like-count');
+            let count = parseInt(countSpan.innerText);
 
-.navbar {
-    background: #000000;
-    border-bottom: 1px solid #292929;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    padding: 10px 0;
-}
+            if (icon.classList.contains('fa-regular')) {
+                icon.classList.remove('fa-regular');
+                icon.classList.add('fa-solid', 'liked');
+                countSpan.innerText = count + 1;
+            } else {
+                icon.classList.remove('fa-solid', 'liked');
+                icon.classList.add('fa-regular');
+                countSpan.innerText = count - 1;
+            }
+        }
 
-.nav-container {
-    max-width: 935px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-}
+        // Open & Close Create Post Modal
+        function openModal() {
+            document.getElementById('postModal').style.display = 'flex';
+        }
 
-.logo {
-    font-family: Arial, sans-serif;
-    font-size: 24px;
-    font-weight: bold;
-    color: #ff7900;
-}
+        function closeModal() {
+            document.getElementById('postModal').style.display = 'none';
+        }
 
-.search-bar {
-    background-color: #202020;
-    color: #ffffff;
-    border: 1px solid #333333;
-    padding: 8px 12px;
-    border-radius: 8px;
-    width: 250px;
-    outline: none;
-}
+        // Add New Post with Photo from Gallery
+        function addPost() {
+            const fileInput = document.getElementById('imageInput');
+            const caption = document.getElementById('captionInput').value || "New DHAAKAD Post!";
+            const feed = document.getElementById('feed-container');
+            const stories = feed.querySelector('.stories');
 
-.search-bar::placeholder {
-    color: #aaaaaa;
-}
-
-.nav-icons i {
-    color: #ffffff;
-    font-size: 22px;
-    margin-left: 20px;
-    cursor: pointer;
-    transition: color 0.2s;
-}
-
-.nav-icons i:hover {
-    color: #ff7900;
-}
-
-.main-content {
-    max-width: 935px;
-    margin: 30px auto;
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-}
-
-.feed {
-    width: 470px;
-}
-
-.stories {
-    background: #111111;
-    border: 1px solid #292929;
-    border-radius: 8px;
-    padding: 12px;
-    display: flex;
-    gap: 15px;
-    margin-bottom: 20px;
-    overflow-x: auto;
-}
-
-.story-circle {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-size: 11px;
-    gap: 5px;
-    color: #ffffff;
-}
-
-.inner-circle {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: linear-gradient(45deg, #ff7900, #ffb000);
-    border: 2px solid #ff7900;
-}
-
-.post {
-    background: #111111;
-    border: 1px solid #292929;
-    border-radius: 8px;
-    margin-bottom: 20px;
-}
-
-.post-header {
-    padding: 12px;
-    font-weight: bold;
-    font-size: 14px;
-    border-bottom: 1px solid #292929;
-    color: #ff7900;
-}
-
-.placeholder-img {
-    width: 100%;
-    height: 400px;
-    background-color: #1c1c1c;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #aaaaaa;
-}
-
-.post-footer {
-    padding: 12px;
-}
-
-.post-icons {
-    display: flex;
-    gap: 15px;
-    font-size: 22px;
-    margin-bottom: 8px;
-    color: #ffffff;
-}
-
-.post-icons i {
-    cursor: pointer;
-    transition: color 0.2s;
-}
-
-.post-icons i:hover {
-    color: #ff7900;
-}
-
-.likes {
-    font-size: 14px;
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: #ffffff;
-}
-
-.caption {
-    font-size: 14px;
-    color: #eeeeee;
-}
-
-.caption b {
-    color: #ff7900;
-}
-
-.sidebar {
-    width: 293px;
-}
-
-.profile-section {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.mini-profile {
-    width: 56px;
-    height: 56px;
-    background: linear-gradient(45deg, #ff7900, #ffb000);
-    border-radius: 50%;
-}
-
-.user-id {
-    font-weight: bold;
-    font-size: 14px;
-    color: #ffffff;
-}
-
-.user-name {
-    color: #999999;
-    font-size: 14px;
-}
-
-@media (max-width: 750px) {
-    .sidebar {
-        display: none;
-    }
-
-    .main-content {
-        margin: 15px auto;
-        padding: 0 10px;
-    }
-
-    .feed {
-        width: 100%;
-        max-width: 470px;
-    }
-
-    .search-bar {
-        width: 150px;
-    }
-
-    .nav-icons i {
-        margin-left: 10px;
-        font-size: 19px;
-    }
-}
-    
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const postHTML = `
+                        <div class="post">
+                            <div class="post-header">
+                                <div class="avatar-small"></div>
+                                <span>DHAAKAD_USER</span>
+                            </div>
+                            <div class="post-img">
+                                <img src="${e.target.result}" alt="Post">
+                            </div>
+                            <div class="post-footer">
+                                <div class="post-icons">
+                                    <i class="fa-regular fa-heart" onclick="toggleLike(this)"></i>
+                                    <i class="fa-regular fa-comment"></i>
+                                    <i class="fa-regular fa-paper-plane"></i>
+                                </div>
+                                <p class="likes"><span class="like-count">0</span> likes</p>
+                                <p class="caption"><b>DHAAKAD_USER</b> ${caption}</p>
+                            </div>
+                        </div>
+                    `;
+                    stories.insertAdjacentHTML('afterend', postHTML);
+                    fileInput.value = '';
+                    document.getElementById('captionInput').value = '';
+                    closeModal();
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                alert("Pehle koi photo select karein!");
+            }
+        }
+    </script>
 </body>
 </html>
