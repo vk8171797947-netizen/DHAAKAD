@@ -54,6 +54,15 @@
         .comment-box input { flex: 1; padding: 8px 10px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-color); border-radius: 6px; font-size: 14px; }
         .comment-box button { background: #ff7900; color: #000; border: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; }
 
+        /* Profile Page Styles */
+        .profile-container { display: none; max-width: 470px; margin: 15px auto; padding: 20px; text-align: center; background: var(--post-bg); border: 1px solid var(--border-color); border-radius: 10px; }
+        .profile-avatar { width: 90px; height: 90px; border-radius: 50%; background: #ff7900; color: #000; font-size: 36px; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto; font-weight: bold; }
+        .profile-container h2 { margin-bottom: 5px; color: var(--text-color); }
+        .profile-container p { color: #888; font-size: 14px; margin-bottom: 20px; }
+        .profile-edit-box { display: flex; gap: 8px; margin-bottom: 15px; }
+        .profile-edit-box input { flex: 1; padding: 10px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-color); border-radius: 6px; }
+        .profile-edit-box button { background: #ff7900; color: #000; border: none; padding: 10px 15px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+
         /* Modal */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 100; justify-content: center; align-items: center; padding: 15px; }
         .modal-content { background: var(--post-bg); padding: 20px; border-radius: 12px; width: 100%; max-width: 360px; border: 1px solid var(--border-color); text-align: center; }
@@ -77,6 +86,7 @@
         <div class="nav-icons">
             <button type="button" class="icon-btn" id="themeBtn" title="Theme Toggle"><i class="fa-solid fa-moon"></i></button>
             <button type="button" class="icon-btn" id="homeBtn" title="Home"><i class="fa-solid fa-house"></i></button>
+            <button type="button" class="icon-btn" id="profileBtn" title="Profile"><i class="fa-regular fa-user"></i></button>
             <button type="button" class="icon-btn" id="plusBtn" title="Create Post"><i class="fa-regular fa-square-plus"></i></button>
             <button type="button" class="icon-btn" id="notifBtn" title="Notifications"><i class="fa-regular fa-heart"></i></button>
         </div>
@@ -104,6 +114,18 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Profile Page Section (Hidden by default) -->
+    <div class="profile-container" id="profileSection">
+        <div class="profile-avatar"><i class="fa-solid fa-user"></i></div>
+        <h2 id="displayUsername">DHAAKAD_USER</h2>
+        <p>धाकड़ ऐप का ऑफिशियल यूजर 🚀</p>
+        <div class="profile-edit-box">
+            <input type="text" id="newUsernameInput" placeholder="नया यूजरनेम लिखें...">
+            <button type="button" id="saveUsernameBtn">बदलो</button>
+        </div>
+        <button type="button" class="btn btn-secondary" id="backToHomeBtn">वापस होम पर जाएं</button>
     </div>
 
     <!-- Create Post Modal -->
@@ -147,8 +169,21 @@
 
         // Navbar Action Controls
         document.getElementById('homeBtn').addEventListener('click', () => {
+            document.getElementById('profileSection').style.display = 'none';
+            document.getElementById('feed').style.display = 'block';
             window.scrollTo({ top: 0, behavior: 'smooth' });
             showToast('होम पेज पर आ गए! 🏠');
+        });
+
+        document.getElementById('profileBtn').addEventListener('click', () => {
+            document.getElementById('feed').style.display = 'none';
+            document.getElementById('profileSection').style.display = 'block';
+            showToast('प्रोफाइल पेज खुल गया 👤');
+        });
+
+        document.getElementById('backToHomeBtn').addEventListener('click', () => {
+            document.getElementById('profileSection').style.display = 'none';
+            document.getElementById('feed').style.display = 'block';
         });
 
         document.getElementById('plusBtn').addEventListener('click', () => {
@@ -181,6 +216,24 @@
         // Load data on startup
         loadPostsFromStorage();
 
+        // Username Logic
+        const savedName = localStorage.getItem('dhaakad_username');
+        if (savedName) {
+            document.getElementById('displayUsername').innerText = savedName;
+        }
+
+        document.getElementById('saveUsernameBtn').addEventListener('click', () => {
+            const newName = document.getElementById('newUsernameInput').value.trim();
+            if (newName) {
+                document.getElementById('displayUsername').innerText = newName;
+                localStorage.setItem('dhaakad_username', newName);
+                document.getElementById('newUsernameInput').value = '';
+                showToast('नाम बदल गया! ✅');
+            } else {
+                showToast('कृपया सही नाम लिखें! ⚠️');
+            }
+        });
+
         // Submit New Post with Image Support
         document.getElementById('submitPostBtn').addEventListener('click', () => {
             const input = document.getElementById('captionInput');
@@ -198,7 +251,7 @@
                 const newPost = document.createElement('div');
                 newPost.className = 'post';
                 newPost.innerHTML = `
-                    <div class="post-header"><i class="fa-solid fa-user"></i> DHAAKAD_USER</div>
+                    <div class="post-header"><i class="fa-solid fa-user"></i> ${localStorage.getItem('dhaakad_username') || 'DHAAKAD_USER'}</div>
                     <div class="post-box">${imgSrc ? `<img src="${imgSrc}" alt="Post Image">` : text}</div>
                     <div class="post-footer">
                         <div class="post-actions">
@@ -207,7 +260,7 @@
                             <button type="button" class="action-btn share-btn"><i class="fa-regular fa-paper-plane"></i></button>
                         </div>
                         <p><b><span class="like-count">1</span> likes</b></p>
-                        <p><b>DHAAKAD_USER</b> ${text}</p>
+                        <p><b>${localStorage.getItem('dhaakad_username') || 'DHAAKAD_USER'}</b> ${text}</p>
                         <div class="comments-list"></div>
                         <div class="comment-box">
                             <input type="text" placeholder="कमेंट लिखें...">
@@ -292,45 +345,5 @@
             }
         });
     </script>
-            /* Profile Modal & Page Styles */
-        .profile-container { display: none; max-width: 470px; margin: 15px auto; padding: 20px; text-align: center; background: var(--post-bg); border: 1px solid var(--border-color); border-radius: 10px; }
-        .profile-avatar { width: 90px; height: 90px; border-radius: 50%; background: #ff7900; color: #000; font-size: 36px; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto; font-weight: bold; }
-        .profile-container h2 { margin-bottom: 5px; color: var(--text-color); }
-        .profile-container p { color: #888; font-size: 14px; margin-bottom: 20px; }
-        .profile-edit-box { display: flex; gap: 8px; margin-bottom: 15px; }
-        .profile-edit-box input { flex: 1; padding: 10px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-color); border-radius: 6px; }
-        .profile-edit-box button { background: #ff7900; color: #000; border: none; padding: 10px 15px; border-radius: 6px; font-weight: bold; cursor: pointer; }
-            // Profile Page Toggle & Logic
-        const profileBtn = document.createElement('button'); // (या HTML में बटन जोड़ चुके हैं तो नीचे लॉजिक सेट करें)
-        
-        document.getElementById('profileBtn').addEventListener('click', () => {
-            document.getElementById('feed').style.display = 'none';
-            document.getElementById('profileSection').style.display = 'block';
-            showToast('प्रोफाइल पेज खुल गया 👤');
-        });
-
-        document.getElementById('backToHomeBtn').addEventListener('click', () => {
-            document.getElementById('profileSection').style.display = 'none';
-            document.getElementById('feed').style.display = 'block';
-        });
-
-        // Username Change Logic with LocalStorage
-        const savedName = localStorage.getItem('dhaakad_username');
-        if (savedName) {
-            document.getElementById('displayUsername').innerText = savedName;
-        }
-
-        document.getElementById('saveUsernameBtn').addEventListener('click', () => {
-            const newName = document.getElementById('newUsernameInput').value.trim();
-            if (newName) {
-                document.getElementById('displayUsername').innerText = newName;
-                localStorage.setItem('dhaakad_username', newName);
-                document.getElementById('newUsernameInput').value = '';
-                showToast('नाम बदल गया! ✅');
-            } else {
-                showToast('कृपया सही नाम लिखें! ⚠️');
-            }
-        });
-    
 </body>
 </html>
