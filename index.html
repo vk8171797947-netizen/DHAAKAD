@@ -10,428 +10,155 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: Arial, sans-serif;
         }
-
         body {
-            background-color: #000000;
-            color: #ffffff;
+            background-color: #000;
+            color: #fff;
         }
-
         .navbar {
-            background: #111111;
-            border-bottom: 1px solid #292929;
+            background: #111;
+            border-bottom: 1px solid #333;
             position: sticky;
             top: 0;
-            z-index: 100;
-            padding: 12px 0;
-        }
-
-        .nav-container {
-            max-width: 935px;
-            margin: 0 auto;
+            z-index: 10;
+            padding: 10px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 15px;
         }
-
         .logo {
-            font-size: 24px;
-            font-weight: 800;
             color: #ff7900;
-            letter-spacing: 1px;
-        }
-
-        .nav-icons {
-            display: flex;
-            align-items: center;
-            gap: 18px;
-        }
-
-        .nav-icons i {
-            font-size: 21px;
-            color: #ffffff;
-            cursor: pointer;
-            padding: 5px;
-        }
-
-        .nav-icons i:active {
-            color: #ff7900;
-        }
-
-        .search-bar {
-            background-color: #1c1c1c;
-            border: 1px solid #333333;
-            color: #ffffff;
-            padding: 8px 14px;
-            border-radius: 8px;
-            width: 100%;
-            max-width: 250px;
-            outline: none;
-        }
-
-        .main-content {
-            max-width: 935px;
-            margin: 20px auto;
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            padding: 0 12px;
-        }
-
-        .feed {
-            width: 100%;
-            max-width: 470px;
-        }
-
-        .stories {
-            background: #111111;
-            border: 1px solid #292929;
-            border-radius: 10px;
-            padding: 14px;
-            display: flex;
-            gap: 16px;
-            margin-bottom: 20px;
-            overflow-x: auto;
-        }
-
-        .stories::-webkit-scrollbar {
-            display: none;
-        }
-
-        .story-circle {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-size: 12px;
-            gap: 6px;
-            color: #ffffff;
-            flex-shrink: 0;
-        }
-
-        .inner-circle {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: linear-gradient(45deg, #ff7900, #ffb000);
-            border: 2px solid #000;
-            outline: 2px solid #ff7900;
-        }
-
-        .post {
-            background: #111111;
-            border: 1px solid #292929;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            overflow: hidden;
-        }
-
-        .post-header {
-            padding: 12px 15px;
             font-weight: bold;
-            font-size: 14px;
-            border-bottom: 1px solid #292929;
+            font-size: 22px;
+        }
+        .nav-icons i {
+            font-size: 20px;
+            margin-left: 15px;
+            cursor: pointer;
+        }
+        .main {
+            max-width: 470px;
+            margin: 20px auto;
+            padding: 0 10px;
+        }
+        .post {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .post-header {
+            padding: 10px;
             color: #ff7900;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            font-weight: bold;
         }
-
-        .avatar-small {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: linear-gradient(45deg, #ff7900, #ffb000);
-        }
-
-        .placeholder-img {
+        .post-box {
             width: 100%;
             height: 350px;
-            background-color: #1c1c1c;
+            background: #222;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #aaaaaa;
-            font-size: 16px;
+            color: #888;
         }
-
-        .post-img img {
-            width: 100%;
-            max-height: 450px;
-            object-fit: cover;
-            display: block;
-        }
-
         .post-footer {
-            padding: 12px 15px;
+            padding: 10px;
         }
-
-        .post-icons {
-            display: flex;
-            gap: 18px;
+        .post-footer i {
             font-size: 22px;
-            margin-bottom: 10px;
-            color: #ffffff;
-        }
-
-        .post-icons i {
             cursor: pointer;
+            margin-right: 15px;
         }
-
         .liked {
-            color: #ff3b30 !important;
+            color: red !important;
         }
-
-        .likes {
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 6px;
-        }
-
-        .caption {
-            font-size: 14px;
-            color: #eeeeee;
-        }
-
-        .caption b {
-            color: #ff7900;
-        }
-
-        .sidebar {
-            width: 293px;
-        }
-
-        .profile-section {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            background: #111111;
-            padding: 15px;
-            border-radius: 10px;
-            border: 1px solid #292929;
-        }
-
-        .mini-profile {
-            width: 56px;
-            height: 56px;
-            background: linear-gradient(45deg, #ff7900, #ffb000);
-            border-radius: 50%;
-        }
-
-        .user-id {
-            font-weight: bold;
-            font-size: 14px;
-            color: #ff7900;
-        }
-
-        .user-name {
-            color: #999999;
-            font-size: 13px;
-        }
-
         .modal {
             display: none;
             position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 200;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
             justify-content: center;
             align-items: center;
-            padding: 15px;
         }
-
-        .modal-box {
-            background: #161616;
-            border: 1px solid #333;
-            border-radius: 12px;
-            padding: 20px;
-            width: 100%;
-            max-width: 400px;
-        }
-
-        .modal-box h3 {
-            color: #ff7900;
-            margin-bottom: 15px;
-        }
-
-        .modal-box input, .modal-box textarea {
-            width: 100%;
+        .modal-content {
             background: #222;
-            border: 1px solid #333;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 350px;
+        }
+        .modal-content textarea, .modal-content input {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 8px;
+            background: #111;
             color: #fff;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 12px;
-            outline: none;
+            border: 1px solid #444;
         }
-
-        .modal-btns {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-        }
-
         .btn {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .btn-orange {
             background: #ff7900;
             color: #000;
-        }
-
-        .btn-gray {
-            background: #333;
-            color: #fff;
-        }
-
-        @media (max-width: 768px) {
-            .sidebar { display: none; }
+            border: none;
+            padding: 8px 15px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
         }
     </style>
 </head>
 <body>
 
     <div class="navbar">
-        <div class="nav-container">
-            <div class="logo">DHAAKAD</div>
-            <input type="text" placeholder="Search" class="search-bar">
-            <div class="nav-icons">
-                <i class="fa-solid fa-house"></i>
-                <i class="fa-regular fa-paper-plane"></i>
-                <!-- Plus icon with direct mobile click function -->
-                <i class="fa-regular fa-square-plus" onclick="openModal()"></i>
-                <i class="fa-regular fa-compass"></i>
-                <i class="fa-regular fa-heart"></i>
+        <div class="logo">DHAAKAD</div>
+        <div class="nav-icons">
+            <i class="fa-solid fa-house"></i>
+            <i class="fa-regular fa-square-plus" onclick="openBox()"></i>
+            <i class="fa-regular fa-heart"></i>
+        </div>
+    </div>
+
+    <div class="main" id="feed">
+        <div class="post">
+            <div class="post-header">DHAAKAD_USER</div>
+            <div class="post-box">Post Image Here</div>
+            <div class="post-footer">
+                <i class="fa-regular fa-heart" id="likeIcon" onclick="likePost()"></i>
+                <p><span id="likeCount">1245</span> likes</p>
+                <p><b>DHAAKAD_USER</b> Welcome to DHAAKAD!</p>
             </div>
         </div>
     </div>
 
-    <div class="main-content">
-        <div class="feed" id="feed-container">
-            <div class="stories">
-                <div class="story-circle"><div class="inner-circle"></div><span>Your Story</span></div>
-                <div class="story-circle"><div class="inner-circle"></div><span>user_1</span></div>
-                <div class="story-circle"><div class="inner-circle"></div><span>user_2</span></div>
-                <div class="story-circle"><div class="inner-circle"></div><span>user_3</span></div>
-            </div>
-
-            <div class="post">
-                <div class="post-header">
-                    <div class="avatar-small"></div>
-                    <span>DHAAKAD_USER</span>
-                </div>
-                <div class="post-img">
-                    <div class="placeholder-img">Post Image Here</div>
-                </div>
-                <div class="post-footer">
-                    <div class="post-icons">
-                        <!-- Like icon with direct mobile click function -->
-                        <i class="fa-regular fa-heart" onclick="toggleLike(this)"></i>
-                        <i class="fa-regular fa-comment"></i>
-                        <i class="fa-regular fa-paper-plane"></i>
-                    </div>
-                    <p class="likes"><span class="like-count">1245</span> likes</p>
-                    <p class="caption"><b>DHAAKAD_USER</b> Welcome to DHAAKAD! 🔥</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="sidebar">
-            <div class="profile-section">
-                <div class="mini-profile"></div>
-                <div>
-                    <p class="user-id">DHAAKAD_USER</p>
-                    <p class="user-name">Official Creator</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Box -->
-    <div class="modal" id="postModal">
-        <div class="modal-box">
-            <h3>Create New Post</h3>
-            <input type="file" id="imageInput" accept="image/*">
-            <textarea id="captionInput" rows="3" placeholder="Write a caption..."></textarea>
-            <div class="modal-btns">
-                <button class="btn btn-gray" onclick="closeModal()">Cancel</button>
-                <button class="btn btn-orange" onclick="addPost()">Post</button>
-            </div>
+    <!-- Modal -->
+    <div class="modal" id="myModal">
+        <div class="modal-content">
+            <h3>New Post</h3>
+            <input type="text" id="captionText" placeholder="Write a caption...">
+            <button class="btn" onclick="closeBox()">Close</button>
         </div>
     </div>
 
     <script>
-        // Open Modal Function
-        function openModal() {
-            document.getElementById('postModal').style.display = 'flex';
+        function openBox() {
+            document.getElementById('myModal').style.display = 'flex';
         }
-
-        // Close Modal Function
-        function closeModal() {
-            document.getElementById('postModal').style.display = 'none';
+        function closeBox() {
+            document.getElementById('myModal').style.display = 'none';
         }
-
-        // Like Button Function
-        function toggleLike(icon) {
-            const footer = icon.closest('.post-footer');
-            const countSpan = footer.querySelector('.like-count');
+        function likePost() {
+            let icon = document.getElementById('likeIcon');
+            let countSpan = document.getElementById('likeCount');
             let count = parseInt(countSpan.innerText);
 
             if (icon.classList.contains('fa-regular')) {
-                icon.classList.remove('fa-regular', 'fa-heart');
-                icon.classList.add('fa-solid', 'fa-heart', 'liked');
+                icon.classList.remove('fa-regular');
+                icon.classList.add('fa-solid', 'liked');
                 countSpan.innerText = count + 1;
             } else {
-                icon.classList.remove('fa-solid', 'fa-heart', 'liked');
-                icon.classList.add('fa-regular', 'fa-heart');
+                icon.classList.remove('fa-solid', 'liked');
+                icon.classList.add('fa-regular');
                 countSpan.innerText = count - 1;
-            }
-        }
-
-        // Add Post Function
-        function addPost() {
-            const fileInput = document.getElementById('imageInput');
-            const caption = document.getElementById('captionInput').value || "New DHAAKAD Post!";
-            const feedContainer = document.getElementById('feed-container');
-            const stories = feedContainer.querySelector('.stories');
-
-            if (fileInput.files && fileInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const postHTML = `
-                        <div class="post">
-                            <div class="post-header">
-                                <div class="avatar-small"></div>
-                                <span>DHAAKAD_USER</span>
-                            </div>
-                            <div class="post-img">
-                                <img src="${e.target.result}" alt="Post">
-                            </div>
-                            <div class="post-footer">
-                                <div class="post-icons">
-                                    <i class="fa-regular fa-heart" onclick="toggleLike(this)"></i>
-                                    <i class="fa-regular fa-comment"></i>
-                                    <i class="fa-regular fa-paper-plane"></i>
-                                </div>
-                                <p class="likes"><span class="like-count">0</span> likes</p>
-                                <p class="caption"><b>DHAAKAD_USER</b> ${caption}</p>
-                            </div>
-                        </div>
-                    `;
-                    stories.insertAdjacentHTML('afterend', postHTML);
-                    fileInput.value = '';
-                    document.getElementById('captionInput').value = '';
-                    closeModal();
-                };
-                reader.readAsDataURL(fileInput.files[0]);
-            } else {
-                alert("कृपया पहले गैलरी से एक फोटो चुनें!");
             }
         }
     </script>
