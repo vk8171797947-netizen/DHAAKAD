@@ -343,6 +343,21 @@
                     showToast('लिंक कॉपी हो गया! 🔗');
                 }
             }
+                        // Follow Button Logic inside feed click listener
+            const followBtn = e.target.closest('.follow-btn');
+            if (followBtn) {
+                if (followBtn.innerText === 'Follow') {
+                    followBtn.innerText = 'Following';
+                    followBtn.style.background = '#333';
+                    followBtn.style.color = '#fff';
+                    showToast('फॉलो कर लिया! 🤝');
+                } else {
+                    followBtn.innerText = 'Follow';
+                    followBtn.style.background = '#ff7900';
+                    followBtn.style.color = '#000';
+                    showToast('अनफॉलो कर दिया! ❌');
+                }
+            }
         });
     </script>
         <!-- Profile Page Section -->
@@ -363,21 +378,6 @@
 
         <button type="button" class="btn btn-secondary" id="backToHomeBtn">वापस होम पर जाएं</button>
     </div>
-              // Follow Button Logic inside feed click listener
-            const followBtn = e.target.closest('.follow-btn');
-            if (followBtn) {
-                if (followBtn.innerText === 'Follow') {
-                    followBtn.innerText = 'Following';
-                    followBtn.style.background = '#333';
-                    followBtn.style.color = '#fff';
-                    showToast('फॉलो कर लिया! 🤝');
-                } else {
-                    followBtn.innerText = 'Follow';
-                    followBtn.style.background = '#ff7900';
-                    followBtn.style.color = '#000';
-                    showToast('अनफॉलो कर दिया! ❌');
-                }
-            }
-    
+              
 </body>
 </html>
