@@ -6,43 +6,65 @@
     <title>DHAAKAD</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --bg-color: #000;
+            --text-color: #fff;
+            --nav-bg: #111;
+            --border-color: #333;
+            --post-bg: #111;
+            --post-box-bg: #1a1a1a;
+            --input-bg: #000;
+        }
+
+        .light-mode {
+            --bg-color: #f0f2f5;
+            --text-color: #000;
+            --nav-bg: #fff;
+            --border-color: #ddd;
+            --post-bg: #fff;
+            --post-box-bg: #f9f9f9;
+            --input-bg: #fff;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #000; color: #fff; padding-bottom: 60px; }
+        body { background-color: var(--bg-color); color: var(--text-color); padding-bottom: 60px; transition: background 0.3s, color 0.3s; }
         
         /* Navbar */
-        .navbar { background: #111; border-bottom: 1px solid #333; position: sticky; top: 0; z-index: 10; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; }
+        .navbar { background: var(--nav-bg); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 10; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s; }
         .logo { color: #ff7900; font-weight: bold; font-size: 24px; letter-spacing: 1px; }
-        .nav-icons { display: flex; gap: 15px; }
-        .icon-btn { background: none; border: none; color: #fff; font-size: 22px; padding: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .nav-icons { display: flex; gap: 12px; align-items: center; }
+        .icon-btn { background: none; border: none; color: var(--text-color); font-size: 20px; padding: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .icon-btn:active { color: #ff7900; transform: scale(0.92); }
 
         /* Feed & Posts */
         .main { max-width: 470px; margin: 15px auto; padding: 0 10px; }
-        .post { background: #111; border: 1px solid #333; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+        .post { background: var(--post-bg); border: 1px solid var(--border-color); border-radius: 10px; margin-bottom: 20px; overflow: hidden; transition: background 0.3s; }
         .post-header { padding: 12px; color: #ff7900; font-weight: bold; font-size: 14px; display: flex; align-items: center; gap: 8px; }
-        .post-box { width: 100%; min-height: 280px; background: #1a1a1a; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px; padding: 20px; text-align: center; border-top: 1px solid #222; border-bottom: 1px solid #222; }
+        .post-box { width: 100%; min-height: 250px; background: var(--post-box-bg); display: flex; align-items: center; justify-content: center; color: var(--text-color); font-size: 18px; padding: 10px; text-align: center; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); overflow: hidden; }
+        .post-box img { width: 100%; max-height: 400px; object-fit: cover; border-radius: 6px; }
         .post-footer { padding: 12px; }
         .post-actions { display: flex; gap: 12px; margin-bottom: 8px; }
-        .action-btn { background: none; border: none; color: #fff; font-size: 24px; padding: 4px; cursor: pointer; }
+        .action-btn { background: none; border: none; color: var(--text-color); font-size: 24px; padding: 4px; cursor: pointer; }
         .liked { color: #ff3b30 !important; }
         .post-footer p { font-size: 14px; margin-bottom: 6px; line-height: 1.4; }
 
         /* Comments Section */
-        .comments-list { margin-top: 8px; padding-top: 8px; border-top: 1px solid #222; font-size: 13px; color: #ccc; }
+        .comments-list { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border-color); font-size: 13px; color: var(--text-color); opacity: 0.85; }
         .comment-box { display: none; margin-top: 10px; gap: 8px; }
-        .comment-box input { flex: 1; padding: 8px 10px; background: #000; border: 1px solid #444; color: #fff; border-radius: 6px; font-size: 14px; }
+        .comment-box input { flex: 1; padding: 8px 10px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-color); border-radius: 6px; font-size: 14px; }
         .comment-box button { background: #ff7900; color: #000; border: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; }
 
         /* Modal */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 100; justify-content: center; align-items: center; padding: 15px; }
-        .modal-content { background: #1a1a1a; padding: 20px; border-radius: 12px; width: 100%; max-width: 360px; border: 1px solid #333; text-align: center; }
+        .modal-content { background: var(--post-bg); padding: 20px; border-radius: 12px; width: 100%; max-width: 360px; border: 1px solid var(--border-color); text-align: center; }
         .modal-content h3 { margin-bottom: 15px; color: #ff7900; }
-        .modal-content input { width: 100%; margin-bottom: 15px; padding: 12px; background: #000; color: #fff; border: 1px solid #444; border-radius: 6px; font-size: 15px; }
+        .modal-content input[type="text"] { width: 100%; margin-bottom: 12px; padding: 12px; background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 6px; font-size: 15px; }
+        .modal-content input[type="file"] { width: 100%; margin-bottom: 15px; color: var(--text-color); font-size: 14px; }
         .btn-container { display: flex; gap: 10px; }
         .btn { width: 100%; background: #ff7900; color: #000; border: none; padding: 12px; font-weight: bold; cursor: pointer; border-radius: 6px; font-size: 15px; }
         .btn-secondary { background: #333; color: #fff; }
 
-        /* Bottom Toast Notification */
+        /* Toast Notification */
         #toast { visibility: hidden; min-width: 240px; background-color: #ff7900; color: #000; font-weight: bold; text-align: center; border-radius: 25px; padding: 10px 18px; position: fixed; z-index: 200; left: 50%; bottom: 25px; transform: translateX(-50%); font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
         #toast.show { visibility: visible; }
     </style>
@@ -53,17 +75,19 @@
     <div class="navbar">
         <div class="logo">DHAAKAD</div>
         <div class="nav-icons">
-            <button type="button" class="icon-btn" id="homeBtn"><i class="fa-solid fa-house"></i></button>
-            <button type="button" class="icon-btn" id="plusBtn"><i class="fa-regular fa-square-plus"></i></button>
-            <button type="button" class="icon-btn" id="notifBtn"><i class="fa-regular fa-heart"></i></button>
+            <button type="button" class="icon-btn" id="themeBtn" title="Theme Toggle"><i class="fa-solid fa-moon"></i></button>
+            <button type="button" class="icon-btn" id="homeBtn" title="Home"><i class="fa-solid fa-house"></i></button>
+            <button type="button" class="icon-btn" id="plusBtn" title="Create Post"><i class="fa-regular fa-square-plus"></i></button>
+            <button type="button" class="icon-btn" id="notifBtn" title="Notifications"><i class="fa-regular fa-heart"></i></button>
         </div>
     </div>
 
     <!-- Main Feed -->
     <div class="main" id="feed">
-        <div class="post">
+        <!-- Default Initial Post -->
+        <div class="post" data-id="default-1">
             <div class="post-header"><i class="fa-solid fa-fire"></i> DHAAKAD_OFFICIAL</div>
-            <div class="post-box">🔥 DHAAKAD Ultimate App</div>
+            <div class="post-box">🔥 DHAAKAD Ultimate App with Storage & Upload</div>
             <div class="post-footer">
                 <div class="post-actions">
                     <button type="button" class="action-btn like-btn"><i class="fa-regular fa-heart"></i></button>
@@ -71,7 +95,7 @@
                     <button type="button" class="action-btn share-btn"><i class="fa-regular fa-paper-plane"></i></button>
                 </div>
                 <p><b><span class="like-count">1245</span> likes</b></p>
-                <p><b>DHAAKAD_OFFICIAL</b> अब मोबाइल पर हर बटन 100% काम करेगा!</p>
+                <p><b>DHAAKAD_OFFICIAL</b> अब हर नया फीचर एकदम लोड और सेव रहेगा!</p>
                 
                 <div class="comments-list"></div>
                 <div class="comment-box">
@@ -86,7 +110,8 @@
     <div class="modal" id="myModal">
         <div class="modal-content">
             <h3>नई पोस्ट बनाएं</h3>
-            <input type="text" id="captionInput" placeholder="यहाँ अपना स्टेटस या पोस्ट लिखें...">
+            <input type="text" id="captionInput" placeholder="कैप्शन या स्टेटस लिखें...">
+            <input type="file" id="imageInput" accept="image/*">
             <div class="btn-container">
                 <button type="button" class="btn btn-secondary" id="cancelPostBtn">बंद करें</button>
                 <button type="button" class="btn" id="submitPostBtn">पोस्ट करें</button>
@@ -98,7 +123,7 @@
     <div id="toast">मैसेज</div>
 
     <script>
-        // Toast Notification Function
+        // Toast Function
         function showToast(msg) {
             const toast = document.getElementById("toast");
             toast.innerText = msg;
@@ -106,10 +131,24 @@
             setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 2500);
         }
 
-        // Navbar Buttons
+        // Dark/Light Theme Switcher
+        const themeBtn = document.getElementById('themeBtn');
+        themeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            const icon = themeBtn.querySelector('i');
+            if(document.body.classList.contains('light-mode')) {
+                icon.className = "fa-solid fa-sun";
+                showToast('लाइट मोड चालू हो गया ☀️');
+            } else {
+                icon.className = "fa-solid fa-moon";
+                showToast('डार्क मोड चालू हो गया 🌙');
+            }
+        });
+
+        // Navbar Action Controls
         document.getElementById('homeBtn').addEventListener('click', () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
-            showToast('आप होम पेज पर हैं! 🏠');
+            showToast('होम पेज पर आ गए! 🏠');
         });
 
         document.getElementById('plusBtn').addEventListener('click', () => {
@@ -120,48 +159,81 @@
             showToast('कोई नया नोटिफिकेशन नहीं है ❤️');
         });
 
-        // Modal Buttons
         document.getElementById('cancelPostBtn').addEventListener('click', () => {
             document.getElementById('myModal').style.display = 'none';
             document.getElementById('captionInput').value = '';
+            document.getElementById('imageInput').value = '';
         });
 
+        // Local Storage Handling for Posts
+        function savePostsToStorage() {
+            const feedHtml = document.getElementById('feed').innerHTML;
+            localStorage.setItem('dhaakad_feed', feedHtml);
+        }
+
+        function loadPostsFromStorage() {
+            const savedFeed = localStorage.getItem('dhaakad_feed');
+            if (savedFeed) {
+                document.getElementById('feed').innerHTML = savedFeed;
+            }
+        }
+
+        // Load data on startup
+        loadPostsFromStorage();
+
+        // Submit New Post with Image Support
         document.getElementById('submitPostBtn').addEventListener('click', () => {
             const input = document.getElementById('captionInput');
+            const imageInput = document.getElementById('imageInput');
             const text = input.value.trim();
-            if (!text) {
-                showToast('पहले कुछ लिखो भाई! ✍️');
+            
+            if (!text && imageInput.files.length === 0) {
+                showToast('कृपया कुछ लिखें या फोटो चुनें! ⚠️');
                 return;
             }
 
-            const feed = document.getElementById('feed');
-            const newPost = document.createElement('div');
-            newPost.className = 'post';
-            newPost.innerHTML = `
-                <div class="post-header"><i class="fa-solid fa-user"></i> DHAAKAD_USER</div>
-                <div class="post-box">${text}</div>
-                <div class="post-footer">
-                    <div class="post-actions">
-                        <button type="button" class="action-btn like-btn"><i class="fa-regular fa-heart"></i></button>
-                        <button type="button" class="action-btn comment-toggle-btn"><i class="fa-regular fa-comment"></i></button>
-                        <button type="button" class="action-btn share-btn"><i class="fa-regular fa-paper-plane"></i></button>
+            const reader = new FileReader();
+            const processPost = (imgSrc = '') => {
+                const feed = document.getElementById('feed');
+                const newPost = document.createElement('div');
+                newPost.className = 'post';
+                newPost.innerHTML = `
+                    <div class="post-header"><i class="fa-solid fa-user"></i> DHAAKAD_USER</div>
+                    <div class="post-box">${imgSrc ? `<img src="${imgSrc}" alt="Post Image">` : text}</div>
+                    <div class="post-footer">
+                        <div class="post-actions">
+                            <button type="button" class="action-btn like-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button type="button" class="action-btn comment-toggle-btn"><i class="fa-regular fa-comment"></i></button>
+                            <button type="button" class="action-btn share-btn"><i class="fa-regular fa-paper-plane"></i></button>
+                        </div>
+                        <p><b><span class="like-count">1</span> likes</b></p>
+                        <p><b>DHAAKAD_USER</b> ${text}</p>
+                        <div class="comments-list"></div>
+                        <div class="comment-box">
+                            <input type="text" placeholder="कमेंट लिखें...">
+                            <button type="button" class="send-comment-btn">Send</button>
+                        </div>
                     </div>
-                    <p><b><span class="like-count">1</span> likes</b></p>
-                    <p><b>DHAAKAD_USER</b> ${text}</p>
-                    <div class="comments-list"></div>
-                    <div class="comment-box">
-                        <input type="text" placeholder="कमेंट लिखें...">
-                        <button type="button" class="send-comment-btn">Send</button>
-                    </div>
-                </div>
-            `;
-            feed.prepend(newPost);
-            document.getElementById('myModal').style.display = 'none';
-            input.value = '';
-            showToast('नई पोस्ट लाइव हो गई! 🔥');
+                `;
+                feed.prepend(newPost);
+                document.getElementById('myModal').style.display = 'none';
+                input.value = '';
+                imageInput.value = '';
+                savePostsToStorage();
+                showToast('नई पोस्ट लाइव हो गई! 🔥');
+            };
+
+            if (imageInput.files && imageInput.files[0]) {
+                reader.onload = function(e) {
+                    processPost(e.target.result);
+                }
+                reader.readAsDataURL(imageInput.files[0]);
+            } else {
+                processPost('');
+            }
         });
 
-        // Feed Event Delegation (Works for both old & new posts)
+        // Feed Actions (Like, Comments, Share)
         document.getElementById('feed').addEventListener('click', (e) => {
             const likeBtn = e.target.closest('.like-btn');
             const commentToggle = e.target.closest('.comment-toggle-btn');
@@ -183,6 +255,7 @@
                     icon.classList.add('fa-regular');
                     countSpan.innerText = count - 1;
                 }
+                savePostsToStorage();
             }
 
             if (commentToggle) {
@@ -200,14 +273,25 @@
                     p.innerHTML = `<b>You:</b> ${input.value.trim()}`;
                     list.appendChild(p);
                     input.value = '';
+                    savePostsToStorage();
                     showToast('कमेंट जुड़ गया! 💬');
                 }
             }
 
             if (shareBtn) {
-                showToast('लिंक कॉपी हो गया! 🔗');
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'DHAAKAD App',
+                        text: 'इस शानदार धाकड़ ऐप को देखें!',
+                        url: window.location.href,
+                    }).catch(() => {});
+                } else {
+                    navigator.clipboard.writeText(window.location.href);
+                    showToast('लिंक कॉपी हो गया! 🔗');
+                }
             }
         });
     </script>
 </body>
 </html>
+
