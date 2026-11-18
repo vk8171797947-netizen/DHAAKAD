@@ -363,6 +363,23 @@
 
         <button type="button" class="btn btn-secondary" id="backToHomeBtn">वापस होम पर जाएं</button>
     </div>
+        // Bio Save & Load Logic
+        const savedBio = localStorage.getItem('dhaakad_bio');
+        if (savedBio) {
+            document.getElementById('displayBio').innerText = savedBio;
+        }
+
+        document.getElementById('saveBioBtn').addEventListener('click', () => {
+            const newBio = document.getElementById('newBioInput').value.trim();
+            if (newBio) {
+                document.getElementById('displayBio').innerText = newBio;
+                localStorage.setItem('dhaakad_bio', newBio);
+                document.getElementById('newBioInput').value = '';
+                showToast('बायो अपडेट हो गया! ✅');
+            } else {
+                showToast('कृपया सही बायो लिखें! ⚠️');
+            }
+        });
     
 </body>
 </html>
