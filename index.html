@@ -27,24 +27,19 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-color); color: var(--text-color); padding-bottom: 70px; transition: background 0.3s, color 0.3s; }
+        body { background-color: var(--bg-color); color: var(--text-color); padding-bottom: 60px; transition: background 0.3s, color 0.3s; }
         
         /* Navbar */
-        .navbar { background: var(--nav-bg); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 10; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; }
+        .navbar { background: var(--nav-bg); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 10; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s; }
         .logo { color: #ff7900; font-weight: bold; font-size: 24px; letter-spacing: 1px; }
         .nav-icons { display: flex; gap: 12px; align-items: center; }
         .icon-btn { background: none; border: none; color: var(--text-color); font-size: 20px; padding: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .icon-btn:active { color: #ff7900; transform: scale(0.92); }
 
-        /* Views / Sections */
-        .view-section { display: none; }
-        .view-section.active { display: block; }
-
         /* Feed & Posts */
         .main { max-width: 470px; margin: 15px auto; padding: 0 10px; }
-        .post { background: var(--post-bg); border: 1px solid var(--border-color); border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+        .post { background: var(--post-bg); border: 1px solid var(--border-color); border-radius: 10px; margin-bottom: 20px; overflow: hidden; transition: background 0.3s; }
         .post-header { padding: 12px; color: #ff7900; font-weight: bold; font-size: 14px; display: flex; align-items: center; gap: 8px; }
-        .post-header img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 1px solid #ff7900; }
         .post-box { width: 100%; min-height: 250px; background: var(--post-box-bg); display: flex; align-items: center; justify-content: center; color: var(--text-color); font-size: 18px; padding: 10px; text-align: center; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); overflow: hidden; }
         .post-box img { width: 100%; max-height: 400px; object-fit: cover; border-radius: 6px; }
         .post-footer { padding: 12px; }
@@ -59,23 +54,12 @@
         .comment-box input { flex: 1; padding: 8px 10px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-color); border-radius: 6px; font-size: 14px; }
         .comment-box button { background: #ff7900; color: #000; border: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; }
 
-        /* Profile Page Design */
-        .profile-container { max-width: 470px; margin: 20px auto; padding: 0 15px; text-align: center; }
-        .profile-card { background: var(--post-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 25px 15px; }
-        .profile-dp-wrapper { position: relative; width: 100px; height: 100px; margin: 0 auto 15px auto; }
-        .profile-dp { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 2px solid #ff7900; background: #222; }
-        .profile-name { font-size: 20px; font-weight: bold; color: #ff7900; margin-bottom: 5px; }
-        .profile-bio { font-size: 14px; color: var(--text-color); opacity: 0.8; margin-bottom: 20px; }
-        .profile-stats { display: flex; justify-content: space-around; margin-bottom: 20px; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); padding: 12px 0; }
-        .stat-box span { display: block; font-weight: bold; font-size: 16px; color: var(--text-color); }
-        .stat-box small { font-size: 12px; color: #888; }
-        .edit-profile-btn { background: #333; color: #fff; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 14px; }
-
         /* Modal */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 100; justify-content: center; align-items: center; padding: 15px; }
         .modal-content { background: var(--post-bg); padding: 20px; border-radius: 12px; width: 100%; max-width: 360px; border: 1px solid var(--border-color); text-align: center; }
         .modal-content h3 { margin-bottom: 15px; color: #ff7900; }
-        .modal-content input, .modal-content textarea { width: 100%; margin-bottom: 12px; padding: 12px; background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 6px; font-size: 15px; }
+        .modal-content input[type="text"] { width: 100%; margin-bottom: 12px; padding: 12px; background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 6px; font-size: 15px; }
+        .modal-content input[type="file"] { width: 100%; margin-bottom: 15px; color: var(--text-color); font-size: 14px; }
         .btn-container { display: flex; gap: 10px; }
         .btn { width: 100%; background: #ff7900; color: #000; border: none; padding: 12px; font-weight: bold; cursor: pointer; border-radius: 6px; font-size: 15px; }
         .btn-secondary { background: #333; color: #fff; }
@@ -94,54 +78,30 @@
             <button type="button" class="icon-btn" id="themeBtn" title="Theme Toggle"><i class="fa-solid fa-moon"></i></button>
             <button type="button" class="icon-btn" id="homeBtn" title="Home"><i class="fa-solid fa-house"></i></button>
             <button type="button" class="icon-btn" id="plusBtn" title="Create Post"><i class="fa-regular fa-square-plus"></i></button>
-            <button type="button" class="icon-btn" id="profileNavBtn" title="Profile"><i class="fa-regular fa-user"></i></button>
+            <button type="button" class="icon-btn" id="notifBtn" title="Notifications"><i class="fa-regular fa-heart"></i></button>
         </div>
     </div>
 
-    <!-- FEED VIEW -->
-    <div id="feedView" class="view-section active">
-        <div class="main" id="feed">
-            <div class="post" data-id="default-1">
-                <div class="post-header">
-                    <img src="https://via.placeholder.com/30" alt="DP" class="user-dp-thumb"> 
-                    <span class="username-display">DHAAKAD_OFFICIAL</span>
+    <!-- Main Feed -->
+    <div class="main" id="feed">
+        <!-- Default Initial Post -->
+        <div class="post" data-id="default-1">
+            <div class="post-header"><i class="fa-solid fa-fire"></i> DHAAKAD_OFFICIAL</div>
+            <div class="post-box">🔥 DHAAKAD Ultimate App with Storage & Upload</div>
+            <div class="post-footer">
+                <div class="post-actions">
+                    <button type="button" class="action-btn like-btn"><i class="fa-regular fa-heart"></i></button>
+                    <button type="button" class="action-btn comment-toggle-btn"><i class="fa-regular fa-comment"></i></button>
+                    <button type="button" class="action-btn share-btn"><i class="fa-regular fa-paper-plane"></i></button>
                 </div>
-                <div class="post-box">🔥 DHAAKAD Ultimate App - Profile & DP Update</div>
-                <div class="post-footer">
-                    <div class="post-actions">
-                        <button type="button" class="action-btn like-btn"><i class="fa-regular fa-heart"></i></button>
-                        <button type="button" class="action-btn comment-toggle-btn"><i class="fa-regular fa-comment"></i></button>
-                        <button type="button" class="action-btn share-btn"><i class="fa-regular fa-paper-plane"></i></button>
-                    </div>
-                    <p><b><span class="like-count">1245</span> likes</b></p>
-                    <p><b>DHAAKAD_OFFICIAL</b> अब अपनी प्रोफाइल और डीपी सेट करें!</p>
-                    <div class="comments-list"></div>
-                    <div class="comment-box">
-                        <input type="text" placeholder="कमेंट लिखें...">
-                        <button type="button" class="send-comment-btn">Send</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- PROFILE VIEW -->
-    <div id="profileView" class="view-section">
-        <div class="profile-container">
-            <div class="profile-card">
-                <div class="profile-dp-wrapper">
-                    <img id="userProfileDp" src="https://via.placeholder.com/100" alt="DP" class="profile-dp">
-                </div>
-                <h2 id="userProfileName" class="profile-name">DHAAKAD_USER</h2>
-                <p id="userProfileBio" class="profile-bio">हर हर महादेव! 🔥 धाकड़ ऐप यूजर</p>
+                <p><b><span class="like-count">1245</span> likes</b></p>
+                <p><b>DHAAKAD_OFFICIAL</b> अब हर नया फीचर एकदम लोड और सेव रहेगा!</p>
                 
-                <div class="profile-stats">
-                    <div class="stat-box"><span id="postCount">1</span><small>Posts</small></div>
-                    <div class="stat-box"><span>1.2K</span><small>Followers</small></div>
-                    <div class="stat-box"><span>180</span><small>Following</small></div>
+                <div class="comments-list"></div>
+                <div class="comment-box">
+                    <input type="text" placeholder="कमेंट लिखें...">
+                    <button type="button" class="send-comment-btn">Send</button>
                 </div>
-                
-                <button type="button" class="edit-profile-btn" id="openEditProfile">प्रोफाइल एडिट करें (DP बदलें)</button>
             </div>
         </div>
     </div>
@@ -151,25 +111,10 @@
         <div class="modal-content">
             <h3>नई पोस्ट बनाएं</h3>
             <input type="text" id="captionInput" placeholder="कैप्शन या स्टेटस लिखें...">
-            <input type="file" id="imageInput" accept="image/*" style="color:var(--text-color); margin-bottom:12px;">
+            <input type="file" id="imageInput" accept="image/*">
             <div class="btn-container">
                 <button type="button" class="btn btn-secondary" id="cancelPostBtn">बंद करें</button>
                 <button type="button" class="btn" id="submitPostBtn">पोस्ट करें</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Edit Profile Modal -->
-    <div class="modal" id="editProfileModal">
-        <div class="modal-content">
-            <h3>प्रोफाइल एडिट करें</h3>
-            <input type="text" id="editNameInput" placeholder="अपना नाम लिखें...">
-            <textarea id="editBioInput" placeholder="अपना बायो लिखें..." rows="2" style="background:var(--input-bg); color:var(--text-color); border:1px solid var(--border-color); border-radius:6px; padding:10px; width:100%; margin-bottom:12px;"></textarea>
-            <label style="font-size:12px; display:block; text-align:left; margin-bottom:5px; color:#ff7900;">अपनी डीपी (DP) फोटो चुनें:</label>
-            <input type="file" id="editDpInput" accept="image/*" style="color:var(--text-color); margin-bottom:12px;">
-            <div class="btn-container">
-                <button type="button" class="btn btn-secondary" id="cancelEditBtn">बंद करें</button>
-                <button type="button" class="btn" id="saveProfileBtn">सेव करें</button>
             </div>
         </div>
     </div>
@@ -178,6 +123,7 @@
     <div id="toast">मैसेज</div>
 
     <script>
+        // Toast Function
         function showToast(msg) {
             const toast = document.getElementById("toast");
             toast.innerText = msg;
@@ -185,7 +131,7 @@
             setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 2500);
         }
 
-        // Theme Switcher
+        // Dark/Light Theme Switcher
         const themeBtn = document.getElementById('themeBtn');
         themeBtn.addEventListener('click', () => {
             document.body.classList.toggle('light-mode');
@@ -199,113 +145,48 @@
             }
         });
 
-        // Navigation Switching
-        const feedView = document.getElementById('feedView');
-        const profileView = document.getElementById('profileView');
-
+        // Navbar Action Controls
         document.getElementById('homeBtn').addEventListener('click', () => {
-            feedView.classList.add('active');
-            profileView.classList.remove('active');
             window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-
-        document.getElementById('profileNavBtn').addEventListener('click', () => {
-            profileView.classList.add('active');
-            feedView.classList.remove('active');
+            showToast('होम पेज पर आ गए! 🏠');
         });
 
         document.getElementById('plusBtn').addEventListener('click', () => {
             document.getElementById('myModal').style.display = 'flex';
         });
 
+        document.getElementById('notifBtn').addEventListener('click', () => {
+            showToast('कोई नया नोटिफिकेशन नहीं है ❤️');
+        });
+
         document.getElementById('cancelPostBtn').addEventListener('click', () => {
             document.getElementById('myModal').style.display = 'none';
+            document.getElementById('captionInput').value = '';
+            document.getElementById('imageInput').value = '';
         });
 
-        // Edit Profile Modal Controls
-        document.getElementById('openEditProfile').addEventListener('click', () => {
-            document.getElementById('editNameInput').value = document.getElementById('userProfileName').innerText;
-            document.getElementById('editBioInput').value = document.getElementById('userProfileBio').innerText;
-            document.getElementById('editProfileModal').style.display = 'flex';
-        });
-
-        document.getElementById('cancelEditBtn').addEventListener('click', () => {
-            document.getElementById('editProfileModal').style.display = 'none';
-        });
-
-        // Save Profile Logic with DP
-        document.getElementById('saveProfileBtn').addEventListener('click', () => {
-            const newName = document.getElementById('editNameInput').value.trim();
-            const newBio = document.getElementById('editBioInput').value.trim();
-            const dpInput = document.getElementById('editDpInput');
-
-            if (newName) {
-                document.getElementById('userProfileName').innerText = newName;
-                localStorage.setItem('dhaakad_name', newName);
-            }
-            if (newBio) {
-                document.getElementById('userProfileBio').innerText = newBio;
-                localStorage.setItem('dhaakad_bio', newBio);
-            }
-
-            if (dpInput.files && dpInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const dpUrl = e.target.result;
-                    document.getElementById('userProfileDp').src = dpUrl;
-                    localStorage.setItem('dhaakad_dp', dpUrl);
-                    updateAllThumbs(dpUrl);
-                }
-                reader.readAsDataURL(dpInput.files[0]);
-            }
-
-            document.getElementById('editProfileModal').style.display = 'none';
-            showToast('प्रोफाइल अपडेट हो गई! ✨');
-        });
-
-        function updateAllThumbs(dpUrl) {
-            document.querySelectorAll('.user-dp-thumb').forEach(img => {
-                img.src = dpUrl;
-            });
-        }
-
-        // Local Storage Load Profile & Feed
-        function loadUserData() {
-            const savedName = localStorage.getItem('dhaakad_name');
-            const savedBio = localStorage.getItem('dhaakad_bio');
-            const savedDp = localStorage.getItem('dhaakad_dp');
-
-            if (savedName) document.getElementById('userProfileName').innerText = savedName;
-            if (savedBio) document.getElementById('userProfileBio').innerText = savedBio;
-            if (savedDp) {
-                document.getElementById('userProfileDp').src = savedDp;
-                updateAllThumbs(savedDp);
-            }
-        }
-
+        // Local Storage Handling for Posts
         function savePostsToStorage() {
-            localStorage.setItem('dhaakad_feed', document.getElementById('feed').innerHTML);
+            const feedHtml = document.getElementById('feed').innerHTML;
+            localStorage.setItem('dhaakad_feed', feedHtml);
         }
 
         function loadPostsFromStorage() {
             const savedFeed = localStorage.getItem('dhaakad_feed');
             if (savedFeed) {
                 document.getElementById('feed').innerHTML = savedFeed;
-                loadUserData();
             }
         }
 
-        loadUserData();
+        // Load data on startup
         loadPostsFromStorage();
 
-        // Submit Post with Current DP & Name
+        // Submit New Post with Image Support
         document.getElementById('submitPostBtn').addEventListener('click', () => {
             const input = document.getElementById('captionInput');
             const imageInput = document.getElementById('imageInput');
             const text = input.value.trim();
-            const currentName = document.getElementById('userProfileName').innerText;
-            const currentDp = document.getElementById('userProfileDp').src;
-
+            
             if (!text && imageInput.files.length === 0) {
                 showToast('कृपया कुछ लिखें या फोटो चुनें! ⚠️');
                 return;
@@ -317,10 +198,7 @@
                 const newPost = document.createElement('div');
                 newPost.className = 'post';
                 newPost.innerHTML = `
-                    <div class="post-header">
-                        <img src="${currentDp}" alt="DP" class="user-dp-thumb">
-                        <span>${currentName}</span>
-                    </div>
+                    <div class="post-header"><i class="fa-solid fa-user"></i> DHAAKAD_USER</div>
                     <div class="post-box">${imgSrc ? `<img src="${imgSrc}" alt="Post Image">` : text}</div>
                     <div class="post-footer">
                         <div class="post-actions">
@@ -329,9 +207,90 @@
                             <button type="button" class="action-btn share-btn"><i class="fa-regular fa-paper-plane"></i></button>
                         </div>
                         <p><b><span class="like-count">1</span> likes</b></p>
-                        <p><b>${currentName}</b>${text}</p>
+                        <p><b>DHAAKAD_USER</b> ${text}</p>
                         <div class="comments-list"></div>
                         <div class="comment-box">
                             <input type="text" placeholder="कमेंट लिखें...">
-                            <button type="button" class="send-comment-
-        
+                            <button type="button" class="send-comment-btn">Send</button>
+                        </div>
+                    </div>
+                `;
+                feed.prepend(newPost);
+                document.getElementById('myModal').style.display = 'none';
+                input.value = '';
+                imageInput.value = '';
+                savePostsToStorage();
+                showToast('नई पोस्ट लाइव हो गई! 🔥');
+            };
+
+            if (imageInput.files && imageInput.files[0]) {
+                reader.onload = function(e) {
+                    processPost(e.target.result);
+                }
+                reader.readAsDataURL(imageInput.files[0]);
+            } else {
+                processPost('');
+            }
+        });
+
+        // Feed Actions (Like, Comments, Share)
+        document.getElementById('feed').addEventListener('click', (e) => {
+            const likeBtn = e.target.closest('.like-btn');
+            const commentToggle = e.target.closest('.comment-toggle-btn');
+            const sendComment = e.target.closest('.send-comment-btn');
+            const shareBtn = e.target.closest('.share-btn');
+
+            if (likeBtn) {
+                const icon = likeBtn.querySelector('i');
+                const post = likeBtn.closest('.post');
+                const countSpan = post.querySelector('.like-count');
+                let count = parseInt(countSpan.innerText);
+
+                if (icon.classList.contains('fa-regular')) {
+                    icon.classList.remove('fa-regular');
+                    icon.classList.add('fa-solid', 'liked');
+                    countSpan.innerText = count + 1;
+                } else {
+                    icon.classList.remove('fa-solid', 'liked');
+                    icon.classList.add('fa-regular');
+                    countSpan.innerText = count - 1;
+                }
+                savePostsToStorage();
+            }
+
+            if (commentToggle) {
+                const post = commentToggle.closest('.post');
+                const box = post.querySelector('.comment-box');
+                box.style.display = box.style.display === 'flex' ? 'none' : 'flex';
+            }
+
+            if (sendComment) {
+                const post = sendComment.closest('.post');
+                const input = post.querySelector('.comment-box input');
+                const list = post.querySelector('.comments-list');
+                if (input.value.trim() !== "") {
+                    const p = document.createElement('p');
+                    p.innerHTML = `<b>You:</b> ${input.value.trim()}`;
+                    list.appendChild(p);
+                    input.value = '';
+                    savePostsToStorage();
+                    showToast('कमेंट जुड़ गया! 💬');
+                }
+            }
+
+            if (shareBtn) {
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'DHAAKAD App',
+                        text: 'इस शानदार धाकड़ ऐप को देखें!',
+                        url: window.location.href,
+                    }).catch(() => {});
+                } else {
+                    navigator.clipboard.writeText(window.location.href);
+                    showToast('लिंक कॉपी हो गया! 🔗');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
