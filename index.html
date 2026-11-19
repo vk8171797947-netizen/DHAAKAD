@@ -3,108 +3,137 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>धाकड़ (Dhaakad)</title>
+  <title>धाकड़ (Dhaakad) — नेक्स्ट-लेवल रील्स और स्टोरी</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-    body { background: #000; color: #fff; max-width: 450px; margin: auto; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: #000; color: #fff; max-width: 450px; margin: 0 auto; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-    header { background: #000; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e1e1e; z-index: 25; }
-    header h1 { font-size: 21px; background: linear-gradient(45deg, #ff2a55, #ff9900); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    header { background: rgba(0, 0, 0, 0.95); padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1b1b1e; z-index: 25; }
+    .brand-title { font-size: 22px; font-weight: 800; letter-spacing: 0.3px; background: linear-gradient(45deg, #ff2a55, #ff9900, #ffd000); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .header-pill { font-size: 10px; font-weight: 700; color: #ffd000; background: rgba(255, 42, 85, 0.16); border: 1px solid rgba(255, 153, 0, 0.4); padding: 4px 9px; border-radius: 999px; }
 
-    .stories-strip { display: flex; gap: 11px; overflow-x: auto; padding: 9px 12px; background: #000; border-bottom: 1px solid #1a1a1a; align-items: center; z-index: 20; }
-    .story-item { text-align: center; min-width: 64px; cursor: pointer; }
-    .story-ring { width: 54px; height: 54px; margin: auto; border-radius: 50%; padding: 2px; background: linear-gradient(45deg, #f9ce34, #ee2a7b, #6228d7); display: flex; align-items: center; justify-content: center; position: relative; }
-    .story-ring.own { background: #333; }
-    .story-inner { width: 100%; height: 100%; border-radius: 50%; background: #181818; display: flex; align-items: center; justify-content: center; overflow: hidden; font-size: 22px; }
+    .stories-strip { display: flex; gap: 11px; overflow-x: auto; padding: 9px 12px; background: #000; border-bottom: 1px solid #18181b; align-items: center; z-index: 20; scrollbar-width: none; }
+    .stories-strip::-webkit-scrollbar { display: none; }
+    .story-item { text-align: center; min-width: 64px; cursor: pointer; flex-shrink: 0; }
+    .story-ring { width: 56px; height: 56px; margin: 0 auto; border-radius: 50%; padding: 2px; background: linear-gradient(45deg, #f9ce34, #ee2a7b, #6228d7); display: flex; align-items: center; justify-content: center; position: relative; }
+    .story-ring.own { background: linear-gradient(45deg, #ff2a55, #ff9900); }
+    .story-inner { width: 100%; height: 100%; border-radius: 50%; background: #16161a; display: flex; align-items: center; justify-content: center; overflow: hidden; font-size: 22px; border: 2px solid #000; }
     .story-inner img, .story-inner video { width: 100%; height: 100%; object-fit: cover; }
-    .story-plus { position: absolute; bottom: -2px; right: -2px; background: #ff2a55; color: #fff; width: 19px; height: 19px; border-radius: 50%; font-size: 13px; line-height: 19px; font-weight: bold; border: 2px solid #000; }
-    .story-label { font-size: 10px; color: #ddd; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 66px; }
+    .story-plus { position: absolute; bottom: -2px; right: -2px; background: #ff2a55; color: #fff; width: 20px; height: 20px; border-radius: 50%; font-size: 14px; line-height: 18px; font-weight: bold; border: 2px solid #000; }
+    .story-label { font-size: 10px; color: #e4e4e7; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 68px; }
 
-    main { flex: 1; overflow-y: auto; position: relative; padding-bottom: 64px; }
+    main { flex: 1; overflow-y: auto; position: relative; padding-bottom: 66px; background: #000; }
     .screen { display: none; min-height: 100%; }
     .screen.active { display: block; }
 
-    .reel-card { position: relative; width: 100%; height: calc(100vh - 185px); min-height: 430px; background: #090909; border-bottom: 2px solid #1c1c1c; overflow: hidden; }
-    .reel-card video { width: 100%; height: 100%; object-fit: cover; }
-    .reel-overlay-sticker { position: absolute; font-size: 56px; pointer-events: none; z-index: 3; }
-    .reel-overlay-text { position: absolute; bottom: 135px; left: 50%; transform: translateX(-50%); font-size: 21px; font-weight: bold; text-shadow: 2px 2px 6px #000; text-align: center; width: 90%; pointer-events: none; z-index: 3; }
-    .big-heart { position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%) scale(0); font-size: 85px; opacity: 0; transition: all 0.35s ease; pointer-events: none; z-index: 10; }
+    .reel-card { position: relative; width: 100%; height: calc(100vh - 186px); min-height: 440px; background: #09090b; border-bottom: 2px solid #18181c; overflow: hidden; }
+    .reel-card video { position: relative; z-index: 2; width: 100%; height: 100%; object-fit: cover; display: block; }
+    .reel-fallback-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; display: block; }
+
+    .reel-top-bar { position: absolute; top: 0; left: 0; right: 0; z-index: 7; padding: 10px 12px; background: linear-gradient(180deg, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0) 100%); display: flex; justify-content: space-between; align-items: center; }
+    .reel-top-user { display: flex; align-items: center; gap: 9px; }
+    .reel-top-ring { width: 35px; height: 35px; border-radius: 50%; padding: 2px; background: linear-gradient(45deg, #f9ce34, #ee2a7b, #6228d7); display: flex; align-items: center; justify-content: center; }
+    .reel-top-dp { width: 100%; height: 100%; border-radius: 50%; background: #18181c; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 15px; }
+    .reel-top-dp img, .reel-top-dp video { width: 100%; height: 100%; object-fit: cover; }
+    .reel-top-name { font-size: 13px; font-weight: 700; color: #fff; line-height: 1.15; }
+    .reel-top-loc { font-size: 10px; color: #d4d4d8; margin-top: 2px; }
+
+    .reel-overlay-sticker { position: absolute; font-size: 54px; pointer-events: none; z-index: 4; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.65)); }
+    .reel-overlay-text { position: absolute; bottom: 138px; left: 50%; transform: translateX(-50%); font-size: 21px; font-weight: 800; text-shadow: 2px 2px 8px #000; text-align: center; width: 90%; pointer-events: none; z-index: 4; }
+    .big-heart { position: absolute; top: 44%; left: 50%; transform: translate(-50%, -50%) scale(0); font-size: 88px; opacity: 0; transition: all 0.32s ease; pointer-events: none; z-index: 10; }
     .big-heart.show { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
 
-    .reel-actions { position: absolute; right: 10px; bottom: 88px; display: flex; flex-direction: column; gap: 13px; align-items: center; z-index: 6; }
-    .action-btn { background: rgba(0,0,0,0.45); border: none; color: #fff; font-size: 22px; width: 42px; height: 42px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; }
-    .action-btn span { font-size: 10px; margin-top: 1px; }
+    .reel-actions { position: absolute; right: 10px; bottom: 84px; display: flex; flex-direction: column; gap: 12px; align-items: center; z-index: 8; }
+    .action-btn { background: rgba(15, 15, 18, 0.62); border: 1px solid rgba(255,255,255,0.12); color: #fff; font-size: 21px; width: 42px; height: 42px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; }
+    .action-btn span { font-size: 10px; font-weight: 700; margin-top: 1px; }
 
-    .reel-info { position: absolute; left: 12px; bottom: 52px; right: 62px; z-index: 6; background: linear-gradient(transparent, rgba(0,0,0,0.82)); padding: 8px; border-radius: 8px; }
+    .reel-info { position: absolute; left: 12px; bottom: 48px; right: 60px; z-index: 8; background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.86) 100%); padding: 10px 8px 6px; border-radius: 10px; }
     .user-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
-    .mini-dp { width: 32px; height: 32px; border-radius: 50%; overflow: hidden; border: 2px solid #ff2a55; background: #222; display: flex; align-items: center; justify-content: center; font-size: 16px; }
-    .mini-dp img, .mini-dp video { width: 100%; height: 100%; object-fit: cover; }
-    .follow-btn { background: #ff2a55; border: none; color: #fff; padding: 3px 10px; border-radius: 14px; font-size: 11px; font-weight: bold; cursor: pointer; }
-    .follow-btn.following { background: #333; border: 1px solid #666; }
-    .music-line { font-size: 11px; color: #e5e5e5; margin: 3px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .follow-btn { background: linear-gradient(45deg, #ff2a55, #ff7700); border: none; color: #fff; padding: 3px 11px; border-radius: 999px; font-size: 11px; font-weight: 700; cursor: pointer; }
+    .follow-btn.following { background: #27272a; border: 1px solid #52525b; }
+    .music-line { font-size: 11px; color: #e4e4e7; margin: 3px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    .quick-comment-bar { position: absolute; left: 0; right: 0; bottom: 0; background: #0c0c0c; border-top: 1px solid #222; padding: 7px 10px; display: flex; gap: 6px; z-index: 8; }
-    .quick-comment-bar input { flex: 1; margin-top: 0; padding: 7px 12px; border-radius: 20px; background: #1c1c1c; border: 1px solid #333; color: #fff; font-size: 12px; }
+    .quick-comment-bar { position: absolute; left: 0; right: 0; bottom: 0; background: #0b0b0d; border-top: 1px solid #222226; padding: 7px 10px; display: flex; gap: 6px; z-index: 9; }
+    .quick-comment-bar input { flex: 1; margin-top: 0; padding: 7px 12px; border-radius: 999px; background: #18181c; border: 1px solid #2e2e36; color: #fff; font-size: 12px; }
 
     .status-box { padding: 12px; }
-    .status-card-panel { background: #151515; border: 1px solid #282828; border-radius: 12px; padding: 12px; margin-bottom: 14px; }
+    .insta-top-strip { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .insta-tool-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+    .insta-tool-card { background: #17171b; border: 1px solid #27272e; border-radius: 12px; padding: 12px 6px; text-align: center; cursor: pointer; }
+    .insta-tool-card div:first-child { font-size: 20px; }
+    .insta-tool-card div:last-child { font-size: 11px; color: #e4e4e7; margin-top: 4px; font-weight: 600; }
+
+    .recents-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .recents-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 10px; }
+    .cam-tile { background: #18181c; border: 1px solid #2c2c34; height: 104px; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; color: #fff; }
+    .pick-tile { background: #121216; border: 1px dashed #454552; height: 104px; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; font-size: 11px; color: #d4d4d8; overflow: hidden; padding: 4px; text-align: center; }
+    .text-story-tile { background: linear-gradient(135deg, #ff2a55, #ff9900); height: 104px; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; font-size: 12px; font-weight: 700; padding: 6px; text-align: center; }
+
     .status-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-    .status-thumb { background: #1c1c1c; border: 2px solid #ff2a55; border-radius: 10px; padding: 5px; text-align: center; cursor: pointer; overflow: hidden; }
-    .status-thumb img, .status-thumb video { width: 100%; height: 95px; object-fit: cover; border-radius: 7px; }
+    .status-thumb { background: #17171b; border: 2px solid #ff2a55; border-radius: 10px; padding: 5px; text-align: center; cursor: pointer; overflow: hidden; }
+    .status-thumb img, .status-thumb video { width: 100%; height: 92px; object-fit: cover; border-radius: 7px; }
 
     .editor-box { padding: 12px; }
-    .stage { position: relative; width: 100%; height: 260px; background: #151515; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid #333; }
+    .reel-creator-chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 8px; scrollbar-width: none; }
+    .reel-creator-chips::-webkit-scrollbar { display: none; }
+    .creator-chip { background: #18181c; color: #fff; border: 1px solid #2e2e36; padding: 7px 12px; border-radius: 10px; font-size: 11px; font-weight: 600; white-space: nowrap; cursor: pointer; }
+
+    .stage { position: relative; width: 100%; height: 255px; background: #121216; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid #2c2c35; }
     .stage video { width: 100%; height: 100%; object-fit: cover; display: none; }
-    #draggable-sticker { position: absolute; top: 35%; left: 40%; font-size: 56px; cursor: move; user-select: none; touch-action: none; display: none; z-index: 4; }
-    #preview-text { position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%); font-size: 20px; font-weight: bold; text-shadow: 2px 2px 5px #000; pointer-events: none; text-align: center; width: 90%; z-index: 3; }
+    #draggable-sticker { position: absolute; top: 34%; left: 40%; font-size: 54px; cursor: move; user-select: none; touch-action: none; display: none; z-index: 4; }
+    #preview-text { position: absolute; bottom: 26px; left: 50%; transform: translateX(-50%); font-size: 20px; font-weight: 800; text-shadow: 2px 2px 6px #000; pointer-events: none; text-align: center; width: 90%; z-index: 3; }
 
     .media-actions { display: flex; gap: 6px; margin-top: 8px; }
-    .small-btn { background: #222; color: #fff; border: 1px solid #444; padding: 7px 8px; border-radius: 8px; font-size: 11px; cursor: pointer; flex: 1; text-align: center; }
+    .small-btn { background: #1b1b20; color: #fff; border: 1px solid #383844; padding: 8px; border-radius: 9px; font-size: 11px; cursor: pointer; flex: 1; text-align: center; font-weight: 600; }
     .small-btn.danger { color: #ff6b6b; border-color: #ff6b6b; }
-    .small-btn.accent { background: #ff2a55; border-color: #ff2a55; font-weight: bold; }
+    .small-btn.accent { background: linear-gradient(45deg, #ff2a55, #ff7700); border: none; font-weight: 700; }
 
-    .tool-tabs { display: flex; justify-content: space-between; margin: 10px 0; background: #181818; padding: 5px; border-radius: 10px; gap: 4px; }
-    .tool-tabs button { flex: 1; background: none; border: none; color: #ccc; padding: 8px 2px; font-size: 11px; cursor: pointer; border-radius: 7px; }
-    .tool-tabs button.active-tab { background: #ff2a55; color: #fff; font-weight: bold; }
+    .tool-tabs { display: flex; justify-content: space-between; margin: 10px 0; background: #151519; padding: 5px; border-radius: 10px; gap: 4px; border: 1px solid #25252d; }
+    .tool-tabs button { flex: 1; background: none; border: none; color: #d4d4d8; padding: 8px 2px; font-size: 11px; cursor: pointer; border-radius: 7px; }
+    .tool-tabs button.active-tab { background: #ff2a55; color: #fff; font-weight: 700; }
 
-    .panel { display: none; background: #141414; padding: 10px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #252525; }
+    .panel { display: none; background: #141418; padding: 10px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #25252d; }
     .panel.active { display: block; }
     .preset-row { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; }
-    .preset-row button { background: #242424; color: #fff; border: 1px solid #444; padding: 6px 10px; border-radius: 8px; white-space: nowrap; font-size: 12px; cursor: pointer; }
+    .preset-row button { background: #222229; color: #fff; border: 1px solid #3e3e4a; padding: 6px 10px; border-radius: 8px; white-space: nowrap; font-size: 11px; cursor: pointer; }
     .sticker-grid { display: flex; justify-content: space-around; font-size: 28px; padding: 6px 0; cursor: pointer; }
 
-    input[type="text"], input[type="number"], select { width: 100%; padding: 9px; background: #222; border: 1px solid #444; color: #fff; border-radius: 8px; margin-top: 6px; font-size: 13px; }
-    .post-btn { width: 100%; padding: 12px; background: linear-gradient(45deg, #ff2a55, #ff7700); border: none; color: #fff; font-size: 15px; font-weight: bold; border-radius: 10px; cursor: pointer; margin-top: 10px; }
+    .mode-switch-bar { display: flex; justify-content: space-around; background: #141418; border: 1px solid #282830; border-radius: 999px; padding: 8px 6px; margin-top: 12px; font-size: 11px; font-weight: 700; }
+    .mode-switch-bar button { background: none; border: none; color: #d4d4d8; cursor: pointer; padding: 4px 10px; border-radius: 999px; }
+    .mode-switch-bar button.active-mode { background: #27272f; color: #fff; }
 
-    .profile-header { padding: 18px 14px; text-align: center; border-bottom: 1px solid #222; }
+    input[type="text"], input[type="number"], select { width: 100%; padding: 9px; background: #1c1c22; border: 1px solid #353540; color: #fff; border-radius: 8px; margin-top: 6px; font-size: 13px; }
+    .post-btn { width: 100%; padding: 12px; background: linear-gradient(45deg, #ff2a55, #ff7700); border: none; color: #fff; font-size: 14px; font-weight: 700; border-radius: 10px; cursor: pointer; margin-top: 10px; }
+
+    .profile-header { padding: 18px 14px; text-align: center; border-bottom: 1px solid #1e1e24; }
     .dp-container { position: relative; width: 94px; height: 94px; margin: 0 auto 10px; }
-    .dp-circle { width: 100%; height: 100%; border-radius: 50%; overflow: hidden; border: 3px solid #ff2a55; background: #222; display: flex; align-items: center; justify-content: center; font-size: 34px; }
+    .dp-circle { width: 100%; height: 100%; border-radius: 50%; overflow: hidden; border: 3px solid #ff2a55; background: #1b1b20; display: flex; align-items: center; justify-content: center; font-size: 34px; }
     .dp-circle img, .dp-circle video { width: 100%; height: 100%; object-fit: cover; }
     .dp-edit-badge { position: absolute; bottom: 0; right: 0; background: #ff2a55; color: #fff; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; border: 2px solid #000; }
     .stats-row { display: flex; justify-content: center; gap: 28px; margin: 12px 0; }
     .stat-box strong { display: block; font-size: 17px; }
-    .stat-box span { font-size: 11px; color: #999; }
-    .bio-box { background: #151515; padding: 10px; border-radius: 10px; margin-top: 10px; text-align: left; border: 1px solid #262626; }
+    .stat-box span { font-size: 11px; color: #a1a1aa; }
+    .bio-box { background: #141418; padding: 10px; border-radius: 10px; margin-top: 10px; text-align: left; border: 1px solid #25252d; }
     .my-videos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; padding: 4px; }
-    .grid-item { aspect-ratio: 9/16; background: #1a1a1a; overflow: hidden; }
+    .grid-item { aspect-ratio: 9/16; background: #18181c; overflow: hidden; }
     .grid-item video { width: 100%; height: 100%; object-fit: cover; }
 
     .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.88); z-index: 60; align-items: center; justify-content: center; padding: 14px; }
     .modal-overlay.open { display: flex; }
-    .modal-card { width: 100%; max-width: 420px; background: #151515; border: 1px solid #333; border-radius: 14px; padding: 14px; max-height: 82vh; overflow-y: auto; }
+    .modal-card { width: 100%; max-width: 420px; background: #151519; border: 1px solid #2e2e38; border-radius: 14px; padding: 14px; max-height: 82vh; overflow-y: auto; }
     .comment-list { max-height: 240px; overflow-y: auto; margin: 10px 0; display: flex; flex-direction: column; gap: 7px; }
-    .comment-item { background: #222; padding: 8px 10px; border-radius: 8px; font-size: 12px; }
+    .comment-item { background: #202026; padding: 8px 10px; border-radius: 8px; font-size: 12px; }
 
-    nav { position: fixed; bottom: 0; width: 100%; max-width: 450px; background: #000; border-top: 1px solid #222; display: flex; justify-content: space-around; padding: 8px 0; z-index: 35; }
-    nav button { background: none; border: none; color: #888; font-size: 10px; display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer; }
-    nav button.active { color: #ff2a55; font-weight: bold; }
+    nav { position: fixed; bottom: 0; width: 100%; max-width: 450px; background: #000; border-top: 1px solid #1e1e24; display: flex; justify-content: space-around; padding: 8px 0; z-index: 35; }
+    nav button { background: none; border: none; color: #8e8e98; font-size: 10px; display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer; }
+    nav button.active { color: #ff2a55; font-weight: 700; }
     nav button span.icon { font-size: 18px; }
   </style>
 </head>
-  <body>
+<body>
   <header>
-    <h1>🔥 धाकड़</h1>
-    <span style="font-size: 11px; color: #aaa;">मेड इन इंडिया</span>
+    <div class="brand-title">🔥 धाकड़</div>
+    <div class="header-pill">प्रो क्रिएटर मोड</div>
   </header>
 
   <div class="stories-strip" id="stories-strip">
@@ -125,23 +154,76 @@
 
     <section id="status-screen" class="screen">
       <div class="status-box">
-        <div class="status-card-panel">
-          <strong style="font-size:14px; color:#ff9900; display:block; margin-bottom:8px;">✨ नया स्टेटस लगाएं</strong>
-          <label for="status-file-input" class="small-btn accent" style="display:block; padding:9px; font-size:12px;">📷 फोटो या वीडियो चुनें</label>
-          <input type="file" id="status-file-input" accept="image/*,video/*" style="display:none;">
-          <input type="text" id="status-text-input" placeholder="स्टेटस पर लिखें...">
-          <button type="button" class="post-btn" onclick="publishStatus()">🚀 स्टेटस पोस्ट करें</button>
+        <div class="insta-top-strip">
+          <button type="button" onclick="openScreen('feed-screen', document.getElementById('nav-home'))" style="background:none; border:none; color:#fff; font-size:20px; cursor:pointer;">✕</button>
+          <strong style="font-size:15px;">Add to story</strong>
+          <span style="font-size:17px;">⚙️</span>
         </div>
 
-        <strong style="font-size:13px; color:#ccc; display:block; margin-bottom:8px;">👀 स्टेटस देखें (क्लिक करके फुल देखें)</strong>
-        <div class="status-grid" id="status-grid"></div>
+        <div class="insta-tool-cards">
+          <div class="insta-tool-card" onclick="applyStoryTemplate('🔥 धाकड़ स्वैग • आज का ट्रेंड')">
+            <div>✨</div>
+            <div>Templates</div>
+          </div>
+          <div class="insta-tool-card" onclick="applyStoryTemplate('🎵 धाकड़ बीट • फुल वाइब')">
+            <div>🎵</div>
+            <div>Music</div>
+          </div>
+          <div class="insta-tool-card" onclick="document.getElementById('status-file-input').click()">
+            <div>🖼️</div>
+            <div>Collage</div>
+          </div>
+        </div>
+
+        <div class="recents-row">
+          <strong style="font-size:14px;">Recents ▾</strong>
+          <label for="status-file-input" style="background:#222229; color:#fff; padding:5px 12px; border-radius:999px; font-size:11px; font-weight:600; cursor:pointer;">Select</label>
+        </div>
+
+        <div class="recents-grid">
+          <label for="status-file-input" class="cam-tile">
+            <span style="font-size:24px;">📷</span>
+            <span style="font-size:10px; color:#a1a1aa; margin-top:4px;">कैमरा / गैलरी</span>
+          </label>
+
+          <div id="status-preview-tile" class="pick-tile" onclick="document.getElementById('status-file-input').click()">
+            <span>+ फोटो/वीडियो</span>
+            <span style="font-size:10px; color:#8e8e98; margin-top:3px;">यहाँ चुनें</span>
+          </div>
+
+          <div class="text-story-tile" onclick="quickPublishTextStory()">
+            <span>✍️ टेक्स्ट</span>
+            <span style="font-size:10px; margin-top:2px;">स्टेटस</span>
+          </div>
+        </div>
+
+        <input type="file" id="status-file-input" accept="image/*,video/*" style="display:none;">
+        <input type="text" id="status-text-input" placeholder="स्टेटस पर लिखें...">
+        <button type="button" class="post-btn" onclick="publishStatus()">🚀 स्टेटस पोस्ट करें</button>
+
+        <div style="margin-top:14px;">
+          <strong style="font-size:13px; color:#d4d4d8; display:block; margin-bottom:8px;">👀 स्टेटस देखें (क्लिक करके फुल देखें)</strong>
+          <div class="status-grid" id="status-grid"></div>
+        </div>
       </div>
     </section>
         <section id="upload-screen" class="screen">
       <div class="editor-box">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <button type="button" onclick="openScreen('feed-screen', document.getElementById('nav-home'))" style="background:none; border:none; color:#fff; font-size:20px; cursor:pointer;">✕</button>
+          <strong style="font-size:15px;">New reel</strong>
+          <span style="font-size:16px;">⚙️</span>
+        </div>
+
+        <div class="reel-creator-chips">
+          <button type="button" class="creator-chip" onclick="switchTool('panel-filter', document.querySelector('.tool-tabs button'))">✂️ Edits</button>
+          <button type="button" class="creator-chip" onclick="openScreen('profile-screen', document.getElementById('nav-profile'))">📥 Drafts</button>
+          <button type="button" class="creator-chip" onclick="document.getElementById('hindi-caption-input').value='🔥 धाकड़ रील!'; document.getElementById('preview-text').innerText='🔥 धाकड़ रील!';">➕ Templates</button>
+        </div>
+
         <div class="stage" id="editor-stage">
           <video id="editor-video" loop playsinline controls></video>
-          <span id="stage-placeholder" style="color: #777; font-size: 13px;">वीडियो चुनें या कैमरा से रिकॉर्ड करें</span>
+          <span id="stage-placeholder" style="color: #8e8e98; font-size: 13px;">वीडियो चुनें या कैमरा से रिकॉर्ड करें</span>
           <div id="draggable-sticker">😎</div>
           <div id="preview-text"></div>
         </div>
@@ -182,7 +264,7 @@
         </div>
 
         <div id="panel-sticker" class="panel">
-          <p style="font-size: 11px; color: #aaa; text-align: center;">स्टिकर चुनें और वीडियो पर उंगली से खिसकाएं:</p>
+          <p style="font-size: 11px; color: #a1a1aa; text-align: center;">स्टिकर चुनें और वीडियो पर उंगली से खिसकाएं:</p>
           <div class="sticker-grid">
             <span onclick="chooseSticker('')">❌</span>
             <span onclick="chooseSticker('😎')">😎</span>
@@ -217,12 +299,12 @@
           <div style="display: flex; gap: 6px; margin-top: 4px; align-items: center;">
             <input type="number" id="custom-start" placeholder="शुरू (sec)" min="0" step="0.5" style="margin-top:0;">
             <input type="number" id="custom-end" placeholder="अंत (sec)" min="0" step="0.5" style="margin-top:0;">
-            <button type="button" onclick="cutCustomRange()" style="background:#00c853; color:#000; font-weight:bold; border:none; padding:9px 10px; border-radius:8px; font-size:12px; cursor:pointer;">काटें</button>
+            <button type="button" onclick="cutCustomRange()" style="background:#00c853; color:#000; font-weight:700; border:none; padding:9px 10px; border-radius:8px; font-size:12px; cursor:pointer;">काटें</button>
           </div>
 
           <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px;">
             <strong style="font-size: 12px; color: #ff9900;">वीडियो के 6 बराबर हिस्से</strong>
-            <button type="button" onclick="cutInto6EqualParts()" style="background: #ff2a55; color: #fff; border: none; padding: 5px 10px; border-radius: 7px; font-size: 11px; cursor: pointer;">
+            <button type="button" onclick="cutInto6EqualParts()" style="background: #ff2a55; color: #fff; border: none; padding: 5px 10px; border-radius: 7px; font-size: 11px; font-weight: 600; cursor: pointer;">
               6 हिस्से बनाएं
             </button>
           </div>
@@ -232,6 +314,13 @@
 
         <input type="text" id="post-description" placeholder="कैप्शन लिखें (#धाकड़)...">
         <button type="button" class="post-btn" onclick="publishReel()">🚀 धाकड़ पर अपलोड करें</button>
+
+        <div class="mode-switch-bar">
+          <button type="button" onclick="publishReel()">POST</button>
+          <button type="button" onclick="openScreen('status-screen', document.getElementById('nav-status'))">STORY</button>
+          <button type="button" class="active-mode">REEL</button>
+          <button type="button" onclick="toggleCameraRecording()" style="color:#ff6b6b;">LIVE</button>
+        </div>
       </div>
     </section>
 
@@ -243,7 +332,7 @@
           <input type="file" id="dp-file-input" accept="image/*,video/*" style="display: none;">
         </div>
         <p style="font-size: 11px; color: #ff9900; margin-bottom: 6px;">(DP पर फोटो या वीडियो दोनों लगा सकते हैं)</p>
-        <h2 id="display-username">@dhaakad_user</h2>
+        <h2 id="display-username">@dhaakad_king</h2>
 
         <div class="stats-row">
           <div class="stat-box"><strong id="post-count">0</strong><span>वीडियो</span></div>
@@ -252,17 +341,17 @@
         </div>
 
         <div class="bio-box">
-          <label style="font-size: 11px; color: #aaa;">नाम:</label>
+          <label style="font-size: 11px; color: #a1a1aa;">नाम:</label>
           <input type="text" id="edit-name-input" placeholder="अपना नाम लिखें...">
-          <label style="font-size: 11px; color: #aaa; display: block; margin-top: 8px;">बायो (Bio):</label>
+          <label style="font-size: 11px; color: #a1a1aa; display: block; margin-top: 8px;">बायो (Bio):</label>
           <input type="text" id="edit-bio-input" placeholder="अपना बायो लिखें...">
-          <button type="button" onclick="saveUserProfile()" style="margin-top: 8px; width: 100%; padding: 8px; background: #252525; color: #fff; border: 1px solid #ff2a55; border-radius: 6px; cursor: pointer;">
+          <button type="button" onclick="saveUserProfile()" style="margin-top: 8px; width: 100%; padding: 8px; background: #222229; color: #fff; border: 1px solid #ff2a55; border-radius: 6px; font-weight: 600; cursor: pointer;">
             💾 प्रोफ़ाइल और Bio सेव करें
           </button>
         </div>
       </div>
 
-      <h4 style="padding: 10px 14px; font-size: 13px; color: #ccc;">मेरे वीडियो</h4>
+      <h4 style="padding: 10px 14px; font-size: 13px; color: #d4d4d8;">मेरे वीडियो</h4>
       <div class="my-videos-grid" id="my-videos-grid"></div>
     </section>
   </main>
@@ -296,17 +385,20 @@
     <button type="button" id="nav-home" class="active" onclick="openScreen('feed-screen', this)">
       <span class="icon">🏠</span><span>होम</span>
     </button>
-    <button type="button" id="nav-status" onclick="openScreen('status-screen', this)">
-      <span class="icon">⭕</span><span>स्टेटस</span>
+    <button type="button" id="nav-video" onclick="openScreen('feed-screen', this)">
+      <span class="icon">🎬</span><span>वीडियो</span>
     </button>
     <button type="button" id="nav-upload" onclick="openScreen('upload-screen', this)">
       <span class="icon">➕</span><span>अपलोड</span>
     </button>
+    <button type="button" id="nav-status" onclick="openScreen('status-screen', this)">
+      <span class="icon">⭕</span><span>स्टेटस</span>
+    </button>
     <button type="button" id="nav-profile" onclick="openScreen('profile-screen', this)">
       <span class="icon">👤</span><span>प्रोफ़ाइल</span>
     </button>
-    </nav>
-        <script>
+  </nav>
+    <script>
     let userProfile = JSON.parse(localStorage.getItem('dhaakad_profile')) || {
       name: '@dhaakad_king',
       bio: 'धाकड़ अंदाज़, देसी स्वैग 🔥',
@@ -318,14 +410,15 @@
     let reelsList = JSON.parse(localStorage.getItem('dhaakad_reels')) || [
       {
         id: 1,
-        user: 'flix.indian',
+        user: 'dhaakad_official',
+        location: 'आगरा, उत्तर प्रदेश',
         videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-man-dancing-under-changing-lights-1240-large.mp4',
         filter: 'contrast(115%)',
         sticker: '🔥',
         stickerTop: '18%',
         stickerLeft: '75%',
-        text: 'धाकड़ रील्स पर आपका स्वागत है!',
-        textColor: '#ffaa00',
+        text: 'धाकड़ में आपका स्वागत है!',
+        textColor: '#ffd000',
         musicUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
         musicTitle: 'धाकड़ बीट • ओरिजिनल ऑडियो',
         startSec: 0,
@@ -336,7 +429,7 @@
         liked: false,
         saved: false,
         following: false,
-        comments: ['जबरदस्त भाई 🔥', 'मस्त रील है!', 'सुपर!']
+        comments: ['जबरदस्त भाई 🔥', 'मस्त रील है!', 'सुपर धाकड़!']
       }
     ];
 
@@ -353,6 +446,7 @@
     let mediaRecorder = null;
     let recordedChunks = [];
     let isRecording = false;
+    let canvasAnimId = null;
 
     function openScreen(screenId, btn) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -373,13 +467,26 @@
       }
     }
 
+    function applyStoryTemplate(text) {
+      document.getElementById('status-text-input').value = text;
+      document.getElementById('status-text-input').focus();
+    }
+
     document.getElementById('status-file-input').addEventListener('change', function(e) {
       const f = e.target.files[0];
       if (!f) return;
       tempStatusType = f.type.startsWith('video/') ? 'video' : 'image';
       tempStatusUrl = URL.createObjectURL(f);
-      document.getElementById('status-text-input').placeholder = `चुना गया: ${f.name} (कैप्शन लिखें...)`;
+      const tile = document.getElementById('status-preview-tile');
+      tile.innerHTML = tempStatusType === 'video'
+        ? `<video src="${tempStatusUrl}" muted style="width:100%;height:100%;object-fit:cover;border-radius:8px;"></video>`
+        : `<img src="${tempStatusUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">`;
     });
+
+    function quickPublishTextStory() {
+      const txt = document.getElementById('status-text-input').value.trim() || 'धाकड़ स्टेटस 🔥';
+      pushStatusEntry(txt, '', 'text');
+    }
 
     function publishStatus() {
       const txt = document.getElementById('status-text-input').value.trim();
@@ -387,18 +494,23 @@
         alert('पहले फोटो/वीडियो चुनें या कुछ लिखें!');
         return;
       }
+      pushStatusEntry(txt || 'धाकड़ स्टेटस 🔥', tempStatusUrl, tempStatusUrl ? tempStatusType : 'text');
+      tempStatusUrl = '';
+      tempStatusType = 'text';
+      document.getElementById('status-text-input').value = '';
+      document.getElementById('status-file-input').value = '';
+      document.getElementById('status-preview-tile').innerHTML = '<span>+ फोटो/वीडियो</span><span style="font-size:10px; color:#8e8e98; margin-top:3px;">यहाँ चुनें</span>';
+    }
+
+    function pushStatusEntry(caption, url, type) {
       statusList.unshift({
         id: Date.now(),
         user: userProfile.name,
-        url: tempStatusUrl,
-        type: tempStatusUrl ? tempStatusType : 'text',
-        caption: txt || 'धाकड़ स्टेटस 🔥'
+        url,
+        type,
+        caption
       });
       try { localStorage.setItem('dhaakad_statuses', JSON.stringify(statusList)); } catch (e) {}
-      document.getElementById('status-text-input').value = '';
-      document.getElementById('status-file-input').value = '';
-      tempStatusUrl = '';
-      tempStatusType = 'text';
       renderStatusGrid();
       syncTopStories();
       alert('स्टेटस लग गया!');
@@ -407,17 +519,17 @@
     function renderStatusGrid() {
       const grid = document.getElementById('status-grid');
       if (!statusList.length) {
-        grid.innerHTML = '<p style="grid-column:1/-1; font-size:12px; color:#888;">अभी कोई स्टेटस नहीं है। ऊपर से लगाएं।</p>';
+        grid.innerHTML = '<p style="grid-column:1/-1; font-size:12px; color:#8e8e98;">अभी कोई स्टेटस नहीं है। ऊपर से लगाएं।</p>';
         return;
       }
       grid.innerHTML = '';
       statusList.forEach((st, idx) => {
         const card = document.createElement('div');
         card.className = 'status-thumb';
-        let thumb = `<div style="height:95px; display:flex; align-items:center; justify-content:center; font-size:12px; padding:4px;">${st.caption}</div>`;
+        let thumb = `<div style="height:92px; display:flex; align-items:center; justify-content:center; font-size:12px; padding:4px;">${st.caption}</div>`;
         if (st.type === 'image' && st.url) thumb = `<img src="${st.url}">`;
         if (st.type === 'video' && st.url) thumb = `<video src="${st.url}" muted></video>`;
-        card.innerHTML = `${thumb}<div style="font-size:10px; color:#ddd; margin-top:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${st.caption}</div>`;
+        card.innerHTML = `${thumb}<div style="font-size:10px; color:#e4e4e7; margin-top:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${st.caption}</div>`;
         card.onclick = () => openStatusViewer(idx);
         grid.appendChild(card);
       });
@@ -434,7 +546,7 @@
       } else if (st.type === 'image' && st.url) {
         box.innerHTML = `<img src="${st.url}" style="width:100%; max-height:60vh; border-radius:10px; object-fit:contain;">`;
       } else {
-        box.innerHTML = `<div style="padding:36px 14px; background:#222; border-radius:10px; font-size:18px;">${st.caption}</div>`;
+        box.innerHTML = `<div style="padding:36px 14px; background:#202026; border-radius:10px; font-size:18px;">${st.caption}</div>`;
       }
       document.getElementById('status-viewer-modal').classList.add('open');
     }
@@ -451,17 +563,37 @@
 
       const container = document.getElementById('story-ring-container');
       container.innerHTML = '';
-      statusList.forEach((st, idx) => {
+
+      const fallbackFriends = [
+        { user: 'aaj_ki_reel', icon: '🔥', idx: -1 },
+        { user: 'desi_vibe', icon: '🎵', idx: -1 },
+        { user: 'royal_king', icon: '👑', idx: -1 }
+      ];
+
+      const items = statusList.length
+        ? statusList.map((st, idx) => ({
+            user: st.user || 'creator',
+            icon: '🔥',
+            url: st.url,
+            type: st.type,
+            idx
+          }))
+        : fallbackFriends;
+
+      items.forEach(item => {
         const div = document.createElement('div');
         div.className = 'story-item';
-        const inner = (st.type === 'image' && st.url)
-          ? `<img src="${st.url}">`
-          : ((st.type === 'video' && st.url) ? `<video src="${st.url}" muted></video>` : '🔥');
+        const inner = (item.type === 'image' && item.url)
+          ? `<img src="${item.url}">`
+          : ((item.type === 'video' && item.url) ? `<video src="${item.url}" muted></video>` : item.icon);
         div.innerHTML = `
           <div class="story-ring"><div class="story-inner">${inner}</div></div>
-          <div class="story-label">${st.caption}</div>
+          <div class="story-label">${item.user}</div>
         `;
-        div.onclick = () => openStatusViewer(idx);
+        div.onclick = () => {
+          if (item.idx >= 0) openStatusViewer(item.idx);
+          else openScreen('status-screen', document.getElementById('nav-status'));
+        };
         container.appendChild(div);
       });
     }
@@ -554,7 +686,7 @@
       document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
       document.getElementById(panelId).classList.add('active');
       document.querySelectorAll('.tool-tabs button').forEach(b => b.classList.remove('active-tab'));
-      btn.classList.add('active-tab');
+      if (btn) btn.classList.add('active-tab');
     }
 
     function setPreset(val) { editorVideo.style.filter = val; }
@@ -594,7 +726,7 @@
       } else {
         editorAudio.src = this.value;
         editorVideo.muted = true;
-        editorAudio.play();
+        editorAudio.play().catch(() => {});
       }
     });
 
@@ -622,11 +754,11 @@
       for (let i = 0; i < 6; i++) {
         const start = i * partLen, end = (i + 1) * partLen;
         const box = document.createElement('div');
-        box.style.cssText = 'background:#202020; border:1px solid #3c3c3c; border-radius:8px; padding:7px; text-align:center;';
+        box.style.cssText = 'background:#202026; border:1px solid #3c3c48; border-radius:8px; padding:7px; text-align:center;';
         box.innerHTML = `
-          <div style="font-size:12px; font-weight:bold;">हिस्सा ${i + 1}</div>
-          <div style="font-size:10px; color:#bbb; margin:2px 0;">${start.toFixed(1)}s - ${end.toFixed(1)}s</div>
-          <button type="button" onclick="previewPart(${start}, ${end}, ${i + 1})" style="background:#333; color:#fff; border:1px solid #666; padding:3px 6px; border-radius:5px; font-size:10px; cursor:pointer;">▶ देखें</button>
+          <div style="font-size:12px; font-weight:700;">हिस्सा ${i + 1}</div>
+          <div style="font-size:10px; color:#b4b4be; margin:2px 0;">${start.toFixed(1)}s - ${end.toFixed(1)}s</div>
+          <button type="button" onclick="previewPart(${start}, ${end}, ${i + 1})" style="background:#32323c; color:#fff; border:1px solid #666; padding:3px 6px; border-radius:5px; font-size:10px; cursor:pointer;">▶ देखें</button>
           <button type="button" onclick="applyPartForPost(${start}, ${end}, ${i + 1})" style="background:#ff2a55; color:#fff; border:none; padding:3px 6px; border-radius:5px; font-size:10px; cursor:pointer;">✔ लगाएं</button>
         `;
         grid.appendChild(box);
@@ -655,8 +787,7 @@
       }
       document.getElementById('selected-part-info').innerText = `✔ हिस्सा ${partNum}/6 तैयार है!`;
     }
-          
-    function publishReel() {
+          function publishReel() {
       if (!currentUploadedVideoUrl) {
         alert('कृपया पहले कोई वीडियो चुनें या रिकॉर्ड करें!');
         return;
@@ -665,6 +796,7 @@
       const newReel = {
         id: Date.now(),
         user: userProfile.name,
+        location: 'आगरा, उत्तर प्रदेश',
         videoUrl: currentUploadedVideoUrl,
         filter: editorVideo.style.filter || 'none',
         sticker: stickerEl.style.display === 'none' ? '' : stickerEl.innerText,
@@ -691,6 +823,54 @@
       openScreen('feed-screen', document.getElementById('nav-home'));
     }
 
+    function startFallbackCanvasAnimation(canvas) {
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let t = 0;
+
+      function drawFrame() {
+        const w = canvas.width = canvas.clientWidth || 400;
+        const h = canvas.height = canvas.clientHeight || 460;
+        t += 0.025;
+
+        const grad = ctx.createLinearGradient(0, 0, w, h);
+        grad.addColorStop(0, '#181024');
+        grad.addColorStop(0.5, '#2a0c18');
+        grad.addColorStop(1, '#111116');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, w, h);
+
+        const pulse = Math.sin(t) * 14;
+        ctx.beginPath();
+        ctx.arc(w / 2, h * 0.42, 62 + pulse * 0.35, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(255, 42, 85, 0.55)';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+
+        ctx.fillStyle = 'rgba(255, 153, 0, 0.14)';
+        ctx.beginPath();
+        ctx.arc(w / 2, h * 0.42, 46, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 28px system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('🔥 धाकड़', w / 2, h * 0.42 + 10);
+
+        ctx.fillStyle = '#e4e4e7';
+        ctx.font = '600 13px system-ui, sans-serif';
+        ctx.fillText('अपना वीडियो अपलोड करें या कैमरा रिकॉर्ड करें', w / 2, h * 0.42 + 95);
+      }
+
+      drawFrame();
+      if (canvasAnimId) cancelAnimationFrame(canvasAnimId);
+      function loop() {
+        drawFrame();
+        canvasAnimId = requestAnimationFrame(loop);
+      }
+      canvasAnimId = requestAnimationFrame(loop);
+    }
+
     function renderFeed() {
       const container = document.getElementById('reels-container');
       container.innerHTML = '';
@@ -698,12 +878,25 @@
       reelsList.forEach((reel, idx) => {
         const dpHtml = userProfile.dpType === 'video' && userProfile.dpUrl
           ? `<video src="${userProfile.dpUrl}" autoplay loop muted playsinline></video>`
-          : (userProfile.dpType === 'image' && userProfile.dpUrl ? `<img src="${userProfile.dpUrl}">` : `😎`);
+          : (userProfile.dpType === 'image' && userProfile.dpUrl ? `<img src="${userProfile.dpUrl}">` : `🔥`);
 
         const card = document.createElement('div');
         card.className = 'reel-card';
         card.innerHTML = `
+          <canvas class="reel-fallback-canvas" id="fallback-canvas-${idx}"></canvas>
           <div class="big-heart" id="heart-${idx}">❤️</div>
+
+          <div class="reel-top-bar">
+            <div class="reel-top-user">
+              <div class="reel-top-ring"><div class="reel-top-dp">${dpHtml}</div></div>
+              <div>
+                <div class="reel-top-name">${reel.user}</div>
+                <div class="reel-top-loc">📍 ${reel.location || 'आगरा, उत्तर प्रदेश'}</div>
+              </div>
+            </div>
+            <span style="color:#fff; font-size:18px; letter-spacing:1px;">⋮</span>
+          </div>
+
           <video id="reel-vid-${idx}" src="${reel.videoUrl}" style="filter:${reel.filter}" loop playsinline onclick="handleVideoTap(this, ${idx})"></video>
           ${reel.sticker ? `<div class="reel-overlay-sticker" style="top:${reel.stickerTop}; left:${reel.stickerLeft};">${reel.sticker}</div>` : ''}
           ${reel.text ? `<div class="reel-overlay-text" style="color:${reel.textColor};">${reel.text}</div>` : ''}
@@ -719,24 +912,34 @@
 
           <div class="reel-info">
             <div class="user-row">
-              <div class="mini-dp">${dpHtml}</div>
-              <strong>${reel.user}</strong>
+              <strong style="font-size:13px;">${reel.user}</strong>
               <button type="button" class="follow-btn ${reel.following ? 'following' : ''}" onclick="toggleFollow(${idx})">
                 ${reel.following ? 'Following' : '+ Follow'}
               </button>
             </div>
             <div class="music-line">🎵 ${reel.musicTitle || 'ओरिजिनल ऑडियो'}</div>
-            <p style="font-size:12px; color:#eee;">${reel.desc}</p>
+            <p style="font-size:12px; color:#f4f4f5;">${reel.desc}</p>
           </div>
 
           <div class="quick-comment-bar">
             <input type="text" id="quick-cmt-${idx}" placeholder="Add comment...">
-            <button type="button" onclick="sendQuickComment(${idx})" style="background:#ff2a55; border:none; color:#fff; padding:0 12px; border-radius:16px; font-size:11px; cursor:pointer;">भेजें</button>
+            <button type="button" onclick="sendQuickComment(${idx})" style="background:#ff2a55; border:none; color:#fff; padding:0 12px; border-radius:999px; font-size:11px; font-weight:600; cursor:pointer;">भेजें</button>
           </div>
         `;
         container.appendChild(card);
 
+        const canvas = card.querySelector('canvas');
+        startFallbackCanvasAnimation(canvas);
+
         const vid = card.querySelector('video');
+        const syncCanvasVisibility = () => {
+          const playable = vid.readyState >= 2 && !vid.error && vid.videoWidth > 0;
+          vid.style.opacity = playable ? '1' : '0';
+        };
+        vid.addEventListener('loadeddata', syncCanvasVisibility);
+        vid.addEventListener('canplay', syncCanvasVisibility);
+        vid.addEventListener('error', () => { vid.style.opacity = '0'; });
+
         if (reel.startSec) vid.currentTime = reel.startSec;
         if (reel.endSec) {
           vid.ontimeupdate = () => {
@@ -745,8 +948,9 @@
         }
         if (idx === 0) {
           vid.muted = true;
-          vid.play().catch(() => {});
+          vid.play().then(syncCanvasVisibility).catch(syncCanvasVisibility);
         }
+        setTimeout(syncCanvasVisibility, 650);
       });
     }
 
@@ -760,7 +964,7 @@
       } else {
         const audio = document.getElementById(`feed-audio-${idx}`);
         if (vid.paused) {
-          vid.play();
+          vid.play().catch(() => {});
           if (audio) { vid.muted = true; audio.play().catch(() => {}); } else { vid.muted = false; }
         } else {
           vid.pause();
@@ -823,7 +1027,7 @@
       const comments = reelsList[activeCommentIndex].comments || [];
       list.innerHTML = comments.length
         ? comments.map(c => `<div class="comment-item">${c}</div>`).join('')
-        : `<p style="color:#888; font-size:12px;">अभी कोई कमेंट नहीं है।</p>`;
+        : `<p style="color:#8e8e98; font-size:12px;">अभी कोई कमेंट नहीं है।</p>`;
     }
 
     function addCommentFromModal() {
