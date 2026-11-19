@@ -1,60 +1,90 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DHAAKAD</title>
+    <title>DHAAKAD Social</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --bg:#000; --txt:#fff; --nav:#111; --bdr:#333; --post:#111; --box:#1a1a1a; --inp:#000; }
-        .light-mode { --bg:#f0f2f5; --txt:#000; --nav:#fff; --bdr:#ddd; --post:#fff; --box:#f9f9f9; --inp:#fff; }
+        :root { --bg:#000; --txt:#fff; --nav:#111; --bdr:#2a2a2a; --post:#111; --box:#1a1a1a; --inp:#000; --muted:#9ca3af; --accent:#ff7900; }
+        .light-mode { --bg:#f0f2f5; --txt:#000; --nav:#fff; --bdr:#ddd; --post:#fff; --box:#f3f4f6; --inp:#fff; --muted:#555; }
         * { margin:0; padding:0; box-sizing:border-box; font-family:Arial,sans-serif; -webkit-tap-highlight-color:transparent; }
-        body { background:var(--bg); color:var(--txt); padding-bottom:60px; transition:0.3s; }
-        .navbar { background:var(--nav); border-bottom:1px solid var(--bdr); position:sticky; top:0; z-index:10; padding:12px 15px; display:flex; justify-content:space-between; align-items:center; }
-        .logo { color:#ff7900; font-weight:bold; font-size:24px; letter-spacing:1px; }
-        .nav-icons { display:flex; gap:12px; align-items:center; }
-        .icon-btn { background:none; border:none; color:var(--txt); font-size:20px; padding:6px; cursor:pointer; }
-        .status-bar { max-width:470px; margin:12px auto 0; padding:8px 10px; display:flex; gap:14px; overflow-x:auto; scrollbar-width:none; }
+        body { background:var(--bg); color:var(--txt); padding-bottom:75px; transition:0.25s; }
+        .navbar { background:var(--nav); border-bottom:1px solid var(--bdr); position:sticky; top:0; z-index:30; padding:11px 15px; display:flex; justify-content:space-between; align-items:center; }
+        .logo { color:var(--accent); font-weight:bold; font-size:23px; letter-spacing:1px; }
+        .nav-icons { display:flex; gap:8px; align-items:center; }
+        .icon-btn { position:relative; background:none; border:none; color:var(--txt); font-size:19px; padding:6px; cursor:pointer; }
+        .badge { position:absolute; top:2px; right:1px; background:#ff3b30; color:#fff; font-size:10px; font-weight:bold; min-width:16px; height:16px; border-radius:999px; display:none; align-items:center; justify-content:center; padding:0 4px; }
+        .bottom-nav { position:fixed; bottom:0; left:0; width:100%; background:var(--nav); border-top:1px solid var(--bdr); display:flex; justify-content:space-around; align-items:center; padding:9px 0; z-index:30; }
+        .b-btn { background:none; border:none; color:var(--muted); font-size:21px; cursor:pointer; padding:4px 12px; display:flex; flex-direction:column; align-items:center; gap:2px; }
+        .b-btn span { font-size:10px; }
+        .b-btn.active { color:var(--accent); }
+        .container { max-width:470px; margin:0 auto; padding:10px; }
+        .section { display:none; }
+        .section.active { display:block; }
+        .status-bar { display:flex; gap:12px; overflow-x:auto; padding:6px 2px 12px; border-bottom:1px solid var(--bdr); margin-bottom:12px; scrollbar-width:none; }
         .status-bar::-webkit-scrollbar { display:none; }
-        #statusList { display:flex; gap:14px; }
-        .status-item { display:flex; flex-direction:column; align-items:center; min-width:68px; cursor:pointer; }
-        .status-ring { width:64px; height:64px; border-radius:50%; padding:3px; background:linear-gradient(45deg,#ff7900,#ff3b30); margin-bottom:5px; }
-        .status-ring.add-ring { background:none; border:2px dashed #ff7900; padding:0; }
+        #statusList { display:flex; gap:12px; }
+        .status-item { display:flex; flex-direction:column; align-items:center; min-width:66px; cursor:pointer; }
+        .status-ring { width:62px; height:62px; border-radius:50%; padding:2.5px; background:linear-gradient(45deg,#ff7900,#ff3b30); margin-bottom:4px; }
+        .status-ring.add-ring { background:none; border:2px dashed var(--accent); padding:0; }
         .status-avatar { width:100%; height:100%; border-radius:50%; background:var(--post); color:var(--txt); display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:18px; overflow:hidden; border:2px solid var(--bg); }
         .status-avatar img { width:100%; height:100%; object-fit:cover; }
-        .status-name { font-size:11px; max-width:72px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-        .main { max-width:470px; margin:10px auto 15px; padding:0 10px; }
-        .post { background:var(--post); border:1px solid var(--bdr); border-radius:10px; margin-bottom:20px; overflow:hidden; }
-        .post-header { padding:12px; color:#ff7900; font-weight:bold; font-size:14px; display:flex; justify-content:space-between; align-items:center; }
-        .follow-btn { background:#ff7900; color:#000; border:none; padding:5px 12px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px; }
-        .delete-post-btn { background:#ff3b30; color:#fff; border:none; padding:5px 10px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px; margin-left:6px; }
-        .post-box { width:100%; min-height:250px; background:var(--box); display:flex; align-items:center; justify-content:center; font-size:18px; padding:10px; text-align:center; border-top:1px solid var(--bdr); border-bottom:1px solid var(--bdr); }
-        .post-box img { width:100%; max-height:400px; object-fit:cover; border-radius:6px; }
-        .post-footer { padding:12px; }
-        .post-actions { display:flex; gap:12px; margin-bottom:8px; }
-        .action-btn { background:none; border:none; color:var(--txt); font-size:24px; padding:4px; cursor:pointer; }
+        .status-name { font-size:11px; max-width:70px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .post { background:var(--post); border:1px solid var(--bdr); border-radius:10px; margin-bottom:16px; overflow:hidden; }
+        .post-header { padding:10px 12px; color:var(--accent); font-weight:bold; font-size:14px; display:flex; justify-content:space-between; align-items:center; }
+        .post-header-right { display:flex; gap:6px; align-items:center; }
+        .follow-btn { background:var(--accent); color:#000; border:none; padding:5px 11px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px; }
+        .follow-btn.following { background:#333; color:#fff; }
+        .del-btn { background:#ff3b30; color:#fff; border:none; padding:5px 9px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px; }
+        .post-media { position:relative; width:100%; min-height:230px; background:var(--box); display:flex; align-items:center; justify-content:center; font-size:18px; padding:12px; text-align:center; border-top:1px solid var(--bdr); border-bottom:1px solid var(--bdr); cursor:pointer; user-select:none; }
+        .post-media img, .post-media video { width:100%; max-height:390px; object-fit:cover; border-radius:6px; }
+        .heart-pop { position:absolute; font-size:64px; color:#ff3b30; opacity:0; transform:scale(0.5); transition:0.35s; pointer-events:none; }
+        .heart-pop.show { opacity:0.95; transform:scale(1.15); }
+        .post-footer { padding:11px 12px; }
+        .post-actions { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+        .post-actions-left { display:flex; gap:12px; }
+        .action-btn { background:none; border:none; color:var(--txt); font-size:22px; padding:3px; cursor:pointer; }
         .liked { color:#ff3b30 !important; }
-        .post-footer p { font-size:14px; margin-bottom:6px; }
-        .comments-list { margin-top:8px; padding-top:8px; border-top:1px solid var(--bdr); font-size:13px; opacity:0.85; }
-        .comment-box { display:none; margin-top:10px; gap:8px; }
-        .comment-box input { flex:1; padding:8px 10px; background:var(--inp); border:1px solid var(--bdr); color:var(--txt); border-radius:6px; }
-        .comment-box button { background:#ff7900; color:#000; border:none; padding:8px 14px; border-radius:6px; font-weight:bold; cursor:pointer; }
-        .profile-container { display:none; max-width:470px; margin:15px auto; padding:20px; text-align:center; background:var(--post); border:1px solid var(--bdr); border-radius:10px; }
-        .profile-avatar { width:90px; height:90px; border-radius:50%; background:#ff7900; color:#000; font-size:36px; display:flex; align-items:center; justify-content:center; margin:0 auto 15px; }
-        .profile-edit-box { display:flex; gap:8px; margin:15px 0; }
-        .profile-edit-box input { flex:1; padding:10px; background:var(--inp); border:1px solid var(--bdr); color:var(--txt); border-radius:6px; }
-        .profile-edit-box button { background:#ff7900; color:#000; border:none; padding:10px 15px; border-radius:6px; font-weight:bold; cursor:pointer; }
-        .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:100; justify-content:center; align-items:center; padding:15px; }
-        .modal-content { background:var(--post); padding:20px; border-radius:12px; width:100%; max-width:360px; border:1px solid var(--bdr); text-align:center; }
-        .modal-content h3 { margin-bottom:15px; color:#ff7900; }
-        .modal-content input[type="text"] { width:100%; margin-bottom:12px; padding:12px; background:var(--inp); color:var(--txt); border:1px solid var(--bdr); border-radius:6px; }
-        .modal-content input[type="file"] { width:100%; margin-bottom:15px; }
-        .btn-container { display:flex; gap:10px; }
-        .btn { width:100%; background:#ff7900; color:#000; border:none; padding:12px; font-weight:bold; cursor:pointer; border-radius:6px; }
-        .btn-secondary { background:#333; color:#fff; }
-        .status-view-box { min-height:220px; background:var(--box); border-radius:10px; padding:15px; margin:10px 0 15px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; }
-        .status-view-box img { max-width:100%; max-height:260px; border-radius:8px; }
-        #toast { visibility:hidden; min-width:240px; background:#ff7900; color:#000; font-weight:bold; text-align:center; border-radius:25px; padding:10px 18px; position:fixed; z-index:200; left:50%; bottom:25px; transform:translateX(-50%); font-size:14px; }
+        .saved { color:var(--accent) !important; }
+        .post-footer p { font-size:14px; margin-bottom:5px; line-height:1.35; }
+        .comments-list { margin-top:6px; padding-top:6px; border-top:1px solid var(--bdr); font-size:13px; color:var(--muted); }
+        .comments-list p { margin-bottom:3px; }
+        .comment-box { display:none; margin-top:8px; gap:6px; }
+        .comment-box input { flex:1; padding:8px 10px; background:var(--inp); border:1px solid var(--bdr); color:var(--txt); border-radius:6px; font-size:13px; }
+        .comment-box button { background:var(--accent); color:#000; border:none; padding:8px 13px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:13px; }
+        .inp { width:100%; padding:10px 12px; background:var(--inp); border:1px solid var(--bdr); color:var(--txt); border-radius:8px; font-size:14px; margin-bottom:10px; }
+        .btn { width:100%; background:var(--accent); color:#000; border:none; padding:11px; font-weight:bold; cursor:pointer; border-radius:8px; font-size:14px; }
+        .btn-sec { background:#333; color:#fff; }
+        .btn-danger { background:#ff3b30; color:#fff; }
+        .card { background:var(--post); border:1px solid var(--bdr); border-radius:10px; padding:14px; margin-bottom:14px; }
+        .reel-card { background:var(--post); border:1px solid var(--bdr); border-radius:12px; overflow:hidden; margin-bottom:16px; }
+        .reel-media { width:100%; height:360px; background:#000; display:flex; align-items:center; justify-content:center; color:#fff; position:relative; }
+        .reel-media video, .reel-media img { width:100%; height:100%; object-fit:cover; }
+        .reel-overlay { padding:12px; display:flex; justify-content:space-between; align-items:center; }
+        .chat-users { display:flex; gap:8px; overflow-x:auto; margin-bottom:10px; }
+        .chat-pill { padding:7px 13px; border-radius:999px; border:1px solid var(--bdr); background:var(--box); color:var(--txt); cursor:pointer; font-size:13px; white-space:nowrap; }
+        .chat-pill.active { background:var(--accent); color:#000; border-color:var(--accent); font-weight:bold; }
+        .chat-box { height:280px; overflow-y:auto; background:var(--box); border:1px solid var(--bdr); border-radius:8px; padding:10px; margin-bottom:10px; display:flex; flex-direction:column; gap:8px; }
+        .msg { max-width:78%; padding:8px 12px; border-radius:12px; font-size:13px; line-height:1.35; }
+        .msg.me { align-self:flex-end; background:var(--accent); color:#000; font-weight:bold; }
+        .msg.them { align-self:flex-start; background:var(--post); border:1px solid var(--bdr); }
+        .profile-head { text-align:center; }
+        .profile-avatar { width:86px; height:86px; border-radius:50%; background:var(--accent); color:#000; font-size:34px; display:flex; align-items:center; justify-content:center; margin:0 auto 10px; overflow:hidden; font-weight:bold; }
+        .profile-avatar img { width:100%; height:100%; object-fit:cover; }
+        .stats-row { display:flex; justify-content:space-around; margin:12px 0; padding:10px 0; border-top:1px solid var(--bdr); border-bottom:1px solid var(--bdr); font-size:13px; }
+        .tabs-row { display:flex; gap:8px; margin:12px 0; }
+        .tab-btn { flex:1; padding:8px; border-radius:6px; border:1px solid var(--bdr); background:var(--box); color:var(--txt); font-weight:bold; cursor:pointer; font-size:13px; }
+        .tab-btn.active { background:var(--accent); color:#000; border-color:var(--accent); }
+        .mini-post { background:var(--box); border:1px solid var(--bdr); border-radius:8px; padding:9px; margin-bottom:8px; font-size:13px; text-align:left; }
+        .mini-post img { width:100%; max-height:180px; object-fit:cover; border-radius:6px; margin-bottom:6px; }
+        .modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:100; justify-content:center; align-items:center; padding:15px; }
+        .modal-content { background:var(--post); padding:18px; border-radius:12px; width:100%; max-width:360px; border:1px solid var(--bdr); text-align:center; }
+        .modal-content h3 { margin-bottom:12px; color:var(--accent); }
+        .row { display:flex; gap:8px; }
+        .status-view-box { min-height:210px; background:var(--box); border-radius:10px; padding:14px; margin:10px 0 14px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; }
+        .status-view-box img { max-width:100%; max-height:250px; border-radius:8px; }
+        #toast { visibility:hidden; min-width:220px; background:var(--accent); color:#000; font-weight:bold; text-align:center; border-radius:25px; padding:10px 16px; position:fixed; z-index:200; left:50%; bottom:72px; transform:translateX(-50%); font-size:13px; }
         #toast.show { visibility:visible; }
     </style>
 </head>
@@ -62,78 +92,133 @@
     <div class="navbar">
         <div class="logo">DHAAKAD</div>
         <div class="nav-icons">
-            <button type="button" class="icon-btn" id="themeBtn"><i class="fa-solid fa-moon"></i></button>
-            <button type="button" class="icon-btn" id="homeBtn"><i class="fa-solid fa-house"></i></button>
-            <button type="button" class="icon-btn" id="profileBtn"><i class="fa-regular fa-user"></i></button>
-            <button type="button" class="icon-btn" id="plusBtn"><i class="fa-regular fa-square-plus"></i></button>
-            <button type="button" class="icon-btn" id="notifBtn"><i class="fa-regular fa-heart"></i></button>
+            <button type="button" class="icon-btn" id="themeBtn" title="थीम बदलें"><i class="fa-solid fa-moon"></i></button>
+            <button type="button" class="icon-btn" id="notifOpenBtn" title="नोटिफिकेशन">
+                <i class="fa-regular fa-heart"></i>
+                <span class="badge" id="notifBadge">0</span>
+            </button>
+            <button type="button" class="icon-btn" id="dmOpenBtn" title="मैसेज (DM)"><i class="fa-regular fa-paper-plane"></i></button>
         </div>
     </div>
 
-    <div class="status-bar" id="statusBar">
-        <div class="status-item" id="addStatusBtn">
-            <div class="status-ring add-ring"><div class="status-avatar"><i class="fa-solid fa-plus" style="color:#ff7900;"></i></div></div>
-            <span class="status-name">स्टेटस लगाएं</span>
+    <div class="container">
+        <div class="section active" id="secHome">
+            <div class="status-bar">
+                <div class="status-item" id="addStatusBtn">
+                    <div class="status-ring add-ring"><div class="status-avatar"><i class="fa-solid fa-plus" style="color:var(--accent);"></i></div></div>
+                    <span class="status-name">स्टेटस लगाएं</span>
+                </div>
+                <div id="statusList"></div>
+            </div>
+            <div id="feed"></div>
         </div>
-        <div id="statusList"></div>
-    </div>
 
-    <div class="main" id="feed">
-        <div class="post">
-            <div class="post-header">
-                <div><i class="fa-solid fa-fire"></i> DHAAKAD_OFFICIAL</div>
-                <div>
-                    <button type="button" class="follow-btn">Follow</button>
-                    <button type="button" class="delete-post-btn">Delete</button>
+        <div class="section" id="secExplore">
+            <input type="text" class="inp" id="exploreSearchInp" placeholder="यूज़रनेम या पोस्ट खोजें...">
+            <div id="exploreResults"></div>
+        </div>
+
+        <div class="section" id="secReels">
+            <div class="card">
+                <h3 style="color:var(--accent); margin-bottom:10px; font-size:16px;">नई रील अपलोड करें</h3>
+                <input type="text" class="inp" id="reelCaptionInp" placeholder="रील कैप्शन लिखें...">
+                <input type="file" class="inp" id="reelFileInp" accept="video/*,image/*">
+                <button type="button" class="btn" id="addReelBtn">रील पोस्ट करें</button>
+            </div>
+            <div id="reelsList"></div>
+        </div>
+
+        <div class="section" id="secNotif">
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <h3 style="color:var(--accent); font-size:16px;">नोटिफिकेशन</h3>
+                    <button type="button" class="btn btn-sec" style="width:auto; padding:6px 12px; font-size:12px;" id="clearNotifBtn">साफ़ करें</button>
+                </div>
+                <div id="notifList"></div>
+            </div>
+        </div>
+
+        <div class="section" id="secDm">
+            <div class="card">
+                <h3 style="color:var(--accent); margin-bottom:10px; font-size:16px;">डायरेक्ट मैसेज (DM)</h3>
+                <div class="chat-users" id="chatUsersBar"></div>
+                <div class="chat-box" id="chatMessagesBox"></div>
+                <div class="row">
+                    <input type="text" class="inp" id="chatMsgInp" placeholder="मैसेज लिखें..." style="margin-bottom:0;">
+                    <button type="button" class="btn" id="sendChatBtn" style="width:auto; padding:0 16px;">भेजें</button>
                 </div>
             </div>
-            <div class="post-box">🔥 DHAAKAD Ultimate App with Storage & Upload</div>
-            <div class="post-footer">
-                <div class="post-actions">
-                    <button type="button" class="action-btn like-btn"><i class="fa-regular fa-heart"></i></button>
-                    <button type="button" class="action-btn comment-toggle-btn"><i class="fa-regular fa-comment"></i></button>
-                    <button type="button" class="action-btn share-btn"><i class="fa-regular fa-paper-plane"></i></button>
+        </div>
+
+        <div class="section" id="secProfile">
+            <div class="card profile-head">
+                <div class="profile-avatar" id="profileAvatarBox">D</div>
+                <h2 id="displayUsername">DHAAKAD_USER</h2>
+                <p id="displayBio" style="color:var(--muted); font-size:13px; margin-top:4px;">धाकड़ सोशल क्रिएटर 🚀</p>
+                <div class="stats-row">
+                    <div><b id="stPosts">0</b><br><span style="color:var(--muted);">पोस्ट्स</span></div>
+                    <div><b id="stFollowers">128</b><br><span style="color:var(--muted);">फॉलोअर्स</span></div>
+                    <div><b id="stFollowing">0</b><br><span style="color:var(--muted);">फॉलोइंग</span></div>
                 </div>
-                <p><b><span class="like-count">1245</span> likes</b></p>
-                <p><b>DHAAKAD_OFFICIAL</b> अब हर नया फीचर एकदम लोड और सेव रहेगा!</p>
-                <div class="comments-list"></div>
-                <div class="comment-box"><input type="text" placeholder="कमेंट लिखें..."><button type="button" class="send-comment-btn">Send</button></div>
+                <div class="row" style="margin-bottom:8px;">
+                    <input type="text" class="inp" id="newUsernameInput" placeholder="नया यूजरनेम..." style="margin-bottom:0;">
+                    <button type="button" class="btn" id="saveUsernameBtn" style="width:auto; padding:0 14px;">बदलो</button>
+                </div>
+                <div class="row" style="margin-bottom:8px;">
+                    <input type="text" class="inp" id="newBioInput" placeholder="नया बायो..." style="margin-bottom:0;">
+                    <button type="button" class="btn" id="saveBioBtn" style="width:auto; padding:0 14px;">बायो</button>
+                </div>
+                <input type="file" accept="image/*" id="newAvatarInput" class="inp" style="font-size:12px;">
+                <div class="tabs-row">
+                    <button type="button" class="tab-btn active" id="tabMyPosts">मेरी पोस्ट्स</button>
+                    <button type="button" class="tab-btn" id="tabSavedPosts">सेव्ड पोस्ट्स</button>
+                </div>
+                <div id="profileGrid"></div>
             </div>
         </div>
     </div>
 
-    <div class="profile-container" id="profileSection">
-        <div class="profile-avatar"><i class="fa-solid fa-user"></i></div>
-        <h2 id="displayUsername">DHAAKAD_USER</h2>
-        <p style="color:#888;font-size:14px;">धाकड़ ऐप का ऑफिशियल यूजर 🚀</p>
-        <div class="profile-edit-box"><input type="text" id="newUsernameInput" placeholder="नया यूजरनेम लिखें..."><button type="button" id="saveUsernameBtn">बदलो</button></div>
-        <button type="button" class="btn btn-secondary" id="backToHomeBtn">वापस होम पर जाएं</button>
-    </div>
+    <nav class="bottom-nav">
+        <button type="button" class="b-btn active" data-target="secHome"><i class="fa-solid fa-house"></i><span>होम</span></button>
+        <button type="button" class="b-btn" data-target="secExplore"><i class="fa-solid fa-magnifying-glass"></i><span>खोजें</span></button>
+        <button type="button" class="b-btn" id="openCreatePostBtn"><i class="fa-regular fa-square-plus"></i><span>पोस्ट</span></button>
+        <button type="button" class="b-btn" data-target="secReels"><i class="fa-solid fa-clapperboard"></i><span>रील्स</span></button>
+        <button type="button" class="b-btn" data-target="secProfile"><i class="fa-regular fa-user"></i><span>प्रोफ़ाइल</span></button>
+    </nav>
 
-    <div class="modal" id="myModal">
+    <div class="modal" id="postModal">
         <div class="modal-content">
             <h3>नई पोस्ट बनाएं</h3>
-            <input type="text" id="captionInput" placeholder="कैप्शन लिखें...">
-            <input type="file" id="imageInput" accept="image/*">
-            <div class="btn-container"><button type="button" class="btn btn-secondary" id="cancelPostBtn">बंद करें</button><button type="button" class="btn" id="submitPostBtn">पोस्ट करें</button></div>
+            <input type="text" class="inp" id="captionInput" placeholder="कैप्शन लिखें...">
+            <input type="file" class="inp" id="imageInput" accept="image/*">
+            <div class="row">
+                <button type="button" class="btn btn-sec" id="cancelPostBtn">बंद करें</button>
+                <button type="button" class="btn" id="submitPostBtn">पोस्ट करें</button>
+            </div>
         </div>
     </div>
 
     <div class="modal" id="statusModal">
         <div class="modal-content">
             <h3>24 घंटे का स्टेटस लगाएं</h3>
-            <input type="text" id="statusTextInput" placeholder="अपना स्टेटस लिखें...">
-            <input type="file" id="statusImageInput" accept="image/*">
-            <div class="btn-container"><button type="button" class="btn btn-secondary" id="cancelStatusBtn">बंद करें</button><button type="button" class="btn" id="submitStatusBtn">स्टेटस लगाएं</button></div>
+            <input type="text" class="inp" id="statusTextInput" placeholder="अपना स्टेटस लिखें...">
+            <input type="file" class="inp" id="statusImageInput" accept="image/*">
+            <div class="row">
+                <button type="button" class="btn btn-sec" id="cancelStatusBtn">बंद करें</button>
+                <button type="button" class="btn" id="submitStatusBtn">लगाएं</button>
+            </div>
         </div>
     </div>
 
     <div class="modal" id="viewStatusModal">
         <div class="modal-content">
-            <h3 id="viewStatusUser">यूजर</h3>
-            <div id="viewStatusTime" style="font-size:12px;color:#888;"></div>
+            <h3 id="viewStatusUser">यूज़र</h3>
+            <div id="viewStatusTime" style="font-size:12px; color:var(--muted);"></div>
             <div class="status-view-box" id="viewStatusContent"></div>
-            <button type="button" class="btn btn-secondary" id="closeViewStatusBtn">बंद करें</button>
+            <div class="row">
+                <button type="button" class="btn btn-danger" id="deleteStatusBtn">डिलीट</button>
+                <button type="button" class="btn btn-sec" id="closeViewStatusBtn">बंद करें</button>
+            </div>
         </div>
     </div>
 
@@ -141,119 +226,264 @@
 
     <script>
         const $ = id => document.getElementById(id);
-        function showToast(msg) {
-            const t = $("toast"); t.innerText = msg; t.className = "show";
-            setTimeout(() => t.className = "", 2500);
+        const DAY_MS = 24 * 60 * 60 * 1000;
+        const STORE_KEY = "dhaakad_social_all_v1";
+
+        const defaultData = {
+            user: { name: "DHAAKAD_USER", bio: "धाकड़ सोशल क्रिएटर 🚀", avatar: "" },
+            following: [],
+            posts: [{ id: "p1", author: "DHAAKAD_OFFICIAL", caption: "🔥 DHAAKAD Social App — पोस्ट, रील्स, स्टेटस और चैट सब एक साथ!", media: "", likes: 1245, liked: false, saved: false, comments: ["बहुत बढ़िया ऐप है!"] }],
+            reels: [{ id: "r1", author: "DHAAKAD_REELS", caption: "🎬 पहला धाकड़ रील शोकेस!", media: "", isVideo: false, likes: 340, liked: false }],
+            statuses: [],
+            notifications: [{ text: "DHAAKAD Social में आपका स्वागत है!", time: "अभी" }],
+            chats: {
+                "DHAAKAD_OFFICIAL": [{ from: "them", text: "नमस्ते! DHAAKAD में आपका स्वागत है 🔥" }],
+                "RAHUL_VLOGS": [{ from: "them", text: "भाई नई पोस्ट कब आ रही है?" }]
+            }
+        };
+
+        function loadData() {
+            try {
+                const raw = localStorage.getItem(STORE_KEY);
+                if (!raw) return structuredClone(defaultData);
+                const d = JSON.parse(raw);
+                return {
+                    user: { ...defaultData.user, ...(d.user || {}) },
+                    following: Array.isArray(d.following) ? d.following : [],
+                    posts: Array.isArray(d.posts) ? d.posts : structuredClone(defaultData.posts),
+                    reels: Array.isArray(d.reels) ? d.reels : structuredClone(defaultData.reels),
+                    statuses: Array.isArray(d.statuses) ? d.statuses : [],
+                    notifications: Array.isArray(d.notifications) ? d.notifications : [],
+                    chats: d.chats && typeof d.chats === "object" ? d.chats : structuredClone(defaultData.chats)
+                };
+            } catch (e) { return structuredClone(defaultData); }
         }
+
+        let db = loadData();
+        let activeStatusId = null;
+        let activeChatUser = Object.keys(db.chats)[0] || "DHAAKAD_OFFICIAL";
+        let profileTab = "my";
+                function saveData() {
+            try { localStorage.setItem(STORE_KEY, JSON.stringify(db)); }
+            catch (e) { toast("स्टोरेज फुल है, छोटी फ़ाइल चुनें!"); }
+        }
+
+        function toast(msg) {
+            const t = $("toast"); t.innerText = msg; t.className = "show";
+            clearTimeout(window._toastTimer);
+            window._toastTimer = setTimeout(() => { t.className = ""; }, 2300);
+        }
+
+        function notify(text) {
+            const time = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+            db.notifications.unshift({ text, time });
+            if (db.notifications.length > 40) db.notifications.pop();
+            saveData(); renderNotifications();
+        }
+
+        function switchSection(secId) {
+            document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+            $(secId).classList.add("active");
+            document.querySelectorAll(".b-btn[data-target]").forEach(b => b.classList.toggle("active", b.dataset.target === secId));
+            if (secId === "secProfile") renderProfile();
+            if (secId === "secExplore") renderExplore();
+            if (secId === "secReels") renderReels();
+            if (secId === "secNotif") renderNotifications();
+            if (secId === "secDm") renderChats();
+        }
+
+        document.querySelectorAll(".b-btn[data-target]").forEach(btn => btn.onclick = () => switchSection(btn.dataset.target));
+        $("notifOpenBtn").onclick = () => switchSection("secNotif");
+        $("dmOpenBtn").onclick = () => switchSection("secDm");
 
         $("themeBtn").onclick = () => {
             document.body.classList.toggle("light-mode");
             const light = document.body.classList.contains("light-mode");
             $("themeBtn").querySelector("i").className = light ? "fa-solid fa-sun" : "fa-solid fa-moon";
-            showToast(light ? "लाइट मोड चालू ☀️" : "डार्क मोड चालू 🌙");
+            toast(light ? "लाइट मोड चालू ☀️" : "डार्क मोड चालू 🌙");
         };
 
-        $("homeBtn").onclick = () => { $("profileSection").style.display = "none"; $("feed").style.display = "block"; $("statusBar").style.display = "flex"; showToast("होम पेज 🏠"); };
-        $("profileBtn").onclick = () => { $("feed").style.display = "none"; $("statusBar").style.display = "none"; $("profileSection").style.display = "block"; showToast("प्रोफाइल पेज 👤"); };
-        $("backToHomeBtn").onclick = () => { $("profileSection").style.display = "none"; $("feed").style.display = "block"; $("statusBar").style.display = "flex"; };
-        $("plusBtn").onclick = () => $("myModal").style.display = "flex";
-        $("notifBtn").onclick = () => showToast("कोई नया नोटिफिकेशन नहीं है ❤️");
-        $("cancelPostBtn").onclick = () => { $("myModal").style.display = "none"; $("captionInput").value = ""; $("imageInput").value = ""; };
-
-        const DAY_MS = 24 * 60 * 60 * 1000;
-        function getStatuses() {
-            let list = [];
-            try { list = JSON.parse(localStorage.getItem("dhaakad_st") || "[]"); } catch(e) {}
-            const active = Array.isArray(list) ? list.filter(s => s && s.exp > Date.now()) : [];
-            try { localStorage.setItem("dhaakad_st", JSON.stringify(active)); } catch(e) {}
-            return active;
+        function cleanStatuses() {
+            const now = Date.now(), prev = db.statuses.length;
+            db.statuses = db.statuses.filter(s => s.exp > now);
+            if (db.statuses.length !== prev) saveData();
         }
 
         function renderStatuses() {
-            const box = $("statusList"); box.innerHTML = "";
-            getStatuses().forEach(st => {
-                const div = document.createElement("div");
-                div.className = "status-item";
-                div.innerHTML = `<div class="status-ring"><div class="status-avatar">${st.img ? `<img src="${st.img}">` : st.user[0].toUpperCase()}</div></div><span class="status-name">${st.user}</span>`;
+            cleanStatuses();
+            const list = $("statusList"); list.innerHTML = "";
+            db.statuses.forEach(st => {
+                const div = document.createElement("div"); div.className = "status-item";
+                div.innerHTML = `<div class="status-ring"><div class="status-avatar">${st.img ? `<img src="${st.img}">` : st.author[0].toUpperCase()}</div></div><span class="status-name">${st.author}</span>`;
                 div.onclick = () => {
-                    const cur = getStatuses().find(x => x.id === st.id);
-                    if (!cur) { renderStatuses(); return showToast("स्टेटस खत्म हो गया!"); }
+                    cleanStatuses();
+                    const cur = db.statuses.find(x => x.id === st.id);
+                    if (!cur) { renderStatuses(); return toast("स्टेटस 24 घंटे पूरे होने पर हट गया!"); }
+                    activeStatusId = cur.id;
                     const hrs = Math.floor((cur.exp - Date.now()) / 3600000);
                     const mins = Math.floor(((cur.exp - Date.now()) % 3600000) / 60000);
-                    $("viewStatusUser").innerText = cur.user;
+                    $("viewStatusUser").innerText = cur.author;
                     $("viewStatusTime").innerText = `⏳ ${hrs} घंटा ${mins} मिनट बाकी`;
                     $("viewStatusContent").innerHTML = `${cur.img ? `<img src="${cur.img}">` : ""}${cur.text ? `<div>${cur.text}</div>` : ""}`;
                     $("viewStatusModal").style.display = "flex";
                 };
-                box.appendChild(div);
+                list.appendChild(div);
             });
         }
 
-        $("addStatusBtn").onclick = () => $("statusModal").style.display = "flex";
+        $("addStatusBtn").onclick = () => { $("statusModal").style.display = "flex"; };
         $("cancelStatusBtn").onclick = () => { $("statusModal").style.display = "none"; $("statusTextInput").value = ""; $("statusImageInput").value = ""; };
-        $("closeViewStatusBtn").onclick = () => $("viewStatusModal").style.display = "none";
+        $("closeViewStatusBtn").onclick = () => { $("viewStatusModal").style.display = "none"; activeStatusId = null; };
+        $("deleteStatusBtn").onclick = () => {
+            if (!activeStatusId) return;
+            db.statuses = db.statuses.filter(s => s.id !== activeStatusId);
+            saveData(); renderStatuses(); $("viewStatusModal").style.display = "none"; activeStatusId = null; toast("स्टेटस डिलीट हो गया!");
+        };
 
         $("submitStatusBtn").onclick = () => {
-            const txt = $("statusTextInput").value.trim(), file = $("statusImageInput").files[0];
-            if (!txt && !file) return showToast("कुछ लिखें या फोटो चुनें! ⚠️");
-            const save = (img = "") => {
-                const list = getStatuses(), user = localStorage.getItem("dhaakad_username") || "DHAAKAD_USER";
-                list.unshift({ id: Date.now(), user, text: txt, img, exp: Date.now() + DAY_MS });
-                try { localStorage.setItem("dhaakad_st", JSON.stringify(list)); } catch(e) { showToast("फोटो बहुत बड़ी है!"); }
-                $("statusModal").style.display = "none"; $("statusTextInput").value = ""; $("statusImageInput").value = "";
-                renderStatuses(); showToast("स्टेटस 24 घंटे के लिए लग गया! ⏱️");
+            const text = $("statusTextInput").value.trim(), file = $("statusImageInput").files[0];
+            if (!text && !file) return toast("स्टेटस लिखें या फोटो चुनें!");
+            const addSt = (img = "") => {
+                db.statuses.unshift({ id: "st-" + Date.now(), author: db.user.name, text, img, exp: Date.now() + DAY_MS });
+                saveData(); renderStatuses(); $("statusModal").style.display = "none"; $("statusTextInput").value = ""; $("statusImageInput").value = "";
+                notify(`${db.user.name} ने 24 घंटे का स्टेटस लगाया।`); toast("24 घंटे के लिए स्टेटस लग गया! ⏱️");
             };
-            if (file) { const r = new FileReader(); r.onload = e => save(e.target.result); r.readAsDataURL(file); } else save();
+            if (file) { const r = new FileReader(); r.onload = e => addSt(e.target.result); r.readAsDataURL(file); } else addSt();
         };
 
-        function saveFeed() { try { localStorage.setItem("dhaakad_feed_v3", $("feed").innerHTML); } catch(e) {} }
-        if (localStorage.getItem("dhaakad_feed_v3")) $("feed").innerHTML = localStorage.getItem("dhaakad_feed_v3");
-        if (localStorage.getItem("dhaakad_username")) $("displayUsername").innerText = localStorage.getItem("dhaakad_username");
-        renderStatuses();
+        function renderFeed() {
+            $("feed").innerHTML = db.posts.map(p => {
+                const isF = db.following.includes(p.author);
+                return `<div class="post" data-id="${p.id}"><div class="post-header"><div><i class="fa-solid fa-fire"></i> ${p.author}</div><div class="post-header-right"><button type="button" class="follow-btn ${isF ? "following" : ""}">${isF ? "Following" : "Follow"}</button><button type="button" class="del-btn">Delete</button></div></div><div class="post-media">${p.media ? `<img src="${p.media}" alt="Post">` : `<div>${p.caption}</div>`}<i class="fa-solid fa-heart heart-pop"></i></div><div class="post-footer"><div class="post-actions"><div class="post-actions-left"><button type="button" class="action-btn like-btn"><i class="${p.liked ? "fa-solid liked" : "fa-regular"} fa-heart"></i></button><button type="button" class="action-btn comment-toggle-btn"><i class="fa-regular fa-comment"></i></button><button type="button" class="action-btn share-btn"><i class="fa-regular fa-paper-plane"></i></button></div><button type="button" class="action-btn save-btn"><i class="${p.saved ? "fa-solid saved" : "fa-regular"} fa-bookmark"></i></button></div><p><b>${p.likes} likes</b></p><p><b>${p.author}</b> ${p.caption}</p><div class="comments-list">${p.comments.map(c => `<p><b>कमेंट:</b> ${c}</p>`).join("")}</div><div class="comment-box"><input type="text" placeholder="कमेंट लिखें..."><button type="button" class="send-comment-btn">Send</button></div></div></div>`;
+            }).join("");
+        }
 
-        $("saveUsernameBtn").onclick = () => {
-            const n = $("newUsernameInput").value.trim();
-            if (!n) return showToast("सही नाम लिखें! ⚠️");
-            $("displayUsername").innerText = n; localStorage.setItem("dhaakad_username", n); $("newUsernameInput").value = ""; showToast("नाम बदल गया! ✅");
-        };
+        $("openCreatePostBtn").onclick = () => { $("postModal").style.display = "flex"; };
+        $("cancelPostBtn").onclick = () => { $("postModal").style.display = "none"; $("captionInput").value = ""; $("imageInput").value = ""; };
 
         $("submitPostBtn").onclick = () => {
-            const txt = $("captionInput").value.trim(), file = $("imageInput").files[0];
-            if (!txt && !file) return showToast("कुछ लिखें या फोटो चुनें! ⚠️");
-            const add = (img = "") => {
-                const user = localStorage.getItem("dhaakad_username") || "DHAAKAD_USER";
-                const div = document.createElement("div"); div.className = "post";
-                div.innerHTML = `<div class="post-header"><div><i class="fa-solid fa-user"></i> ${user}</div><div><button type="button" class="follow-btn">Follow</button><button type="button" class="delete-post-btn">Delete</button></div></div><div class="post-box">${img ? `<img src="${img}">` : txt}</div><div class="post-footer"><div class="post-actions"><button type="button" class="action-btn like-btn"><i class="fa-regular fa-heart"></i></button><button type="button" class="action-btn comment-toggle-btn"><i class="fa-regular fa-comment"></i></button><button type="button" class="action-btn share-btn"><i class="fa-regular fa-paper-plane"></i></button></div><p><b><span class="like-count">1</span> likes</b></p><p><b>${user}</b> ${txt}</p><div class="comments-list"></div><div class="comment-box"><input type="text" placeholder="कमेंट लिखें..."><button type="button" class="send-comment-btn">Send</button></div></div>`;
-                $("feed").prepend(div); $("myModal").style.display = "none"; $("captionInput").value = ""; $("imageInput").value = "";
-                saveFeed(); showToast("नई पोस्ट लाइव हो गई! 🔥");
+            const caption = $("captionInput").value.trim(), file = $("imageInput").files[0];
+            if (!caption && !file) return toast("कैप्शन लिखें या फोटो चुनें!");
+            const create = (media = "") => {
+                db.posts.unshift({ id: "p-" + Date.now(), author: db.user.name, caption: caption || "नई पोस्ट", media, likes: 1, liked: false, saved: false, comments: [] });
+                saveData(); renderFeed(); $("postModal").style.display = "none"; $("captionInput").value = ""; $("imageInput").value = "";
+                switchSection("secHome"); notify(`${db.user.name} ने नई पोस्ट डाली।`); toast("नई पोस्ट लाइव हो गई! 🔥");
             };
-            if (file) { const r = new FileReader(); r.onload = e => add(e.target.result); r.readAsDataURL(file); } else add();
+            if (file) { const r = new FileReader(); r.onload = e => create(e.target.result); r.readAsDataURL(file); } else create();
         };
 
         $("feed").onclick = e => {
-            const like = e.target.closest(".like-btn"), cTog = e.target.closest(".comment-toggle-btn"), sCom = e.target.closest(".send-comment-btn"), share = e.target.closest(".share-btn"), fol = e.target.closest(".follow-btn"), del = e.target.closest(".delete-post-btn");
-            if (like) {
-                const ic = like.querySelector("i"), cnt = like.closest(".post").querySelector(".like-count");
-                const liked = ic.classList.toggle("fa-solid"); ic.classList.toggle("fa-regular", !liked); ic.classList.toggle("liked", liked);
-                cnt.innerText = parseInt(cnt.innerText) + (liked ? 1 : -1); saveFeed();
-            }
-            if (cTog) { const b = cTog.closest(".post").querySelector(".comment-box"); b.style.display = b.style.display === "flex" ? "none" : "flex"; }
-            if (sCom) {
-                const p = sCom.closest(".post"), inp = p.querySelector(".comment-box input");
-                if (inp.value.trim()) { p.querySelector(".comments-list").innerHTML += `<p><b>You:</b> ${inp.value.trim()}</p>`; inp.value = ""; saveFeed(); showToast("कमेंट जुड़ गया! 💬"); }
-            }
-            if (share) { if (navigator.share) navigator.share({ title:"DHAAKAD", url:location.href }).catch(()=>{}); else { navigator.clipboard?.writeText(location.href); showToast("लिंक कॉपी हो गया! 🔗"); } }
-            if (fol) {
-                const isF = fol.innerText === "Follow";
-                fol.innerText = isF ? "Following" : "Follow"; fol.style.background = isF ? "#333" : "#ff7900"; fol.style.color = isF ? "#fff" : "#000";
-                saveFeed(); showToast(isF ? "फॉलो कर लिया! 🤝" : "अनफॉलो कर दिया! ❌");
-            }
-            if (del) {
-                del.closest(".post").remove();
-                saveFeed();
-                showToast("पोस्ट डिलीट हो गई! 🗑️");
+            const card = e.target.closest(".post"); if (!card) return;
+            const post = db.posts.find(x => x.id === card.dataset.id); if (!post) return;
+            if (e.target.closest(".like-btn")) {
+                post.liked = !post.liked; post.likes += post.liked ? 1 : -1; saveData(); renderFeed();
+                if (post.liked) notify(`आपने ${post.author} की पोस्ट लाइक की।`);
+            } else if (e.target.closest(".save-btn")) {
+                post.saved = !post.saved; saveData(); renderFeed(); toast(post.saved ? "पोस्ट सेव हो गई! 🔖" : "सेव लिस्ट से हटा दी गई!");
+            } else if (e.target.closest(".comment-toggle-btn")) {
+                const box = card.querySelector(".comment-box"); box.style.display = box.style.display === "flex" ? "none" : "flex";
+            } else if (e.target.closest(".send-comment-btn")) {
+                const inp = card.querySelector(".comment-box input"), txt = inp.value.trim();
+                if (!txt) return; post.comments.push(txt); saveData(); renderFeed(); notify(`${post.author} की पोस्ट पर कमेंट: "${txt}"`); toast("कमेंट जुड़ गया! 💬");
+            } else if (e.target.closest(".share-btn")) {
+                if (navigator.share) navigator.share({ title: "DHAAKAD", text: post.caption, url: location.href }).catch(() => {});
+                else { navigator.clipboard?.writeText(location.href); toast("लिंक कॉपी हो गया! 🔗"); }
+            } else if (e.target.closest(".follow-btn")) {
+                const idx = db.following.indexOf(post.author);
+                if (idx === -1) { db.following.push(post.author); notify(`आपने ${post.author} को फॉलो किया।`); toast(`${post.author} को फॉलो कर लिया! 🤝`); }
+                else { db.following.splice(idx, 1); toast(`${post.author} को अनफॉलो कर दिया! ❌`); }
+                saveData(); renderFeed();
+            } else if (e.target.closest(".del-btn")) {
+                db.posts = db.posts.filter(x => x.id !== post.id); saveData(); renderFeed(); toast("पोस्ट डिलीट हो गई! 🗑️");
             }
         };
+
+        $("feed").ondblclick = e => {
+            const media = e.target.closest(".post-media"); if (!media) return;
+            const post = db.posts.find(x => x.id === media.closest(".post").dataset.id); if (!post) return;
+            if (!post.liked) { post.liked = true; post.likes += 1; saveData(); renderFeed(); notify(`आपने ${post.author} की पोस्ट लाइक की।`); }
+            const pop = $("feed").querySelector(`.post[data-id="${post.id}"] .heart-pop`);
+            if (pop) { pop.classList.add("show"); setTimeout(() => pop.classList.remove("show"), 650); }
+        };
+
+        function renderExplore() {
+            const q = $("exploreSearchInp").value.trim().toLowerCase();
+            const hits = db.posts.filter(p => !q || p.author.toLowerCase().includes(q) || p.caption.toLowerCase().includes(q));
+            $("exploreResults").innerHTML = hits.length
+                ? hits.map(p => `<div class="mini-post">${p.media ? `<img src="${p.media}">` : ""}<b>${p.author}</b>: ${p.caption} <span style="color:var(--muted);">(${p.likes} likes)</span></div>`).join("")
+                : `<p style="color:var(--muted); text-align:center; padding:20px;">कोई परिणाम नहीं मिला।</p>`;
+        }
+        $("exploreSearchInp").oninput = renderExplore;
+
+        function renderReels() {
+            $("reelsList").innerHTML = db.reels.map(r => `<div class="reel-card" data-id="${r.id}"><div class="reel-media">${r.media ? (r.isVideo ? `<video src="${r.media}" controls loop playsinline></video>` : `<img src="${r.media}">`) : `<div style="padding:20px; text-align:center;">${r.caption}</div>`}</div><div class="reel-overlay"><div><b>@${r.author}</b><br><span style="font-size:13px; color:var(--muted);">${r.caption}</span></div><button type="button" class="action-btn reel-like-btn"><i class="${r.liked ? "fa-solid liked" : "fa-regular"} fa-heart"></i> <span style="font-size:14px;">${r.likes}</span></button></div></div>`).join("");
+        }
+
+        $("addReelBtn").onclick = () => {
+            const caption = $("reelCaptionInp").value.trim(), file = $("reelFileInp").files[0];
+            if (!caption && !file) return toast("रील कैप्शन या वीडियो/फ़ोटो चुनें!");
+            const pushReel = (media = "", isVideo = false) => {
+                db.reels.unshift({ id: "r-" + Date.now(), author: db.user.name, caption: caption || "धाकड़ रील", media, isVideo, likes: 1, liked: false });
+                saveData(); renderReels(); $("reelCaptionInp").value = ""; $("reelFileInp").value = "";
+                notify(`${db.user.name} ने नई रील अपलोड की।`); toast("रील लाइव हो गई! 🎬");
+            };
+            if (file) { const isVideo = file.type.startsWith("video/"), r = new FileReader(); r.onload = e => pushReel(e.target.result, isVideo); r.readAsDataURL(file); }
+            else pushReel();
+        };
+
+        $("reelsList").onclick = e => {
+            const btn = e.target.closest(".reel-like-btn"); if (!btn) return;
+            const reel = db.reels.find(x => x.id === btn.closest(".reel-card").dataset.id); if (!reel) return;
+            reel.liked = !reel.liked; reel.likes += reel.liked ? 1 : -1; saveData(); renderReels();
+        };
+
+        function renderNotifications() {
+            const badge = $("notifBadge");
+            if (db.notifications.length) { badge.style.display = "flex"; badge.innerText = db.notifications.length > 9 ? "9+" : db.notifications.length; }
+            else badge.style.display = "none";
+            $("notifList").innerHTML = db.notifications.length
+                ? db.notifications.map(n => `<div class="mini-post">${n.text}<div style="font-size:11px; color:var(--muted); margin-top:3px;">${n.time}</div></div>`).join("")
+                : `<p style="color:var(--muted); font-size:13px;">कोई नया नोटिफिकेशन नहीं है।</p>`;
+        }
+        $("clearNotifBtn").onclick = () => { db.notifications = []; saveData(); renderNotifications(); toast("नोटिफिकेशन साफ़ हो गए!"); };
+
+        function renderChats() {
+            const users = Object.keys(db.chats);
+            $("chatUsersBar").innerHTML = users.map(u => `<button type="button" class="chat-pill ${u === activeChatUser ? "active" : ""}" data-u="${u}">${u}</button>`).join("");
+            const msgs = db.chats[activeChatUser] || [], box = $("chatMessagesBox");
+            box.innerHTML = msgs.map(m => `<div class="msg ${m.from}">${m.text}</div>`).join("");
+            box.scrollTop = box.scrollHeight;
+        }
+
+        $("chatUsersBar").onclick = e => { const pill = e.target.closest(".chat-pill"); if (pill) { activeChatUser = pill.dataset.u; renderChats(); } };
+
+        $("sendChatBtn").onclick = () => {
+            const txt = $("chatMsgInp").value.trim(); if (!txt) return;
+            if (!db.chats[activeChatUser]) db.chats[activeChatUser] = [];
+            db.chats[activeChatUser].push({ from: "me", text: txt });
+            $("chatMsgInp").value = ""; saveData(); renderChats();
+            setTimeout(() => { db.chats[activeChatUser].push({ from: "them", text: "बढ़िया भाई! 🔥 संदेश मिल गया।" }); saveData(); renderChats(); }, 600);
+        };
+
+        function renderProfile() {
+            $("displayUsername").innerText = db.user.name; $("displayBio").innerText = db.user.bio;
+            $("profileAvatarBox").innerHTML = db.user.avatar ? `<img src="${db.user.avatar}">` : db.user.name.charAt(0).toUpperCase();
+            const myPosts = db.posts.filter(p => p.author === db.user.name), savedPosts = db.posts.filter(p => p.saved);
+            $("stPosts").innerText = myPosts.length; $("stFollowing").innerText = db.following.length;
+            const items = profileTab === "my" ? myPosts : savedPosts;
+            $("profileGrid").innerHTML = items.length
+                ? items.map(p => `<div class="mini-post">${p.media ? `<img src="${p.media}">` : ""}<b>${p.author}</b>: ${p.caption}</div>`).join("")
+                : `<p style="color:var(--muted); font-size:13px;">${profileTab === "my" ? "अभी आपकी कोई पोस्ट नहीं है।" : "कोई सेव्ड पोस्ट नहीं है।"}</p>`;
+        }
+
+        $("saveUsernameBtn").onclick = () => { const n = $("newUsernameInput").value.trim(); if (!n) return toast("सही नाम लिखें!"); db.user.name = n; $("newUsernameInput").value = ""; saveData(); renderProfile(); toast("यूजरनेम बदल गया! ✅"); };
+        $("saveBioBtn").onclick = () => { const b = $("newBioInput").value.trim(); if (!b) return toast("सही बायो लिखें!"); db.user.bio = b; $("newBioInput").value = ""; saveData(); renderProfile(); toast("बायो अपडेट हो गया! ✅"); };
+        $("newAvatarInput").onchange = e => { const file = e.target.files[0]; if (!file) return; const r = new FileReader(); r.onload = ev => { db.user.avatar = ev.target.result; saveData(); renderProfile(); toast("प्रोफ़ाइल फ़ोटो बदल गई!"); }; r.readAsDataURL(file); };
+        $("tabMyPosts").onclick = () => { profileTab = "my"; $("tabMyPosts").classList.add("active"); $("tabSavedPosts").classList.remove("active"); renderProfile(); };
+        $("tabSavedPosts").onclick = () => { profileTab = "saved"; $("tabSavedPosts").classList.add("active"); $("tabMyPosts").classList.remove("active"); renderProfile(); };
+
+        renderStatuses(); renderFeed(); renderNotifications(); renderProfile();
+        setInterval(renderStatuses, 60000);
     </script>
 </body>
 </html>
