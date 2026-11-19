@@ -1304,6 +1304,168 @@
     syncSnapContainer();
   })();
 </script>
+<script>
+  (function fixBackCameraAndTimeline() {
+    window.dhaakadFacingMode = window.dhaakadFacingMode || 'environment';
+
+    const editorVideo = document.getElementById('editor-video');
+    const camBtn = document.getElementById('cam-toggle-btn');
+    const flipBtn = document.getElementById('cam-flip-btn');
+    const statusText = document.getElementById('media-status-text');
+    const placeholder = document.getElementById('stage-placeholder');
+
+    function stopCameraTracks() {
+      if (window.dhaakadStream) {
+        window.dhaakadStream.getTracks().forEach(t => t.stop());
+        window.dhaakadStream = null;
+      }
+      if (typeof camStream !== 'undefined' && camStream) {
+        camStream.getTracks().forEach(t => t.stop());
+        camStream = null;
+      }
+    }
+
+    async function openCameraWithMode(mode) {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        if (statusText) statusText.innerText = 'इस ब्राउज़र में कैमरा API उपलब्ध नहीं है।';
+        return null;
+      }
+      stopCameraTracks();
+
+      const constraintsList = [
+        { video: { facingMode: { exact: mode } }, audio: true },
+        { video: { facingMode: mode }, audio: true },
+        { video: true, audio: true }
+      ];
+
+      for (const constraints of constraintsList) {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia(constraints);
+          window.dhaakadStream = stream;
+          if (editorVideo) {
+            editorVideo.srcObject = stream;
+            editorVideo.muted = true;
+            editorVideo.playsInline = true;
+            editorVideo.style.display = 'block';
+            await editorVideo.play().catch(() => {});
+          }
+          if (placeholder) placeholder.style.display = 'none';
+          if (statusText) {
+            statusText.innerText = mode === 'environment'
+              ? '✔ पीछे का कैमरा (Back Camera) चालू है'
+              : '✔ आगे का कैमरा (Front Camera) चालू है';
+          }
+          return stream;
+        } catch (err) {
+          // अगला fallback constraint आज़माएँ
+        }
+      }
+
+      if (statusText) {
+        statusText.innerText = '⚠ कैमरा शुरू नहीं हो सका — ब्राउज़र/फ़ोन में कैमरा परमिशन चेक करें।';
+      }
+      return null;
+    }
+
+    window.toggleCameraRecording = async function() {
+      if (!window.dhaakadRecording) {
+        const stream = await openCameraWithMode(window.dhaakadFacingMode);
+        if (!stream) return;
+
+        window.dhaakadChunks = [];
+        try {
+          window.dhaakadRecorder = new MediaRecorder(stream);
+          window.dhaakadRecorder.ondataavailable = (e) => {
+            if (e.data && e.data.size > 0) window.dhaakadChunks.push(e.data);
+          };
+          window.dhaakadRecorder.onstop = () => {
+            const blob = new Blob(window.dhaakadChunks, { type: 'video/webm' });
+            const url = URL.createObjectURL(blob);
+            stopCameraTracks();
+            if (editorVideo) {
+              editorVideo.srcObject = null;
+              editorVideo.src = url;
+              editorVideo.muted = false;
+              editorVideo.controls = true;
+              editorVideo.play().catch(() => {});
+            }
+            if (typeof currentUploadedVideoUrl !== 'undefined') {
+              currentUploadedVideoUrl = url;
+            }
+            if (statusText) statusText.innerText = '✔ कैमरा वीडियो रिकॉर्ड हो गया!';
+          };
+          window.dhaakadRecorder.start();
+          window.dhaakadRecording = true;
+          if (camBtn) camBtn.innerText = '⏹ रोकें';
+        } catch (err) {
+          if (statusText) statusText.innerText = 'रिकॉर्डिंग शुरू नहीं हो सकी: ' + err.message;
+        }
+      } else {
+        if (window.dhaakadRecorder && window.dhaakadRecorder.state !== 'inactive') {
+          window.dhaakadRecorder.stop();
+        }
+        window.dhaakadRecording = false;
+        if (camBtn) camBtn.innerText = '🎥 कैमरा रिकॉर्ड';
+      }
+    };
+
+    if (flipBtn) {
+      flipBtn.onclick = async function(e) {
+        e.preventDefault();
+        window.dhaakadFacingMode = window.dhaakadFacingMode === 'environment' ? 'user' : 'environment';
+        if (window.dhaakadRecording && window.dhaakadRecorder && window.dhaakadRecorder.state !== 'inactive') {
+          window.dhaakadRecorder.stop();
+          window.dhaakadRecording = false;
+          if (camBtn) camBtn.innerText = '🎥 कैमरा रिकॉर्ड';
+        }
+        await openCameraWithMode(window.dhaakadFacingMode);
+      };
+    }
+
+    // वीडियो टाइमलाइन स्क्रबर (इंस्टाग्राम एडिटर जैसा ट्रैक कंट्रोल)
+    const stage = document.getElementById('editor-stage');
+    if (stage && !document.getElementById('dhaakad-timeline-bar')) {
+      const bar = document.createElement('div');
+      bar.id = 'dhaakad-timeline-bar';
+      bar.style.cssText = 'margin-top:8px; background:#141418; border:1px solid #2b2b34; border-radius:10px; padding:8px 10px;';
+      bar.innerHTML = `
+        <div style="display:flex; justify-content:space-between; font-size:11px; color:#d4d4d8; margin-bottom:4px;">
+          <span id="tl-current-time">0:00</span>
+          <span>टाइमलाइन</span>
+          <span id="tl-total-time">0:05</span>
+        </div>
+        <input type="range" id="tl-scrubber" min="0" max="100" value="0" step="0.1" style="width:100%;">
+      `;
+      stage.insertAdjacentElement('afterend', bar);
+
+      const scrubber = document.getElementById('tl-scrubber');
+      const curLbl = document.getElementById('tl-current-time');
+      const totLbl = document.getElementById('tl-total-time');
+
+      const fmt = (sec) => {
+        if (!isFinite(sec) || sec < 0) return '0:00';
+        const m = Math.floor(sec / 60);
+        const s = Math.floor(sec % 60);
+        return `${m}:${s < 10 ? '0' : ''}${s}`;
+      };
+
+      if (editorVideo) {
+        editorVideo.addEventListener('loadedmetadata', () => {
+          scrubber.max = editorVideo.duration || 5;
+          totLbl.innerText = fmt(editorVideo.duration || 5);
+        });
+        editorVideo.addEventListener('timeupdate', () => {
+          scrubber.value = editorVideo.currentTime || 0;
+          curLbl.innerText = fmt(editorVideo.currentTime || 0);
+        });
+        scrubber.addEventListener('input', () => {
+          editorVideo.currentTime = parseFloat(scrubber.value) || 0;
+          curLbl.innerText = fmt(editorVideo.currentTime);
+        });
+      }
+    }
+  })();
+</script>
   
 </body>
 </html>
