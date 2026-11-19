@@ -1098,5 +1098,112 @@
     renderStatusGrid();
     syncTopStories();
   </script>
+  <script>
+  (function fixDhaakadControlsAndMenu() {
+    // 1. नीचे बार से 'स्टेटस' बटन हटाना (ऊपर Your story पहले से मौजूद है)
+    const statusNavBtn = document.getElementById('nav-status');
+    if (statusNavBtn) statusNavBtn.remove();
+
+    // 2. कैमरा रिकॉर्ड के पास 'आगे/पीछे कैमरा' स्विच बटन जोड़ना
+    const camBtn = document.getElementById('cam-toggle-btn');
+    if (camBtn && !document.getElementById('cam-flip-btn')) {
+      window.dhaakadFacingMode = window.dhaakadFacingMode || 'user';
+      const flipBtn = document.createElement('button');
+      flipBtn.type = 'button';
+      flipBtn.id = 'cam-flip-btn';
+      flipBtn.className = 'small-btn';
+      flipBtn.innerText = '🔄 आगे/पीछे';
+      flipBtn.onclick = async function() {
+        window.dhaakadFacingMode = (window.dhaakadFacingMode === 'user') ? 'environment' : 'user';
+        const statusEl = document.getElementById('media-status-text');
+        if (statusEl) {
+          statusEl.innerText = window.dhaakadFacingMode === 'environment'
+            ? 'पीछे का कैमरा (Back) चुना गया'
+            : 'आगे का कैमरा (Front) चुना गया';
+        }
+        if (typeof camStream !== 'undefined' && camStream) {
+          camStream.getTracks().forEach(t => t.stop());
+          camStream = null;
+          isRecording = false;
+          camBtn.innerText = '🎥 कैमरा रिकॉर्ड';
+        }
+        if (typeof toggleCameraRecording === 'function') {
+          await toggleCameraRecording();
+        }
+      };
+      camBtn.insertAdjacentElement('afterend', flipBtn);
+    }
+
+    // 3. डिलीट बटन को पूरी तरह मज़बूत बनाना (वीडियो + स्टिकर + टेक्स्ट सब रीसेट)
+    window.deleteCurrentVideo = function() {
+      try {
+        if (typeof camStream !== 'undefined' && camStream) {
+          camStream.getTracks().forEach(t => t.stop());
+          camStream = null;
+        }
+        if (typeof isRecording !== 'undefined') isRecording = false;
+        if (camBtn) camBtn.innerText = '🎥 कैमरा रिकॉर्ड';
+
+        const vid = document.getElementById('editor-video');
+        if (vid) {
+          vid.pause();
+          vid.srcObject = null;
+          vid.removeAttribute('src');
+          vid.load();
+          vid.style.display = 'none';
+        }
+        const ph = document.getElementById('stage-placeholder');
+        if (ph) ph.style.display = 'block';
+
+        const picker = document.getElementById('video-picker');
+        if (picker) picker.value = '';
+
+        const stk = document.getElementById('draggable-sticker');
+        if (stk) stk.style.display = 'none';
+
+        const prevTxt = document.getElementById('preview-text');
+        if (prevTxt) prevTxt.innerText = '';
+
+        const capInp = document.getElementById('hindi-caption-input');
+        if (capInp) capInp.value = '';
+
+        if (typeof currentUploadedVideoUrl !== 'undefined') currentUploadedVideoUrl = '';
+        if (typeof activePartRange !== 'undefined') activePartRange = null;
+
+        const sixGrid = document.getElementById('six-parts-grid');
+        if (sixGrid) sixGrid.innerHTML = '';
+
+        const statusEl = document.getElementById('media-status-text');
+        if (statusEl) statusEl.innerText = '✔ वीडियो डिलीट हो गया';
+      } catch (e) {
+        alert('डिलीट करते समय दिक्कत आई: ' + e.message);
+      }
+    };
+
+    // 4. वीडियो के ऊपर 3 डॉट (⋮) को काम करने लायक बनाना (डिलीट व शेयर मेनू)
+    document.querySelectorAll('.reel-card').forEach(function(card, idx) {
+      const topBar = card.querySelector('.reel-top-bar');
+      if (!topBar) return;
+      const dots = topBar.lastElementChild;
+      if (!dots) return;
+
+      dots.style.cursor = 'pointer';
+      dots.style.padding = '4px 8px';
+      dots.onclick = function(ev) {
+        ev.stopPropagation();
+        const choice = prompt('इस वीडियो के लिए विकल्प चुनें:\n1 लिखें = वीडियो डिलीट करें\n2 लिखें = शेयर करें');
+        if (choice === '1' && typeof reelsList !== 'undefined' && Array.isArray(reelsList)) {
+          reelsList.splice(idx, 1);
+          try { localStorage.setItem('dhaakad_reels', JSON.stringify(reelsList)); } catch (err) {}
+          if (typeof renderFeed === 'function') renderFeed();
+          if (typeof loadProfileUI === 'function') loadProfileUI();
+        } else if (choice === '2' && typeof shareReel === 'function') {
+          shareReel(idx);
+        }
+      };
+    });
+  })();
+                                               </script>
+  
 </body>
 </html>
