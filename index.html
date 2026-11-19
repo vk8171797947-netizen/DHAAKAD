@@ -39,7 +39,9 @@
         /* Feed & Posts */
         .main { max-width: 470px; margin: 15px auto; padding: 0 10px; }
         .post { background: var(--post-bg); border: 1px solid var(--border-color); border-radius: 10px; margin-bottom: 20px; overflow: hidden; transition: background 0.3s; }
-        .post-header { padding: 12px; color: #ff7900; font-weight: bold; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+        .post-header { padding: 12px; color: #ff7900; font-weight: bold; font-size: 14px; display: flex; justify-content: space-between; align-items: center; }
+        .post-user-info { display: flex; align-items: center; gap: 8px; }
+        .follow-btn { background: #ff7900; color: #000; border: none; padding: 5px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 12px; }
         .post-box { width: 100%; min-height: 250px; background: var(--post-box-bg); display: flex; align-items: center; justify-content: center; color: var(--text-color); font-size: 18px; padding: 10px; text-align: center; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); overflow: hidden; }
         .post-box img { width: 100%; max-height: 400px; object-fit: cover; border-radius: 6px; }
         .post-footer { padding: 12px; }
@@ -96,7 +98,10 @@
     <div class="main" id="feed">
         <!-- Default Initial Post -->
         <div class="post" data-id="default-1">
-            <div class="post-header"><i class="fa-solid fa-fire"></i> DHAAKAD_OFFICIAL</div>
+            <div class="post-header">
+                <div class="post-user-info"><i class="fa-solid fa-fire"></i> DHAAKAD_OFFICIAL</div>
+                <button type="button" class="follow-btn">Follow</button>
+            </div>
             <div class="post-box">🔥 DHAAKAD Ultimate App with Storage & Upload</div>
             <div class="post-footer">
                 <div class="post-actions">
@@ -251,7 +256,10 @@
                 const newPost = document.createElement('div');
                 newPost.className = 'post';
                 newPost.innerHTML = `
-                    <div class="post-header"><i class="fa-solid fa-user"></i> ${localStorage.getItem('dhaakad_username') || 'DHAAKAD_USER'}</div>
+                    <div class="post-header">
+                        <div class="post-user-info"><i class="fa-solid fa-user"></i> ${localStorage.getItem('dhaakad_username') || 'DHAAKAD_USER'}</div>
+                        <button type="button" class="follow-btn">Follow</button>
+                    </div>
                     <div class="post-box">${imgSrc ? `<img src="${imgSrc}" alt="Post Image">` : text}</div>
                     <div class="post-footer">
                         <div class="post-actions">
@@ -286,12 +294,13 @@
             }
         });
 
-        // Feed Actions (Like, Comments, Share)
+        // Feed Actions (Like, Comments, Share, Follow)
         document.getElementById('feed').addEventListener('click', (e) => {
             const likeBtn = e.target.closest('.like-btn');
             const commentToggle = e.target.closest('.comment-toggle-btn');
             const sendComment = e.target.closest('.send-comment-btn');
             const shareBtn = e.target.closest('.share-btn');
+            const followBtn = e.target.closest('.follow-btn');
 
             if (likeBtn) {
                 const icon = likeBtn.querySelector('i');
@@ -343,8 +352,7 @@
                     showToast('लिंक कॉपी हो गया! 🔗');
                 }
             }
-                        // Follow Button Logic inside feed click listener
-            const followBtn = e.target.closest('.follow-btn');
+
             if (followBtn) {
                 if (followBtn.innerText === 'Follow') {
                     followBtn.innerText = 'Following';
@@ -357,27 +365,9 @@
                     followBtn.style.color = '#000';
                     showToast('अनफॉलो कर दिया! ❌');
                 }
+                savePostsToStorage();
             }
         });
     </script>
-        <!-- Profile Page Section -->
-    <div class="profile-container" id="profileSection">
-        <div class="profile-avatar"><i class="fa-solid fa-user"></i></div>
-        <h2 id="displayUsername">DHAAKAD_USER</h2>
-        <p id="displayBio">धाकड़ ऐप का ऑफिशियल यूजर 🚀</p>
-        
-        <div class="profile-edit-box">
-            <input type="text" id="newUsernameInput" placeholder="नया यूजरनेम लिखें...">
-            <button type="button" id="saveUsernameBtn">नाम बदलो</button>
-        </div>
-
-        <div class="profile-edit-box">
-            <input type="text" id="newBioInput" placeholder="अपना बायो लिखें...">
-            <button type="button" id="saveBioBtn">बायो बदलो</button>
-        </div>
-
-        <button type="button" class="btn btn-secondary" id="backToHomeBtn">वापस होम पर जाएं</button>
-    </div>
-              
 </body>
 </html>
