@@ -208,11 +208,11 @@
         // Local Storage Handling for Posts
         function savePostsToStorage() {
             const feedHtml = document.getElementById('feed').innerHTML;
-            localStorage.setItem('dhaakad_feed', feedHtml);
+            localStorage.setItem('dhaakad_feed_v2', feedHtml);
         }
 
         function loadPostsFromStorage() {
-            const savedFeed = localStorage.getItem('dhaakad_feed');
+            const savedFeed = localStorage.getItem('dhaakad_feed_v2');
             if (savedFeed) {
                 document.getElementById('feed').innerHTML = savedFeed;
             }
