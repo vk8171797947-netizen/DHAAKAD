@@ -36,8 +36,18 @@
         .icon-btn { background: none; border: none; color: var(--text-color); font-size: 20px; padding: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .icon-btn:active { color: #ff7900; transform: scale(0.92); }
 
+        /* Status / Stories Bar */
+        .status-bar { max-width: 470px; margin: 12px auto 0 auto; padding: 8px 10px; display: flex; gap: 14px; overflow-x: auto; scrollbar-width: none; }
+        .status-bar::-webkit-scrollbar { display: none; }
+        .status-item { display: flex; flex-direction: column; align-items: center; min-width: 68px; cursor: pointer; }
+        .status-ring { width: 64px; height: 64px; border-radius: 50%; padding: 3px; background: linear-gradient(45deg, #ff7900, #ff3b30); display: flex; align-items: center; justify-content: center; margin-bottom: 5px; }
+        .status-ring.add-ring { background: none; border: 2px dashed #ff7900; padding: 0; }
+        .status-avatar { width: 100%; height: 100%; border-radius: 50%; background: var(--post-bg); color: var(--text-color); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; overflow: hidden; border: 2px solid var(--bg-color); }
+        .status-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .status-name { font-size: 11px; max-width: 72px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; color: var(--text-color); }
+
         /* Feed & Posts */
-        .main { max-width: 470px; margin: 15px auto; padding: 0 10px; }
+        .main { max-width: 470px; margin: 10px auto 15px auto; padding: 0 10px; }
         .post { background: var(--post-bg); border: 1px solid var(--border-color); border-radius: 10px; margin-bottom: 20px; overflow: hidden; transition: background 0.3s; }
         .post-header { padding: 12px; color: #ff7900; font-weight: bold; font-size: 14px; display: flex; justify-content: space-between; align-items: center; }
         .post-user-info { display: flex; align-items: center; gap: 8px; }
@@ -75,6 +85,11 @@
         .btn { width: 100%; background: #ff7900; color: #000; border: none; padding: 12px; font-weight: bold; cursor: pointer; border-radius: 6px; font-size: 15px; }
         .btn-secondary { background: #333; color: #fff; }
 
+        /* Status Viewer Box */
+        .status-view-box { min-height: 240px; background: var(--post-box-bg); border-radius: 10px; padding: 15px; margin-bottom: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+        .status-view-box img { max-width: 100%; max-height: 280px; border-radius: 8px; object-fit: cover; }
+        .status-meta { font-size: 12px; color: #888; margin-bottom: 12px; }
+
         /* Toast Notification */
         #toast { visibility: hidden; min-width: 240px; background-color: #ff7900; color: #000; font-weight: bold; text-align: center; border-radius: 25px; padding: 10px 18px; position: fixed; z-index: 200; left: 50%; bottom: 25px; transform: translateX(-50%); font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
         #toast.show { visibility: visible; }
@@ -91,6 +106,16 @@
             <button type="button" class="icon-btn" id="profileBtn" title="Profile"><i class="fa-regular fa-user"></i></button>
             <button type="button" class="icon-btn" id="plusBtn" title="Create Post"><i class="fa-regular fa-square-plus"></i></button>
             <button type="button" class="icon-btn" id="notifBtn" title="Notifications"><i class="fa-regular fa-heart"></i></button>
+        </div>
+    </div>
+
+    <!-- 24h Status Bar -->
+    <div class="status-bar" id="statusBar">
+        <div class="status-item" id="addStatusBtn">
+            <div class="status-ring add-ring">
+                <div class="status-avatar"><i class="fa-solid fa-plus" style="color:#ff7900;"></i></div>
+            </div>
+            <span class="status-name">स्टेटस लगाएं</span>
         </div>
     </div>
 
@@ -146,6 +171,29 @@
         </div>
     </div>
 
+    <!-- Create Status Modal (24 Hours) -->
+    <div class="modal" id="statusModal">
+        <div class="modal-content">
+            <h3>24 घंटे का स्टेटस लगाएं</h3>
+            <input type="text" id="statusTextInput" placeholder="अपना स्टेटस लिखें...">
+            <input type="file" id="statusImageInput" accept="image/*">
+            <div class="btn-container">
+                <button type="button" class="btn btn-secondary" id="cancelStatusBtn">बंद करें</button>
+                <button type="button" class="btn" id="submitStatusBtn">स्टेटस लगाएं</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Status Modal -->
+    <div class="modal" id="viewStatusModal">
+        <div class="modal-content">
+            <h3 id="viewStatusUser">यूजर</h3>
+            <div class="status-meta" id="viewStatusTime"></div>
+            <div class="status-view-box" id="viewStatusContent"></div>
+            <button type="button" class="btn btn-secondary" id="closeViewStatusBtn">बंद करें</button>
+        </div>
+    </div>
+
     <!-- Toast Message -->
     <div id="toast">मैसेज</div>
 
@@ -176,12 +224,14 @@
         document.getElementById('homeBtn').addEventListener('click', () => {
             document.getElementById('profileSection').style.display = 'none';
             document.getElementById('feed').style.display = 'block';
+            document.getElementById('statusBar').style.display = 'flex';
             window.scrollTo({ top: 0, behavior: 'smooth' });
             showToast('होम पेज पर आ गए! 🏠');
         });
 
         document.getElementById('profileBtn').addEventListener('click', () => {
             document.getElementById('feed').style.display = 'none';
+            document.getElementById('statusBar').style.display = 'none';
             document.getElementById('profileSection').style.display = 'block';
             showToast('प्रोफाइल पेज खुल गया 👤');
         });
@@ -189,6 +239,7 @@
         document.getElementById('backToHomeBtn').addEventListener('click', () => {
             document.getElementById('profileSection').style.display = 'none';
             document.getElementById('feed').style.display = 'block';
+            document.getElementById('statusBar').style.display = 'flex';
         });
 
         document.getElementById('plusBtn').addEventListener('click', () => {
@@ -205,169 +256,101 @@
             document.getElementById('imageInput').value = '';
         });
 
-        // Local Storage Handling for Posts
-        function savePostsToStorage() {
-            const feedHtml = document.getElementById('feed').innerHTML;
-            localStorage.setItem('dhaakad_feed_v2', feedHtml);
-        }
+        // 24-Hour Status Logic
+        const STATUS_DURATION_MS = 24 * 60 * 60 * 1000;
 
-        function loadPostsFromStorage() {
-            const savedFeed = localStorage.getItem('dhaakad_feed_v2');
-            if (savedFeed) {
-                document.getElementById('feed').innerHTML = savedFeed;
+        function getActiveStatuses() {
+            const now = Date.now();
+            let statuses = [];
+            try {
+                statuses = JSON.parse(localStorage.getItem('dhaakad_statuses_v1') || '[]');
+            } catch (e) {
+                statuses = [];
             }
+            const active = statuses.filter(st => st.expiresAt > now);
+            localStorage.setItem('dhaakad_statuses_v1', JSON.stringify(active));
+            return active;
         }
 
-        // Load data on startup
-        loadPostsFromStorage();
-
-        // Username Logic
-        const savedName = localStorage.getItem('dhaakad_username');
-        if (savedName) {
-            document.getElementById('displayUsername').innerText = savedName;
-        }
-
-        document.getElementById('saveUsernameBtn').addEventListener('click', () => {
-            const newName = document.getElementById('newUsernameInput').value.trim();
-            if (newName) {
-                document.getElementById('displayUsername').innerText = newName;
-                localStorage.setItem('dhaakad_username', newName);
-                document.getElementById('newUsernameInput').value = '';
-                showToast('नाम बदल गया! ✅');
-            } else {
-                showToast('कृपया सही नाम लिखें! ⚠️');
+        function formatRemainingTime(expiresAt) {
+            const diffMs = Math.max(0, expiresAt - Date.now());
+            const hours = Math.floor(diffMs / (1000 * 60 * 60));
+            const mins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+            if (hours > 0) {
+                return `${hours} घंटा ${mins} मिनट बाकी`;
             }
+            return `${mins} मिनट बाकी`;
+        }
+
+        function renderStatuses() {
+            const statusBar = document.getElementById('statusBar');
+            const addBtn = document.getElementById('addStatusBtn');
+            statusBar.innerHTML = '';
+            statusBar.appendChild(addBtn);
+
+            const activeStatuses = getActiveStatuses();
+            activeStatuses.forEach((st) => {
+                const item = document.createElement('div');
+                item.className = 'status-item';
+                item.dataset.id = st.id;
+
+                const avatarContent = st.imgSrc
+                    ? `<img src="${st.imgSrc}" alt="Status">`
+                    : `<span>${(st.user || 'U').charAt(0).toUpperCase()}</span>`;
+
+                item.innerHTML = `
+                    <div class="status-ring">
+                        <div class="status-avatar">${avatarContent}</div>
+                    </div>
+                    <span class="status-name">${st.user}</span>
+                `;
+
+                item.addEventListener('click', () => {
+                    const currentActive = getActiveStatuses().find(x => x.id === st.id);
+                    if (!currentActive) {
+                        showToast('यह स्टेटस 24 घंटे पूरे होने पर हट गया है!');
+                        renderStatuses();
+                        return;
+                    }
+                    document.getElementById('viewStatusUser').innerText = currentActive.user;
+                    document.getElementById('viewStatusTime').innerText = `⏳ ${formatRemainingTime(currentActive.expiresAt)}`;
+                    const contentBox = document.getElementById('viewStatusContent');
+                    contentBox.innerHTML = `
+                        ${currentActive.imgSrc ? `<img src="${currentActive.imgSrc}" alt="Status Image">` : ''}
+                        ${currentActive.text ? `<div style="font-size:17px; text-align:center;">${currentActive.text}</div>` : ''}
+                    `;
+                    document.getElementById('viewStatusModal').style.display = 'flex';
+                });
+
+                statusBar.appendChild(item);
+            });
+        }
+
+        document.getElementById('addStatusBtn').addEventListener('click', () => {
+            document.getElementById('statusModal').style.display = 'flex';
         });
 
-        // Submit New Post with Image Support
-        document.getElementById('submitPostBtn').addEventListener('click', () => {
-            const input = document.getElementById('captionInput');
-            const imageInput = document.getElementById('imageInput');
-            const text = input.value.trim();
-            
-            if (!text && imageInput.files.length === 0) {
-                showToast('कृपया कुछ लिखें या फोटो चुनें! ⚠️');
+        document.getElementById('cancelStatusBtn').addEventListener('click', () => {
+            document.getElementById('statusModal').style.display = 'none';
+            document.getElementById('statusTextInput').value = '';
+            document.getElementById('statusImageInput').value = '';
+        });
+
+        document.getElementById('closeViewStatusBtn').addEventListener('click', () => {
+            document.getElementById('viewStatusModal').style.display = 'none';
+        });
+
+        document.getElementById('submitStatusBtn').addEventListener('click', () => {
+            const textInput = document.getElementById('statusTextInput');
+            const imgInput = document.getElementById('statusImageInput');
+            const text = textInput.value.trim();
+
+            if (!text && imgInput.files.length === 0) {
+                showToast('कृपया स्टेटस लिखें या फोटो चुनें! ⚠️');
                 return;
             }
 
-            const reader = new FileReader();
-            const processPost = (imgSrc = '') => {
-                const feed = document.getElementById('feed');
-                const newPost = document.createElement('div');
-                newPost.className = 'post';
-                newPost.innerHTML = `
-                    <div class="post-header">
-                        <div class="post-user-info"><i class="fa-solid fa-user"></i> ${localStorage.getItem('dhaakad_username') || 'DHAAKAD_USER'}</div>
-                        <button type="button" class="follow-btn">Follow</button>
-                    </div>
-                    <div class="post-box">${imgSrc ? `<img src="${imgSrc}" alt="Post Image">` : text}</div>
-                    <div class="post-footer">
-                        <div class="post-actions">
-                            <button type="button" class="action-btn like-btn"><i class="fa-regular fa-heart"></i></button>
-                            <button type="button" class="action-btn comment-toggle-btn"><i class="fa-regular fa-comment"></i></button>
-                            <button type="button" class="action-btn share-btn"><i class="fa-regular fa-paper-plane"></i></button>
-                        </div>
-                        <p><b><span class="like-count">1</span> likes</b></p>
-                        <p><b>${localStorage.getItem('dhaakad_username') || 'DHAAKAD_USER'}</b> ${text}</p>
-                        <div class="comments-list"></div>
-                        <div class="comment-box">
-                            <input type="text" placeholder="कमेंट लिखें...">
-                            <button type="button" class="send-comment-btn">Send</button>
-                        </div>
-                    </div>
-                `;
-                feed.prepend(newPost);
-                document.getElementById('myModal').style.display = 'none';
-                input.value = '';
-                imageInput.value = '';
-                savePostsToStorage();
-                showToast('नई पोस्ट लाइव हो गई! 🔥');
-            };
-
-            if (imageInput.files && imageInput.files[0]) {
-                reader.onload = function(e) {
-                    processPost(e.target.result);
-                }
-                reader.readAsDataURL(imageInput.files[0]);
-            } else {
-                processPost('');
-            }
-        });
-
-        // Feed Actions (Like, Comments, Share, Follow)
-        document.getElementById('feed').addEventListener('click', (e) => {
-            const likeBtn = e.target.closest('.like-btn');
-            const commentToggle = e.target.closest('.comment-toggle-btn');
-            const sendComment = e.target.closest('.send-comment-btn');
-            const shareBtn = e.target.closest('.share-btn');
-            const followBtn = e.target.closest('.follow-btn');
-
-            if (likeBtn) {
-                const icon = likeBtn.querySelector('i');
-                const post = likeBtn.closest('.post');
-                const countSpan = post.querySelector('.like-count');
-                let count = parseInt(countSpan.innerText);
-
-                if (icon.classList.contains('fa-regular')) {
-                    icon.classList.remove('fa-regular');
-                    icon.classList.add('fa-solid', 'liked');
-                    countSpan.innerText = count + 1;
-                } else {
-                    icon.classList.remove('fa-solid', 'liked');
-                    icon.classList.add('fa-regular');
-                    countSpan.innerText = count - 1;
-                }
-                savePostsToStorage();
-            }
-
-            if (commentToggle) {
-                const post = commentToggle.closest('.post');
-                const box = post.querySelector('.comment-box');
-                box.style.display = box.style.display === 'flex' ? 'none' : 'flex';
-            }
-
-            if (sendComment) {
-                const post = sendComment.closest('.post');
-                const input = post.querySelector('.comment-box input');
-                const list = post.querySelector('.comments-list');
-                if (input.value.trim() !== "") {
-                    const p = document.createElement('p');
-                    p.innerHTML = `<b>You:</b> ${input.value.trim()}`;
-                    list.appendChild(p);
-                    input.value = '';
-                    savePostsToStorage();
-                    showToast('कमेंट जुड़ गया! 💬');
-                }
-            }
-
-            if (shareBtn) {
-                if (navigator.share) {
-                    navigator.share({
-                        title: 'DHAAKAD App',
-                        text: 'इस शानदार धाकड़ ऐप को देखें!',
-                        url: window.location.href,
-                    }).catch(() => {});
-                } else {
-                    navigator.clipboard.writeText(window.location.href);
-                    showToast('लिंक कॉपी हो गया! 🔗');
-                }
-            }
-
-            if (followBtn) {
-                if (followBtn.innerText === 'Follow') {
-                    followBtn.innerText = 'Following';
-                    followBtn.style.background = '#333';
-                    followBtn.style.color = '#fff';
-                    showToast('फॉलो कर लिया! 🤝');
-                } else {
-                    followBtn.innerText = 'Follow';
-                    followBtn.style.background = '#ff7900';
-                    followBtn.style.color = '#000';
-                    showToast('अनफॉलो कर दिया! ❌');
-                }
-                savePostsToStorage();
-            }
-        });
-    </script>
-</body>
-</html>
+            const saveStatus = (imgSrc = '') => {
+                const activeStatuses = getActiveStatuses();
+                const username = localStorage.getItem('dhaakad_username') || 'DHAAKAD_USER';
+  
