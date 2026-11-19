@@ -27,6 +27,7 @@
         .post { background:var(--post); border:1px solid var(--bdr); border-radius:10px; margin-bottom:20px; overflow:hidden; }
         .post-header { padding:12px; color:#ff7900; font-weight:bold; font-size:14px; display:flex; justify-content:space-between; align-items:center; }
         .follow-btn { background:#ff7900; color:#000; border:none; padding:5px 12px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px; }
+        .delete-post-btn { background:#ff3b30; color:#fff; border:none; padding:5px 10px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px; margin-left:6px; }
         .post-box { width:100%; min-height:250px; background:var(--box); display:flex; align-items:center; justify-content:center; font-size:18px; padding:10px; text-align:center; border-top:1px solid var(--bdr); border-bottom:1px solid var(--bdr); }
         .post-box img { width:100%; max-height:400px; object-fit:cover; border-radius:6px; }
         .post-footer { padding:12px; }
@@ -81,7 +82,10 @@
         <div class="post">
             <div class="post-header">
                 <div><i class="fa-solid fa-fire"></i> DHAAKAD_OFFICIAL</div>
-                <button type="button" class="follow-btn">Follow</button>
+                <div>
+                    <button type="button" class="follow-btn">Follow</button>
+                    <button type="button" class="delete-post-btn">Delete</button>
+                </div>
             </div>
             <div class="post-box">🔥 DHAAKAD Ultimate App with Storage & Upload</div>
             <div class="post-footer">
@@ -202,8 +206,8 @@
             if (file) { const r = new FileReader(); r.onload = e => save(e.target.result); r.readAsDataURL(file); } else save();
         };
 
-        function saveFeed() { try { localStorage.setItem("dhaakad_feed_v2", $("feed").innerHTML); } catch(e) {} }
-        if (localStorage.getItem("dhaakad_feed_v2")) $("feed").innerHTML = localStorage.getItem("dhaakad_feed_v2");
+        function saveFeed() { try { localStorage.setItem("dhaakad_feed_v3", $("feed").innerHTML); } catch(e) {} }
+        if (localStorage.getItem("dhaakad_feed_v3")) $("feed").innerHTML = localStorage.getItem("dhaakad_feed_v3");
         if (localStorage.getItem("dhaakad_username")) $("displayUsername").innerText = localStorage.getItem("dhaakad_username");
         renderStatuses();
 
@@ -219,7 +223,7 @@
             const add = (img = "") => {
                 const user = localStorage.getItem("dhaakad_username") || "DHAAKAD_USER";
                 const div = document.createElement("div"); div.className = "post";
-                div.innerHTML = `<div class="post-header"><div><i class="fa-solid fa-user"></i> ${user}</div><button type="button" class="follow-btn">Follow</button></div><div class="post-box">${img ? `<img src="${img}">` : txt}</div><div class="post-footer"><div class="post-actions"><button type="button" class="action-btn like-btn"><i class="fa-regular fa-heart"></i></button><button type="button" class="action-btn comment-toggle-btn"><i class="fa-regular fa-comment"></i></button><button type="button" class="action-btn share-btn"><i class="fa-regular fa-paper-plane"></i></button></div><p><b><span class="like-count">1</span> likes</b></p><p><b>${user}</b> ${txt}</p><div class="comments-list"></div><div class="comment-box"><input type="text" placeholder="कमेंट लिखें..."><button type="button" class="send-comment-btn">Send</button></div></div>`;
+                div.innerHTML = `<div class="post-header"><div><i class="fa-solid fa-user"></i> ${user}</div><div><button type="button" class="follow-btn">Follow</button><button type="button" class="delete-post-btn">Delete</button></div></div><div class="post-box">${img ? `<img src="${img}">` : txt}</div><div class="post-footer"><div class="post-actions"><button type="button" class="action-btn like-btn"><i class="fa-regular fa-heart"></i></button><button type="button" class="action-btn comment-toggle-btn"><i class="fa-regular fa-comment"></i></button><button type="button" class="action-btn share-btn"><i class="fa-regular fa-paper-plane"></i></button></div><p><b><span class="like-count">1</span> likes</b></p><p><b>${user}</b> ${txt}</p><div class="comments-list"></div><div class="comment-box"><input type="text" placeholder="कमेंट लिखें..."><button type="button" class="send-comment-btn">Send</button></div></div>`;
                 $("feed").prepend(div); $("myModal").style.display = "none"; $("captionInput").value = ""; $("imageInput").value = "";
                 saveFeed(); showToast("नई पोस्ट लाइव हो गई! 🔥");
             };
@@ -227,7 +231,7 @@
         };
 
         $("feed").onclick = e => {
-            const like = e.target.closest(".like-btn"), cTog = e.target.closest(".comment-toggle-btn"), sCom = e.target.closest(".send-comment-btn"), share = e.target.closest(".share-btn"), fol = e.target.closest(".follow-btn");
+            const like = e.target.closest(".like-btn"), cTog = e.target.closest(".comment-toggle-btn"), sCom = e.target.closest(".send-comment-btn"), share = e.target.closest(".share-btn"), fol = e.target.closest(".follow-btn"), del = e.target.closest(".delete-post-btn");
             if (like) {
                 const ic = like.querySelector("i"), cnt = like.closest(".post").querySelector(".like-count");
                 const liked = ic.classList.toggle("fa-solid"); ic.classList.toggle("fa-regular", !liked); ic.classList.toggle("liked", liked);
@@ -244,8 +248,12 @@
                 fol.innerText = isF ? "Following" : "Follow"; fol.style.background = isF ? "#333" : "#ff7900"; fol.style.color = isF ? "#fff" : "#000";
                 saveFeed(); showToast(isF ? "फॉलो कर लिया! 🤝" : "अनफॉलो कर दिया! ❌");
             }
+            if (del) {
+                del.closest(".post").remove();
+                saveFeed();
+                showToast("पोस्ट डिलीट हो गई! 🗑️");
+            }
         };
     </script>
 </body>
 </html>
-
