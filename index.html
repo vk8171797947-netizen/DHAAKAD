@@ -1,1 +1,898 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>धाकड़ (Dhaakad)</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body { background: #000; color: #fff; max-width: 450px; margin: auto; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
+    header { background: #000; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e1e1e; z-index: 25; }
+    header h1 { font-size: 21px; background: linear-gradient(45deg, #ff2a55, #ff9900); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+    .stories-strip { display: flex; gap: 11px; overflow-x: auto; padding: 9px 12px; background: #000; border-bottom: 1px solid #1a1a1a; align-items: center; z-index: 20; }
+    .story-item { text-align: center; min-width: 64px; cursor: pointer; }
+    .story-ring { width: 54px; height: 54px; margin: auto; border-radius: 50%; padding: 2px; background: linear-gradient(45deg, #f9ce34, #ee2a7b, #6228d7); display: flex; align-items: center; justify-content: center; position: relative; }
+    .story-ring.own { background: #333; }
+    .story-inner { width: 100%; height: 100%; border-radius: 50%; background: #181818; display: flex; align-items: center; justify-content: center; overflow: hidden; font-size: 22px; }
+    .story-inner img, .story-inner video { width: 100%; height: 100%; object-fit: cover; }
+    .story-plus { position: absolute; bottom: -2px; right: -2px; background: #ff2a55; color: #fff; width: 19px; height: 19px; border-radius: 50%; font-size: 13px; line-height: 19px; font-weight: bold; border: 2px solid #000; }
+    .story-label { font-size: 10px; color: #ddd; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 66px; }
+
+    main { flex: 1; overflow-y: auto; position: relative; padding-bottom: 64px; }
+    .screen { display: none; min-height: 100%; }
+    .screen.active { display: block; }
+
+    .reel-card { position: relative; width: 100%; height: calc(100vh - 185px); min-height: 430px; background: #090909; border-bottom: 2px solid #1c1c1c; overflow: hidden; }
+    .reel-card video { width: 100%; height: 100%; object-fit: cover; }
+    .reel-overlay-sticker { position: absolute; font-size: 56px; pointer-events: none; z-index: 3; }
+    .reel-overlay-text { position: absolute; bottom: 135px; left: 50%; transform: translateX(-50%); font-size: 21px; font-weight: bold; text-shadow: 2px 2px 6px #000; text-align: center; width: 90%; pointer-events: none; z-index: 3; }
+    .big-heart { position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%) scale(0); font-size: 85px; opacity: 0; transition: all 0.35s ease; pointer-events: none; z-index: 10; }
+    .big-heart.show { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+
+    .reel-actions { position: absolute; right: 10px; bottom: 88px; display: flex; flex-direction: column; gap: 13px; align-items: center; z-index: 6; }
+    .action-btn { background: rgba(0,0,0,0.45); border: none; color: #fff; font-size: 22px; width: 42px; height: 42px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; }
+    .action-btn span { font-size: 10px; margin-top: 1px; }
+
+    .reel-info { position: absolute; left: 12px; bottom: 52px; right: 62px; z-index: 6; background: linear-gradient(transparent, rgba(0,0,0,0.82)); padding: 8px; border-radius: 8px; }
+    .user-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+    .mini-dp { width: 32px; height: 32px; border-radius: 50%; overflow: hidden; border: 2px solid #ff2a55; background: #222; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+    .mini-dp img, .mini-dp video { width: 100%; height: 100%; object-fit: cover; }
+    .follow-btn { background: #ff2a55; border: none; color: #fff; padding: 3px 10px; border-radius: 14px; font-size: 11px; font-weight: bold; cursor: pointer; }
+    .follow-btn.following { background: #333; border: 1px solid #666; }
+    .music-line { font-size: 11px; color: #e5e5e5; margin: 3px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .quick-comment-bar { position: absolute; left: 0; right: 0; bottom: 0; background: #0c0c0c; border-top: 1px solid #222; padding: 7px 10px; display: flex; gap: 6px; z-index: 8; }
+    .quick-comment-bar input { flex: 1; margin-top: 0; padding: 7px 12px; border-radius: 20px; background: #1c1c1c; border: 1px solid #333; color: #fff; font-size: 12px; }
+
+    .status-box { padding: 12px; }
+    .status-card-panel { background: #151515; border: 1px solid #282828; border-radius: 12px; padding: 12px; margin-bottom: 14px; }
+    .status-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .status-thumb { background: #1c1c1c; border: 2px solid #ff2a55; border-radius: 10px; padding: 5px; text-align: center; cursor: pointer; overflow: hidden; }
+    .status-thumb img, .status-thumb video { width: 100%; height: 95px; object-fit: cover; border-radius: 7px; }
+
+    .editor-box { padding: 12px; }
+    .stage { position: relative; width: 100%; height: 260px; background: #151515; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid #333; }
+    .stage video { width: 100%; height: 100%; object-fit: cover; display: none; }
+    #draggable-sticker { position: absolute; top: 35%; left: 40%; font-size: 56px; cursor: move; user-select: none; touch-action: none; display: none; z-index: 4; }
+    #preview-text { position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%); font-size: 20px; font-weight: bold; text-shadow: 2px 2px 5px #000; pointer-events: none; text-align: center; width: 90%; z-index: 3; }
+
+    .media-actions { display: flex; gap: 6px; margin-top: 8px; }
+    .small-btn { background: #222; color: #fff; border: 1px solid #444; padding: 7px 8px; border-radius: 8px; font-size: 11px; cursor: pointer; flex: 1; text-align: center; }
+    .small-btn.danger { color: #ff6b6b; border-color: #ff6b6b; }
+    .small-btn.accent { background: #ff2a55; border-color: #ff2a55; font-weight: bold; }
+
+    .tool-tabs { display: flex; justify-content: space-between; margin: 10px 0; background: #181818; padding: 5px; border-radius: 10px; gap: 4px; }
+    .tool-tabs button { flex: 1; background: none; border: none; color: #ccc; padding: 8px 2px; font-size: 11px; cursor: pointer; border-radius: 7px; }
+    .tool-tabs button.active-tab { background: #ff2a55; color: #fff; font-weight: bold; }
+
+    .panel { display: none; background: #141414; padding: 10px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #252525; }
+    .panel.active { display: block; }
+    .preset-row { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; }
+    .preset-row button { background: #242424; color: #fff; border: 1px solid #444; padding: 6px 10px; border-radius: 8px; white-space: nowrap; font-size: 12px; cursor: pointer; }
+    .sticker-grid { display: flex; justify-content: space-around; font-size: 28px; padding: 6px 0; cursor: pointer; }
+
+    input[type="text"], input[type="number"], select { width: 100%; padding: 9px; background: #222; border: 1px solid #444; color: #fff; border-radius: 8px; margin-top: 6px; font-size: 13px; }
+    .post-btn { width: 100%; padding: 12px; background: linear-gradient(45deg, #ff2a55, #ff7700); border: none; color: #fff; font-size: 15px; font-weight: bold; border-radius: 10px; cursor: pointer; margin-top: 10px; }
+
+    .profile-header { padding: 18px 14px; text-align: center; border-bottom: 1px solid #222; }
+    .dp-container { position: relative; width: 94px; height: 94px; margin: 0 auto 10px; }
+    .dp-circle { width: 100%; height: 100%; border-radius: 50%; overflow: hidden; border: 3px solid #ff2a55; background: #222; display: flex; align-items: center; justify-content: center; font-size: 34px; }
+    .dp-circle img, .dp-circle video { width: 100%; height: 100%; object-fit: cover; }
+    .dp-edit-badge { position: absolute; bottom: 0; right: 0; background: #ff2a55; color: #fff; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; border: 2px solid #000; }
+    .stats-row { display: flex; justify-content: center; gap: 28px; margin: 12px 0; }
+    .stat-box strong { display: block; font-size: 17px; }
+    .stat-box span { font-size: 11px; color: #999; }
+    .bio-box { background: #151515; padding: 10px; border-radius: 10px; margin-top: 10px; text-align: left; border: 1px solid #262626; }
+    .my-videos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; padding: 4px; }
+    .grid-item { aspect-ratio: 9/16; background: #1a1a1a; overflow: hidden; }
+    .grid-item video { width: 100%; height: 100%; object-fit: cover; }
+
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.88); z-index: 60; align-items: center; justify-content: center; padding: 14px; }
+    .modal-overlay.open { display: flex; }
+    .modal-card { width: 100%; max-width: 420px; background: #151515; border: 1px solid #333; border-radius: 14px; padding: 14px; max-height: 82vh; overflow-y: auto; }
+    .comment-list { max-height: 240px; overflow-y: auto; margin: 10px 0; display: flex; flex-direction: column; gap: 7px; }
+    .comment-item { background: #222; padding: 8px 10px; border-radius: 8px; font-size: 12px; }
+
+    nav { position: fixed; bottom: 0; width: 100%; max-width: 450px; background: #000; border-top: 1px solid #222; display: flex; justify-content: space-around; padding: 8px 0; z-index: 35; }
+    nav button { background: none; border: none; color: #888; font-size: 10px; display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer; }
+    nav button.active { color: #ff2a55; font-weight: bold; }
+    nav button span.icon { font-size: 18px; }
+  </style>
+</head>
+  <body>
+  <header>
+    <h1>🔥 धाकड़</h1>
+    <span style="font-size: 11px; color: #aaa;">मेड इन इंडिया</span>
+  </header>
+
+  <div class="stories-strip" id="stories-strip">
+    <div class="story-item" onclick="openScreen('status-screen', document.getElementById('nav-status'))">
+      <div class="story-ring own">
+        <div class="story-inner" id="top-own-story-dp">😎</div>
+        <div class="story-plus">+</div>
+      </div>
+      <div class="story-label">Your story</div>
+    </div>
+    <div id="story-ring-container" style="display:flex; gap:11px;"></div>
+  </div>
+
+  <main>
+    <section id="feed-screen" class="screen active">
+      <div id="reels-container"></div>
+    </section>
+
+    <section id="status-screen" class="screen">
+      <div class="status-box">
+        <div class="status-card-panel">
+          <strong style="font-size:14px; color:#ff9900; display:block; margin-bottom:8px;">✨ नया स्टेटस लगाएं</strong>
+          <label for="status-file-input" class="small-btn accent" style="display:block; padding:9px; font-size:12px;">📷 फोटो या वीडियो चुनें</label>
+          <input type="file" id="status-file-input" accept="image/*,video/*" style="display:none;">
+          <input type="text" id="status-text-input" placeholder="स्टेटस पर लिखें...">
+          <button type="button" class="post-btn" onclick="publishStatus()">🚀 स्टेटस पोस्ट करें</button>
+        </div>
+
+        <strong style="font-size:13px; color:#ccc; display:block; margin-bottom:8px;">👀 स्टेटस देखें (क्लिक करके फुल देखें)</strong>
+        <div class="status-grid" id="status-grid"></div>
+      </div>
+    </section>
+        <section id="upload-screen" class="screen">
+      <div class="editor-box">
+        <div class="stage" id="editor-stage">
+          <video id="editor-video" loop playsinline controls></video>
+          <span id="stage-placeholder" style="color: #777; font-size: 13px;">वीडियो चुनें या कैमरा से रिकॉर्ड करें</span>
+          <div id="draggable-sticker">😎</div>
+          <div id="preview-text"></div>
+        </div>
+
+        <div class="media-actions">
+          <label for="video-picker" class="small-btn accent">📁 वीडियो चुनें</label>
+          <input type="file" id="video-picker" accept="video/*" style="display: none;">
+          <button type="button" id="cam-toggle-btn" class="small-btn" onclick="toggleCameraRecording()">🎥 कैमरा रिकॉर्ड</button>
+          <button type="button" class="small-btn danger" onclick="deleteCurrentVideo()">🗑️ डिलीट</button>
+        </div>
+        <p id="media-status-text" style="font-size: 11px; color: #00e676; margin-top: 5px;">तैयार</p>
+
+        <div class="tool-tabs">
+          <button type="button" class="active-tab" onclick="switchTool('panel-filter', this)">🎨 रंग/फ़िल्टर</button>
+          <button type="button" onclick="switchTool('panel-sticker', this)">🧸 कार्टून</button>
+          <button type="button" onclick="switchTool('panel-text', this)">अ हिंदी</button>
+          <button type="button" onclick="switchTool('panel-music', this)">🎵 म्यूज़िक</button>
+          <button type="button" onclick="switchTool('panel-cut', this)">✂️ कट/6 हिस्से</button>
+        </div>
+
+        <div id="panel-filter" class="panel active">
+          <div class="preset-row">
+            <button type="button" onclick="setPreset('none')">मूल</button>
+            <button type="button" onclick="setPreset('grayscale(100%)')">क्लासिक</button>
+            <button type="button" onclick="setPreset('sepia(80%)')">विंटेज</button>
+            <button type="button" onclick="setPreset('contrast(140%) saturate(160%)')">धाकड़ वाइब</button>
+            <button type="button" onclick="setPreset('hue-rotate(120deg)')">रंगीन</button>
+          </div>
+          <label style="font-size: 12px; display: block; margin-top: 6px;">रंग टोन (Hue):
+            <input type="range" id="hue-range" min="0" max="360" value="0" style="width: 100%;">
+          </label>
+          <label style="font-size: 12px; display: block; margin-top: 6px;">चमक (Brightness):
+            <input type="range" id="bright-range" min="50" max="150" value="100" style="width: 100%;">
+          </label>
+          <label style="font-size: 12px; display: block; margin-top: 6px;">कंट्रास्ट (Contrast):
+            <input type="range" id="contrast-range" min="50" max="200" value="100" style="width: 100%;">
+          </label>
+        </div>
+
+        <div id="panel-sticker" class="panel">
+          <p style="font-size: 11px; color: #aaa; text-align: center;">स्टिकर चुनें और वीडियो पर उंगली से खिसकाएं:</p>
+          <div class="sticker-grid">
+            <span onclick="chooseSticker('')">❌</span>
+            <span onclick="chooseSticker('😎')">😎</span>
+            <span onclick="chooseSticker('🤠')">🤠</span>
+            <span onclick="chooseSticker('🦁')">🦁</span>
+            <span onclick="chooseSticker('🕺')">🕺</span>
+            <span onclick="chooseSticker('🔥')">🔥</span>
+            <span onclick="chooseSticker('👑')">👑</span>
+          </div>
+        </div>
+
+        <div id="panel-text" class="panel">
+          <input type="text" id="hindi-caption-input" placeholder="वीडियो पर हिंदी में लिखें...">
+          <div style="display: flex; align-items: center; gap: 10px; margin-top: 8px;">
+            <span style="font-size: 12px;">टेक्स्ट का रंग:</span>
+            <input type="color" id="hindi-color-input" value="#ffffff">
+          </div>
+        </div>
+
+        <div id="panel-music" class="panel">
+          <select id="music-selector">
+            <option value="none">ओरिजिनल आवाज़ (No Music)</option>
+            <option value="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3">धाकड़ बीट 1</option>
+            <option value="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3">देसी स्वैग 2</option>
+            <option value="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3">रॉयल वाइब 3</option>
+          </select>
+          <audio id="editor-audio" loop></audio>
+        </div>
+
+        <div id="panel-cut" class="panel">
+          <strong style="font-size: 12px; color: #ff9900;">✂️ वीडियो काटें (शुरू से अंत सेकंड):</strong>
+          <div style="display: flex; gap: 6px; margin-top: 4px; align-items: center;">
+            <input type="number" id="custom-start" placeholder="शुरू (sec)" min="0" step="0.5" style="margin-top:0;">
+            <input type="number" id="custom-end" placeholder="अंत (sec)" min="0" step="0.5" style="margin-top:0;">
+            <button type="button" onclick="cutCustomRange()" style="background:#00c853; color:#000; font-weight:bold; border:none; padding:9px 10px; border-radius:8px; font-size:12px; cursor:pointer;">काटें</button>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px;">
+            <strong style="font-size: 12px; color: #ff9900;">वीडियो के 6 बराबर हिस्से</strong>
+            <button type="button" onclick="cutInto6EqualParts()" style="background: #ff2a55; color: #fff; border: none; padding: 5px 10px; border-radius: 7px; font-size: 11px; cursor: pointer;">
+              6 हिस्से बनाएं
+            </button>
+          </div>
+          <p id="selected-part-info" style="font-size: 11px; color: #00e676; margin-top: 6px;">पूरा वीडियो चुना है</p>
+          <div id="six-parts-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-top: 8px;"></div>
+        </div>
+
+        <input type="text" id="post-description" placeholder="कैप्शन लिखें (#धाकड़)...">
+        <button type="button" class="post-btn" onclick="publishReel()">🚀 धाकड़ पर अपलोड करें</button>
+      </div>
+    </section>
+
+    <section id="profile-screen" class="screen">
+      <div class="profile-header">
+        <div class="dp-container">
+          <div class="dp-circle" id="profile-dp-display">😎</div>
+          <label for="dp-file-input" class="dp-edit-badge" title="DP पर फोटो या वीडियो लगाएं">📷</label>
+          <input type="file" id="dp-file-input" accept="image/*,video/*" style="display: none;">
+        </div>
+        <p style="font-size: 11px; color: #ff9900; margin-bottom: 6px;">(DP पर फोटो या वीडियो दोनों लगा सकते हैं)</p>
+        <h2 id="display-username">@dhaakad_user</h2>
+
+        <div class="stats-row">
+          <div class="stat-box"><strong id="post-count">0</strong><span>वीडियो</span></div>
+          <div class="stat-box"><strong id="follower-count">120</strong><span>फ़ॉलोअर्स</span></div>
+          <div class="stat-box"><strong id="saved-count">0</strong><span>सेव्ड</span></div>
+        </div>
+
+        <div class="bio-box">
+          <label style="font-size: 11px; color: #aaa;">नाम:</label>
+          <input type="text" id="edit-name-input" placeholder="अपना नाम लिखें...">
+          <label style="font-size: 11px; color: #aaa; display: block; margin-top: 8px;">बायो (Bio):</label>
+          <input type="text" id="edit-bio-input" placeholder="अपना बायो लिखें...">
+          <button type="button" onclick="saveUserProfile()" style="margin-top: 8px; width: 100%; padding: 8px; background: #252525; color: #fff; border: 1px solid #ff2a55; border-radius: 6px; cursor: pointer;">
+            💾 प्रोफ़ाइल और Bio सेव करें
+          </button>
+        </div>
+      </div>
+
+      <h4 style="padding: 10px 14px; font-size: 13px; color: #ccc;">मेरे वीडियो</h4>
+      <div class="my-videos-grid" id="my-videos-grid"></div>
+    </section>
+  </main>
+
+  <div id="comment-modal" class="modal-overlay" onclick="closeModal('comment-modal', event)">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <strong>कमेंट्स</strong>
+        <button type="button" onclick="closeModal('comment-modal')" style="background:none; border:none; color:#fff; font-size:18px; cursor:pointer;">✕</button>
+      </div>
+      <div class="comment-list" id="comment-list"></div>
+      <div style="display:flex; gap:6px;">
+        <input type="text" id="new-comment-input" placeholder="कमेंट लिखें..." style="margin-top:0;">
+        <button type="button" onclick="addCommentFromModal()" style="background:#ff2a55; border:none; color:#fff; padding:0 14px; border-radius:8px; cursor:pointer;">भेजें</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="status-viewer-modal" class="modal-overlay" onclick="closeModal('status-viewer-modal', event)">
+    <div class="modal-card" style="text-align:center;" onclick="event.stopPropagation()">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <strong id="status-viewer-user" style="color:#ff9900;"></strong>
+        <button type="button" onclick="closeModal('status-viewer-modal')" style="background:none; border:none; color:#fff; font-size:18px; cursor:pointer;">✕</button>
+      </div>
+      <div id="status-viewer-media"></div>
+      <p id="status-viewer-caption" style="margin-top:10px; font-size:14px;"></p>
+    </div>
+  </div>
+
+  <nav>
+    <button type="button" id="nav-home" class="active" onclick="openScreen('feed-screen', this)">
+      <span class="icon">🏠</span><span>होम</span>
+    </button>
+    <button type="button" id="nav-status" onclick="openScreen('status-screen', this)">
+      <span class="icon">⭕</span><span>स्टेटस</span>
+    </button>
+    <button type="button" id="nav-upload" onclick="openScreen('upload-screen', this)">
+      <span class="icon">➕</span><span>अपलोड</span>
+    </button>
+    <button type="button" id="nav-profile" onclick="openScreen('profile-screen', this)">
+      <span class="icon">👤</span><span>प्रोफ़ाइल</span>
+    </button>
+    </nav>
+        <script>
+    let userProfile = JSON.parse(localStorage.getItem('dhaakad_profile')) || {
+      name: '@dhaakad_king',
+      bio: 'धाकड़ अंदाज़, देसी स्वैग 🔥',
+      dpUrl: '',
+      dpType: 'none',
+      followers: 120
+    };
+
+    let reelsList = JSON.parse(localStorage.getItem('dhaakad_reels')) || [
+      {
+        id: 1,
+        user: 'flix.indian',
+        videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-man-dancing-under-changing-lights-1240-large.mp4',
+        filter: 'contrast(115%)',
+        sticker: '🔥',
+        stickerTop: '18%',
+        stickerLeft: '75%',
+        text: 'धाकड़ रील्स पर आपका स्वागत है!',
+        textColor: '#ffaa00',
+        musicUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+        musicTitle: 'धाकड़ बीट • ओरिजिनल ऑडियो',
+        startSec: 0,
+        endSec: null,
+        desc: 'अपना वीडियो बनाएं, काटें और शेयर करें #धाकड़',
+        likes: 238,
+        reposts: 9,
+        liked: false,
+        saved: false,
+        following: false,
+        comments: ['जबरदस्त भाई 🔥', 'मस्त रील है!', 'सुपर!']
+      }
+    ];
+
+    let statusList = JSON.parse(localStorage.getItem('dhaakad_statuses') || '[]');
+    let tempStatusUrl = '';
+    let tempStatusType = 'text';
+
+    let currentUploadedVideoUrl = '';
+    let activeCommentIndex = null;
+    let activePartRange = null;
+    let lastTapTime = 0;
+
+    let camStream = null;
+    let mediaRecorder = null;
+    let recordedChunks = [];
+    let isRecording = false;
+
+    function openScreen(screenId, btn) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(screenId).classList.add('active');
+      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+
+      document.getElementById('editor-audio').pause();
+      if (screenId === 'feed-screen') renderFeed();
+      if (screenId === 'status-screen') renderStatusGrid();
+      if (screenId === 'profile-screen') loadProfileUI();
+      syncTopStories();
+    }
+
+    function closeModal(id, e) {
+      if (!e || e.target.id === id) {
+        document.getElementById(id).classList.remove('open');
+      }
+    }
+
+    document.getElementById('status-file-input').addEventListener('change', function(e) {
+      const f = e.target.files[0];
+      if (!f) return;
+      tempStatusType = f.type.startsWith('video/') ? 'video' : 'image';
+      tempStatusUrl = URL.createObjectURL(f);
+      document.getElementById('status-text-input').placeholder = `चुना गया: ${f.name} (कैप्शन लिखें...)`;
+    });
+
+    function publishStatus() {
+      const txt = document.getElementById('status-text-input').value.trim();
+      if (!tempStatusUrl && !txt) {
+        alert('पहले फोटो/वीडियो चुनें या कुछ लिखें!');
+        return;
+      }
+      statusList.unshift({
+        id: Date.now(),
+        user: userProfile.name,
+        url: tempStatusUrl,
+        type: tempStatusUrl ? tempStatusType : 'text',
+        caption: txt || 'धाकड़ स्टेटस 🔥'
+      });
+      try { localStorage.setItem('dhaakad_statuses', JSON.stringify(statusList)); } catch (e) {}
+      document.getElementById('status-text-input').value = '';
+      document.getElementById('status-file-input').value = '';
+      tempStatusUrl = '';
+      tempStatusType = 'text';
+      renderStatusGrid();
+      syncTopStories();
+      alert('स्टेटस लग गया!');
+    }
+
+    function renderStatusGrid() {
+      const grid = document.getElementById('status-grid');
+      if (!statusList.length) {
+        grid.innerHTML = '<p style="grid-column:1/-1; font-size:12px; color:#888;">अभी कोई स्टेटस नहीं है। ऊपर से लगाएं।</p>';
+        return;
+      }
+      grid.innerHTML = '';
+      statusList.forEach((st, idx) => {
+        const card = document.createElement('div');
+        card.className = 'status-thumb';
+        let thumb = `<div style="height:95px; display:flex; align-items:center; justify-content:center; font-size:12px; padding:4px;">${st.caption}</div>`;
+        if (st.type === 'image' && st.url) thumb = `<img src="${st.url}">`;
+        if (st.type === 'video' && st.url) thumb = `<video src="${st.url}" muted></video>`;
+        card.innerHTML = `${thumb}<div style="font-size:10px; color:#ddd; margin-top:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${st.caption}</div>`;
+        card.onclick = () => openStatusViewer(idx);
+        grid.appendChild(card);
+      });
+    }
+
+    function openStatusViewer(idx) {
+      const st = statusList[idx];
+      if (!st) return;
+      document.getElementById('status-viewer-user').innerText = st.user;
+      document.getElementById('status-viewer-caption').innerText = st.caption;
+      const box = document.getElementById('status-viewer-media');
+      if (st.type === 'video' && st.url) {
+        box.innerHTML = `<video src="${st.url}" autoplay loop controls playsinline style="width:100%; max-height:60vh; border-radius:10px;"></video>`;
+      } else if (st.type === 'image' && st.url) {
+        box.innerHTML = `<img src="${st.url}" style="width:100%; max-height:60vh; border-radius:10px; object-fit:contain;">`;
+      } else {
+        box.innerHTML = `<div style="padding:36px 14px; background:#222; border-radius:10px; font-size:18px;">${st.caption}</div>`;
+      }
+      document.getElementById('status-viewer-modal').classList.add('open');
+    }
+
+    function syncTopStories() {
+      const ownDp = document.getElementById('top-own-story-dp');
+      if (userProfile.dpType === 'video' && userProfile.dpUrl) {
+        ownDp.innerHTML = `<video src="${userProfile.dpUrl}" autoplay loop muted playsinline></video>`;
+      } else if (userProfile.dpType === 'image' && userProfile.dpUrl) {
+        ownDp.innerHTML = `<img src="${userProfile.dpUrl}">`;
+      } else {
+        ownDp.innerHTML = '😎';
+      }
+
+      const container = document.getElementById('story-ring-container');
+      container.innerHTML = '';
+      statusList.forEach((st, idx) => {
+        const div = document.createElement('div');
+        div.className = 'story-item';
+        const inner = (st.type === 'image' && st.url)
+          ? `<img src="${st.url}">`
+          : ((st.type === 'video' && st.url) ? `<video src="${st.url}" muted></video>` : '🔥');
+        div.innerHTML = `
+          <div class="story-ring"><div class="story-inner">${inner}</div></div>
+          <div class="story-label">${st.caption}</div>
+        `;
+        div.onclick = () => openStatusViewer(idx);
+        container.appendChild(div);
+      });
+    }
+
+    const videoPicker = document.getElementById('video-picker');
+    const editorVideo = document.getElementById('editor-video');
+    const stickerEl = document.getElementById('draggable-sticker');
+    const editorAudio = document.getElementById('editor-audio');
+
+    videoPicker.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      currentUploadedVideoUrl = URL.createObjectURL(file);
+      editorVideo.srcObject = null;
+      editorVideo.src = currentUploadedVideoUrl;
+      editorVideo.style.display = 'block';
+      document.getElementById('stage-placeholder').style.display = 'none';
+      activePartRange = null;
+      document.getElementById('selected-part-info').innerText = 'पूरा वीडियो चुना है';
+      document.getElementById('media-status-text').innerText = `वीडियो लोड: ${file.name}`;
+      editorVideo.play();
+    });
+
+    function deleteCurrentVideo() {
+      if (camStream) {
+        camStream.getTracks().forEach(t => t.stop());
+        camStream = null;
+      }
+      isRecording = false;
+      document.getElementById('cam-toggle-btn').innerText = '🎥 कैमरा रिकॉर्ड';
+      editorVideo.pause();
+      editorVideo.srcObject = null;
+      editorVideo.removeAttribute('src');
+      editorVideo.load();
+      editorVideo.style.display = 'none';
+      document.getElementById('stage-placeholder').style.display = 'block';
+      videoPicker.value = '';
+      currentUploadedVideoUrl = '';
+      activePartRange = null;
+      document.getElementById('six-parts-grid').innerHTML = '';
+      document.getElementById('media-status-text').innerText = 'वीडियो डिलीट कर दिया गया';
+    }
+
+    async function toggleCameraRecording() {
+      const btn = document.getElementById('cam-toggle-btn');
+      const status = document.getElementById('media-status-text');
+
+      if (!isRecording) {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          alert('इस ब्राउज़र में लाइव कैमरा सपोर्ट नहीं है।');
+          return;
+        }
+        try {
+          camStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: true });
+          recordedChunks = [];
+          editorVideo.srcObject = camStream;
+          editorVideo.muted = true;
+          editorVideo.style.display = 'block';
+          document.getElementById('stage-placeholder').style.display = 'none';
+          editorVideo.play();
+
+          mediaRecorder = new MediaRecorder(camStream);
+          mediaRecorder.ondataavailable = (e) => { if (e.data && e.data.size > 0) recordedChunks.push(e.data); };
+          mediaRecorder.onstop = () => {
+            const blob = new Blob(recordedChunks, { type: 'video/webm' });
+            const url = URL.createObjectURL(blob);
+            if (camStream) { camStream.getTracks().forEach(t => t.stop()); camStream = null; }
+            editorVideo.srcObject = null;
+            editorVideo.src = url;
+            editorVideo.muted = false;
+            editorVideo.play();
+            currentUploadedVideoUrl = url;
+            status.innerText = '✔ कैमरा वीडियो रिकॉर्ड हो गया!';
+          };
+          mediaRecorder.start();
+          isRecording = true;
+          btn.innerText = '⏹ रोकें';
+          status.innerText = '🔴 रिकॉर्डिंग चल रही है...';
+        } catch (err) {
+          alert('कैमरा अनुमति नहीं मिली: ' + err.message);
+        }
+      } else {
+        if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+        isRecording = false;
+        btn.innerText = '🎥 कैमरा रिकॉर्ड';
+      }
+    }
+
+    function switchTool(panelId, btn) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.getElementById(panelId).classList.add('active');
+      document.querySelectorAll('.tool-tabs button').forEach(b => b.classList.remove('active-tab'));
+      btn.classList.add('active-tab');
+    }
+
+    function setPreset(val) { editorVideo.style.filter = val; }
+    const hueRange = document.getElementById('hue-range');
+    const brightRange = document.getElementById('bright-range');
+    const contrastRange = document.getElementById('contrast-range');
+    function updateFilters() {
+      editorVideo.style.filter = `hue-rotate(${hueRange.value}deg) brightness(${brightRange.value}%) contrast(${contrastRange.value}%)`;
+    }
+    hueRange.addEventListener('input', updateFilters);
+    brightRange.addEventListener('input', updateFilters);
+    contrastRange.addEventListener('input', updateFilters);
+
+    function chooseSticker(emoji) {
+      if (!emoji) { stickerEl.style.display = 'none'; }
+      else { stickerEl.innerText = emoji; stickerEl.style.display = 'block'; }
+    }
+    stickerEl.addEventListener('touchmove', function(e) {
+      e.preventDefault();
+      const touch = e.touches[0];
+      const rect = document.getElementById('editor-stage').getBoundingClientRect();
+      stickerEl.style.left = Math.max(0, Math.min(rect.width - 55, touch.clientX - rect.left - 28)) + 'px';
+      stickerEl.style.top = Math.max(0, Math.min(rect.height - 55, touch.clientY - rect.top - 28)) + 'px';
+    });
+
+    document.getElementById('hindi-caption-input').addEventListener('input', function() {
+      document.getElementById('preview-text').innerText = this.value;
+    });
+    document.getElementById('hindi-color-input').addEventListener('input', function() {
+      document.getElementById('preview-text').style.color = this.value;
+    });
+
+    document.getElementById('music-selector').addEventListener('change', function() {
+      if (this.value === 'none') {
+        editorAudio.pause();
+        editorVideo.muted = false;
+      } else {
+        editorAudio.src = this.value;
+        editorVideo.muted = true;
+        editorAudio.play();
+      }
+    });
+
+    function cutCustomRange() {
+      const s = parseFloat(document.getElementById('custom-start').value);
+      const e = parseFloat(document.getElementById('custom-end').value);
+      if (!currentUploadedVideoUrl) { alert('पहले वीडियो चुनें!'); return; }
+      if (isNaN(s) || isNaN(e) || e <= s) { alert('सही शुरू और अंत सेकंड डालें!'); return; }
+      activePartRange = { partNum: 'Custom', start: s, end: e };
+      editorVideo.currentTime = s;
+      editorVideo.play();
+      editorVideo.ontimeupdate = () => { if (editorVideo.currentTime >= e) editorVideo.currentTime = s; };
+      document.getElementById('selected-part-info').innerText = `✔ कट सेट: ${s}s से ${e}s तक`;
+    }
+
+    function cutInto6EqualParts() {
+      const grid = document.getElementById('six-parts-grid');
+      if (!editorVideo.src || isNaN(editorVideo.duration) || editorVideo.duration === 0) {
+        alert('पहले कोई वीडियो चुनें!');
+        return;
+      }
+      const partLen = editorVideo.duration / 6;
+      grid.innerHTML = '';
+
+      for (let i = 0; i < 6; i++) {
+        const start = i * partLen, end = (i + 1) * partLen;
+        const box = document.createElement('div');
+        box.style.cssText = 'background:#202020; border:1px solid #3c3c3c; border-radius:8px; padding:7px; text-align:center;';
+        box.innerHTML = `
+          <div style="font-size:12px; font-weight:bold;">हिस्सा ${i + 1}</div>
+          <div style="font-size:10px; color:#bbb; margin:2px 0;">${start.toFixed(1)}s - ${end.toFixed(1)}s</div>
+          <button type="button" onclick="previewPart(${start}, ${end}, ${i + 1})" style="background:#333; color:#fff; border:1px solid #666; padding:3px 6px; border-radius:5px; font-size:10px; cursor:pointer;">▶ देखें</button>
+          <button type="button" onclick="applyPartForPost(${start}, ${end}, ${i + 1})" style="background:#ff2a55; color:#fff; border:none; padding:3px 6px; border-radius:5px; font-size:10px; cursor:pointer;">✔ लगाएं</button>
+        `;
+        grid.appendChild(box);
+      }
+    }
+
+    function previewPart(start, end, partNum) {
+      editorVideo.currentTime = start;
+      editorVideo.play();
+      editorVideo.ontimeupdate = () => {
+        if (editorVideo.currentTime >= end) {
+          editorVideo.pause();
+          editorVideo.ontimeupdate = null;
+        }
+      };
+      document.getElementById('selected-part-info').innerText = `हिस्सा ${partNum} चल रहा है (${start.toFixed(1)}s - ${end.toFixed(1)}s)`;
+    }
+
+    function applyPartForPost(start, end, partNum) {
+      activePartRange = { partNum, start, end };
+      editorVideo.currentTime = start;
+      editorVideo.pause();
+      const desc = document.getElementById('post-description');
+      if (!desc.value.includes(`हिस्सा ${partNum}/6`)) {
+        desc.value = (desc.value + ` [हिस्सा ${partNum}/6]`).trim();
+      }
+      document.getElementById('selected-part-info').innerText = `✔ हिस्सा ${partNum}/6 तैयार है!`;
+    }
+          
+    function publishReel() {
+      if (!currentUploadedVideoUrl) {
+        alert('कृपया पहले कोई वीडियो चुनें या रिकॉर्ड करें!');
+        return;
+      }
+      const selMusic = document.getElementById('music-selector');
+      const newReel = {
+        id: Date.now(),
+        user: userProfile.name,
+        videoUrl: currentUploadedVideoUrl,
+        filter: editorVideo.style.filter || 'none',
+        sticker: stickerEl.style.display === 'none' ? '' : stickerEl.innerText,
+        stickerTop: stickerEl.style.top || '18%',
+        stickerLeft: stickerEl.style.left || '75%',
+        text: document.getElementById('preview-text').innerText,
+        textColor: document.getElementById('hindi-color-input').value,
+        musicUrl: selMusic.value,
+        musicTitle: selMusic.value === 'none' ? 'ओरिजिनल ऑडियो' : selMusic.options[selMusic.selectedIndex].text,
+        startSec: activePartRange ? activePartRange.start : 0,
+        endSec: activePartRange ? activePartRange.end : null,
+        desc: document.getElementById('post-description').value || 'नया धाकड़ वीडियो 🔥 #धाकड़',
+        likes: 0,
+        reposts: 0,
+        liked: false,
+        saved: false,
+        following: false,
+        comments: []
+      };
+
+      reelsList.unshift(newReel);
+      try { localStorage.setItem('dhaakad_reels', JSON.stringify(reelsList)); } catch(e) {}
+      alert('वीडियो धाकड़ पर अपलोड हो गया 🎉');
+      openScreen('feed-screen', document.getElementById('nav-home'));
+    }
+
+    function renderFeed() {
+      const container = document.getElementById('reels-container');
+      container.innerHTML = '';
+
+      reelsList.forEach((reel, idx) => {
+        const dpHtml = userProfile.dpType === 'video' && userProfile.dpUrl
+          ? `<video src="${userProfile.dpUrl}" autoplay loop muted playsinline></video>`
+          : (userProfile.dpType === 'image' && userProfile.dpUrl ? `<img src="${userProfile.dpUrl}">` : `😎`);
+
+        const card = document.createElement('div');
+        card.className = 'reel-card';
+        card.innerHTML = `
+          <div class="big-heart" id="heart-${idx}">❤️</div>
+          <video id="reel-vid-${idx}" src="${reel.videoUrl}" style="filter:${reel.filter}" loop playsinline onclick="handleVideoTap(this, ${idx})"></video>
+          ${reel.sticker ? `<div class="reel-overlay-sticker" style="top:${reel.stickerTop}; left:${reel.stickerLeft};">${reel.sticker}</div>` : ''}
+          ${reel.text ? `<div class="reel-overlay-text" style="color:${reel.textColor};">${reel.text}</div>` : ''}
+          ${reel.musicUrl !== 'none' ? `<audio id="feed-audio-${idx}" src="${reel.musicUrl}" loop></audio>` : ''}
+
+          <div class="reel-actions">
+            <button type="button" class="action-btn" onclick="toggleLike(${idx})">${reel.liked ? '❤️' : '🤍'}<span>${reel.likes}</span></button>
+            <button type="button" class="action-btn" onclick="openComments(${idx})">💬<span>${reel.comments.length}</span></button>
+            <button type="button" class="action-btn" onclick="repostReel(${idx})">🔁<span>${reel.reposts || 0}</span></button>
+            <button type="button" class="action-btn" onclick="shareReel(${idx})">📤<span>शेयर</span></button>
+            <button type="button" class="action-btn" onclick="toggleSave(${idx})">${reel.saved ? '🔖' : '📑'}<span>सेव</span></button>
+          </div>
+
+          <div class="reel-info">
+            <div class="user-row">
+              <div class="mini-dp">${dpHtml}</div>
+              <strong>${reel.user}</strong>
+              <button type="button" class="follow-btn ${reel.following ? 'following' : ''}" onclick="toggleFollow(${idx})">
+                ${reel.following ? 'Following' : '+ Follow'}
+              </button>
+            </div>
+            <div class="music-line">🎵 ${reel.musicTitle || 'ओरिजिनल ऑडियो'}</div>
+            <p style="font-size:12px; color:#eee;">${reel.desc}</p>
+          </div>
+
+          <div class="quick-comment-bar">
+            <input type="text" id="quick-cmt-${idx}" placeholder="Add comment...">
+            <button type="button" onclick="sendQuickComment(${idx})" style="background:#ff2a55; border:none; color:#fff; padding:0 12px; border-radius:16px; font-size:11px; cursor:pointer;">भेजें</button>
+          </div>
+        `;
+        container.appendChild(card);
+
+        const vid = card.querySelector('video');
+        if (reel.startSec) vid.currentTime = reel.startSec;
+        if (reel.endSec) {
+          vid.ontimeupdate = () => {
+            if (vid.currentTime >= reel.endSec) vid.currentTime = reel.startSec || 0;
+          };
+        }
+        if (idx === 0) {
+          vid.muted = true;
+          vid.play().catch(() => {});
+        }
+      });
+    }
+
+    function handleVideoTap(vid, idx) {
+      const now = Date.now();
+      if (now - lastTapTime < 300) {
+        if (!reelsList[idx].liked) toggleLike(idx);
+        const heart = document.getElementById(`heart-${idx}`);
+        heart.classList.add('show');
+        setTimeout(() => heart.classList.remove('show'), 500);
+      } else {
+        const audio = document.getElementById(`feed-audio-${idx}`);
+        if (vid.paused) {
+          vid.play();
+          if (audio) { vid.muted = true; audio.play().catch(() => {}); } else { vid.muted = false; }
+        } else {
+          vid.pause();
+          if (audio) audio.pause();
+        }
+      }
+      lastTapTime = now;
+    }
+
+    function toggleLike(idx) {
+      reelsList[idx].liked = !reelsList[idx].liked;
+      reelsList[idx].likes += reelsList[idx].liked ? 1 : -1;
+      renderFeed();
+    }
+
+    function repostReel(idx) {
+      reelsList[idx].reposts = (reelsList[idx].reposts || 0) + 1;
+      renderFeed();
+    }
+
+    function toggleSave(idx) {
+      reelsList[idx].saved = !reelsList[idx].saved;
+      renderFeed();
+    }
+
+    function toggleFollow(idx) {
+      reelsList[idx].following = !reelsList[idx].following;
+      userProfile.followers += reelsList[idx].following ? 1 : -1;
+      localStorage.setItem('dhaakad_profile', JSON.stringify(userProfile));
+      renderFeed();
+    }
+
+    function shareReel(idx) {
+      const text = `धाकड़ पर देखें: ${reelsList[idx].user} — ${reelsList[idx].desc}`;
+      if (navigator.share) {
+        navigator.share({ title: 'धाकड़', text }).catch(() => {});
+      } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => alert('लिंक/कैप्शन कॉपी हो गया!'));
+      } else {
+        alert(text);
+      }
+    }
+
+    function sendQuickComment(idx) {
+      const inp = document.getElementById(`quick-cmt-${idx}`);
+      const val = (inp?.value || '').trim();
+      if (!val) return;
+      reelsList[idx].comments.push(`${userProfile.name}: ${val}`);
+      renderFeed();
+    }
+
+    function openComments(idx) {
+      activeCommentIndex = idx;
+      document.getElementById('comment-modal').classList.add('open');
+      renderCommentList();
+    }
+
+    function renderCommentList() {
+      const list = document.getElementById('comment-list');
+      const comments = reelsList[activeCommentIndex].comments || [];
+      list.innerHTML = comments.length
+        ? comments.map(c => `<div class="comment-item">${c}</div>`).join('')
+        : `<p style="color:#888; font-size:12px;">अभी कोई कमेंट नहीं है।</p>`;
+    }
+
+    function addCommentFromModal() {
+      const input = document.getElementById('new-comment-input');
+      const val = input.value.trim();
+      if (!val || activeCommentIndex === null) return;
+      reelsList[activeCommentIndex].comments.push(`${userProfile.name}: ${val}`);
+      input.value = '';
+      renderCommentList();
+      renderFeed();
+    }
+
+    document.getElementById('dp-file-input').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const isVideo = file.type.startsWith('video/');
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        userProfile.dpUrl = ev.target.result;
+        userProfile.dpType = isVideo ? 'video' : 'image';
+        try { localStorage.setItem('dhaakad_profile', JSON.stringify(userProfile)); }
+        catch (err) { userProfile.dpUrl = URL.createObjectURL(file); }
+        loadProfileUI();
+        syncTopStories();
+      };
+      reader.readAsDataURL(file);
+    });
+
+    function saveUserProfile() {
+      const n = document.getElementById('edit-name-input').value.trim();
+      const b = document.getElementById('edit-bio-input').value.trim();
+      if (n) userProfile.name = n;
+      userProfile.bio = b;
+      localStorage.setItem('dhaakad_profile', JSON.stringify(userProfile));
+      loadProfileUI();
+      alert('प्रोफ़ाइल और Bio सेव हो गई!');
+    }
+
+    function loadProfileUI() {
+      document.getElementById('display-username').innerText = userProfile.name;
+      document.getElementById('edit-name-input').value = userProfile.name;
+      document.getElementById('edit-bio-input').value = userProfile.bio;
+      document.getElementById('follower-count').innerText = userProfile.followers;
+      document.getElementById('post-count').innerText = reelsList.length;
+      document.getElementById('saved-count').innerText = reelsList.filter(r => r.saved).length;
+
+      const dpBox = document.getElementById('profile-dp-display');
+      if (userProfile.dpType === 'video' && userProfile.dpUrl) {
+        dpBox.innerHTML = `<video src="${userProfile.dpUrl}" autoplay loop muted playsinline></video>`;
+      } else if (userProfile.dpType === 'image' && userProfile.dpUrl) {
+        dpBox.innerHTML = `<img src="${userProfile.dpUrl}">`;
+      } else {
+        dpBox.innerHTML = `😎`;
+      }
+
+      const grid = document.getElementById('my-videos-grid');
+      grid.innerHTML = '';
+      reelsList.forEach(r => {
+        const item = document.createElement('div');
+        item.className = 'grid-item';
+        item.innerHTML = `<video src="${r.videoUrl}" style="filter:${r.filter}" muted></video>`;
+        grid.appendChild(item);
+      });
+    }
+
+    renderFeed();
+    loadProfileUI();
+    renderStatusGrid();
+    syncTopStories();
+  </script>
+</body>
+</html>
