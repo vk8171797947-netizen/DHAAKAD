@@ -1466,6 +1466,117 @@
     }
   })();
 </script>
+<script>
+  (function upgradeMusicPickerPanel() {
+    const musicPanel = document.getElementById('panel-music');
+    const selector = document.getElementById('music-selector');
+    const audioEl = document.getElementById('editor-audio');
+    if (!musicPanel || !selector || document.getElementById('dhaakad-music-hub')) return;
+
+    const demoTracks = [
+      { label: '🎬 फ़िल्मी ड्रामा बीट • इमोशनल वाइब', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+      { label: '🔥 धाकड़ एक्शन बीट • स्वैग ट्रैक', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
+      { label: '💃 देसी डांस बीट • पार्टी रिदम', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
+      { label: '🎶 रोमांटिक मेलोडी • संध्या वाइब', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3' }
+    ];
+
+    // ड्रॉपडाउन में अतिरिक्त ट्रैक जोड़ना
+    demoTracks.forEach(tr => {
+      const exists = Array.from(selector.options).some(o => o.value === tr.url);
+      if (!exists) {
+        const opt = document.createElement('option');
+        opt.value = tr.url;
+        opt.text = tr.label;
+        selector.appendChild(opt);
+      }
+    });
+
+    // म्यूज़िक पैनल के अंदर सर्च + क्विक ट्रैक चिप्स + अपनी ऑडियो फ़ाइल चुनने का बॉक्स
+    const hub = document.createElement('div');
+    hub.id = 'dhaakad-music-hub';
+    hub.style.cssText = 'margin-top:8px;';
+    hub.innerHTML = `
+      <input type="text" id="dhaakad-music-search" placeholder="गाना या बीट खोजें (जैसे: फ़िल्मी, धाकड़, डांस)..." style="margin-top:0; font-size:12px;">
+      <div id="dhaakad-track-chips" style="display:flex; flex-direction:column; gap:6px; margin-top:8px; max-height:145px; overflow-y:auto;"></div>
+      <div style="margin-top:8px; display:flex; gap:6px; align-items:center;">
+        <label for="dhaakad-custom-audio" style="flex:1; background:#222229; color:#fff; border:1px solid #3e3e4a; padding:8px; border-radius:8px; font-size:11px; font-weight:600; text-align:center; cursor:pointer;">
+          📁 फ़ोन से ऑडियो/गाना चुनें
+        </label>
+        <input type="file" id="dhaakad-custom-audio" accept="audio/*" style="display:none;">
+        <button type="button" id="dhaakad-stop-music" style="background:#2b1619; color:#ff6b6b; border:1px solid #ff6b6b; padding:8px 10px; border-radius:8px; font-size:11px; font-weight:600; cursor:pointer;">
+          ⏹ बंद
+        </button>
+      </div>
+    `;
+    selector.insertAdjacentElement('afterend', hub);
+
+    const searchInp = document.getElementById('dhaakad-music-search');
+    const chipsBox = document.getElementById('dhaakad-track-chips');
+    const customAudioInp = document.getElementById('dhaakad-custom-audio');
+    const stopBtn = document.getElementById('dhaakad-stop-music');
+
+    function playSelectedTrack(url, label) {
+      if (!audioEl) return;
+      audioEl.src = url;
+      const vid = document.getElementById('editor-video');
+      if (vid) vid.muted = true;
+      audioEl.play().catch(() => {});
+      const st = document.getElementById('media-status-text');
+      if (st) st.innerText = `🎵 म्यूज़िक चुना: ${label}`;
+    }
+
+    function renderTrackChips(filterText = '') {
+      const q = filterText.trim().toLowerCase();
+      const filtered = demoTracks.filter(t => !q || t.label.toLowerCase().includes(q));
+      chipsBox.innerHTML = '';
+
+      if (!filtered.length) {
+        chipsBox.innerHTML = '<div style="font-size:11px; color:#a1a1aa; padding:4px;">कोई मैचिंग ट्रैक नहीं मिला — नीचे से अपनी फ़ाइल चुनें।</div>';
+        return;
+      }
+
+      filtered.forEach(t => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.style.cssText = 'text-align:left; background:#1c1c23; color:#fff; border:1px solid #32323d; padding:8px 10px; border-radius:8px; font-size:11px; cursor:pointer;';
+        btn.innerText = `▶ ${t.label}`;
+        btn.onclick = () => {
+          selector.value = t.url;
+          playSelectedTrack(t.url, t.label);
+        };
+        chipsBox.appendChild(btn);
+      });
+    }
+
+    searchInp.addEventListener('input', () => renderTrackChips(searchInp.value));
+
+    customAudioInp.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const url = URL.createObjectURL(file);
+      const opt = document.createElement('option');
+      opt.value = url;
+      opt.text = `🎧 ${file.name}`;
+      selector.appendChild(opt);
+      selector.value = url;
+      playSelectedTrack(url, file.name);
+    });
+
+    stopBtn.addEventListener('click', function() {
+      selector.value = 'none';
+      if (audioEl) {
+        audioEl.pause();
+        audioEl.removeAttribute('src');
+      }
+      const vid = document.getElementById('editor-video');
+      if (vid) vid.muted = false;
+      const st = document.getElementById('media-status-text');
+      if (st) st.innerText = 'ओरिजिनल आवाज़ चालू';
+    });
+
+    renderTrackChips();
+  })();
+</script>
   
 </body>
 </html>
