@@ -1232,6 +1232,78 @@
     };
   })();
 </script>
+<style>
+  #reels-container {
+    scroll-snap-type: y mandatory !important;
+    overflow-y: auto !important;
+    scroll-behavior: smooth !important;
+  }
+  #reels-container .reel-card {
+    scroll-snap-align: start !important;
+    scroll-snap-stop: always !important;
+    height: calc(100vh - 186px) !important;
+    min-height: 440px !important;
+  }
+  body.dhaakad-reels-only #reels-container .reel-card {
+    height: calc(100vh - 122px) !important;
+  }
+</style>
+
+<script>
+  (function lockReelsSnapOneByOne() {
+    function syncSnapContainer() {
+      const mainEl = document.querySelector('main');
+      const reelsBox = document.getElementById('reels-container');
+      if (!mainEl || !reelsBox) return;
+
+      const isFeedActive = document.getElementById('feed-screen')?.classList.contains('active');
+      if (isFeedActive) {
+        mainEl.style.overflowY = 'hidden';
+        mainEl.style.paddingBottom = '64px';
+
+        const isReelsOnly = document.body.classList.contains('dhaakad-reels-only');
+        const cardH = isReelsOnly ? 'calc(100vh - 120px)' : 'calc(100vh - 186px)';
+        reelsBox.style.height = cardH;
+        reelsBox.style.maxHeight = cardH;
+        reelsBox.style.overflowY = 'scroll';
+        reelsBox.style.scrollSnapType = 'y mandatory';
+        reelsBox.style.webkitOverflowScrolling = 'touch';
+
+        reelsBox.querySelectorAll('.reel-card').forEach(function(card) {
+          card.style.height = cardH;
+          card.style.minHeight = cardH;
+          card.style.flexShrink = '0';
+          card.style.scrollSnapAlign = 'start';
+          card.style.scrollSnapStop = 'always';
+        });
+      } else {
+        mainEl.style.overflowY = 'auto';
+        reelsBox.style.height = 'auto';
+        reelsBox.style.maxHeight = 'none';
+        reelsBox.style.overflowY = 'visible';
+        reelsBox.style.scrollSnapType = 'none';
+      }
+    }
+
+    const origOpen = window.openScreen;
+    if (typeof origOpen === 'function') {
+      window.openScreen = function(screenId, btn) {
+        origOpen(screenId, btn);
+        setTimeout(syncSnapContainer, 40);
+      };
+    }
+
+    const origRender = window.renderFeed;
+    if (typeof origRender === 'function') {
+      window.renderFeed = function() {
+        origRender();
+        setTimeout(syncSnapContainer, 40);
+      };
+    }
+
+    syncSnapContainer();
+  })();
+</script>
   
 </body>
 </html>
