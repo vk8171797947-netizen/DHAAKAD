@@ -37,8 +37,9 @@
         .icon-btn:active { color: #ff7900; transform: scale(0.92); }
 
         /* Status / Stories Bar */
-        .status-bar { max-width: 470px; margin: 12px auto 0 auto; padding: 8px 10px; display: flex; gap: 14px; overflow-x: auto; scrollbar-width: none; }
+        .status-bar { max-width: 470px; margin: 12px auto 0 auto; padding: 8px 10px; display: flex; gap: 14px; overflow-x: auto; scrollbar-width: none; align-items: flex-start; }
         .status-bar::-webkit-scrollbar { display: none; }
+        #statusList { display: flex; gap: 14px; }
         .status-item { display: flex; flex-direction: column; align-items: center; min-width: 68px; cursor: pointer; }
         .status-ring { width: 64px; height: 64px; border-radius: 50%; padding: 3px; background: linear-gradient(45deg, #ff7900, #ff3b30); display: flex; align-items: center; justify-content: center; margin-bottom: 5px; }
         .status-ring.add-ring { background: none; border: 2px dashed #ff7900; padding: 0; }
@@ -117,6 +118,7 @@
             </div>
             <span class="status-name">स्टेटस लगाएं</span>
         </div>
+        <div id="statusList"></div>
     </div>
 
     <!-- Main Feed -->
@@ -201,6 +203,7 @@
         // Toast Function
         function showToast(msg) {
             const toast = document.getElementById("toast");
+            if (!toast) return;
             toast.innerText = msg;
             toast.className = "show";
             setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 2500);
@@ -263,12 +266,16 @@
             const now = Date.now();
             let statuses = [];
             try {
-                statuses = JSON.parse(localStorage.getItem('dhaakad_statuses_v1') || '[]');
+                const raw = localStorage.getItem('dhaakad_statuses_v1');
+                statuses = raw ? JSON.parse(raw) : [];
+                if (!Array.isArray(statuses)) statuses = [];
             } catch (e) {
                 statuses = [];
             }
-            const active = statuses.filter(st => st.expiresAt > now);
-            localStorage.setItem('dhaakad_statuses_v1', JSON.stringify(active));
+            const active = statuses.filter(st => st && typeof st.expiresAt === 'number' && st.expiresAt > now);
+            try {
+                localStorage.setItem('dhaakad_statuses_v1', JSON.stringify(active));
+            } catch (e) {}
             return active;
         }
 
@@ -283,10 +290,9 @@
         }
 
         function renderStatuses() {
-            const statusBar = document.getElementById('statusBar');
-            const addBtn = document.getElementById('addStatusBtn');
-            statusBar.innerHTML = '';
-            statusBar.appendChild(addBtn);
+            const statusList = document.getElementById('statusList');
+            if (!statusList) return;
+            statusList.innerHTML = '';
 
             const activeStatuses = getActiveStatuses();
             activeStatuses.forEach((st) => {
@@ -302,7 +308,7 @@
                     <div class="status-ring">
                         <div class="status-avatar">${avatarContent}</div>
                     </div>
-                    <span class="status-name">${st.user}</span>
+                    <span class="status-name">${st.user || 'DHAAKAD_USER'}</span>
                 `;
 
                 item.addEventListener('click', () => {
@@ -312,7 +318,7 @@
                         renderStatuses();
                         return;
                     }
-                    document.getElementById('viewStatusUser').innerText = currentActive.user;
+                    document.getElementById('viewStatusUser').innerText = currentActive.user || 'DHAAKAD_USER';
                     document.getElementById('viewStatusTime').innerText = `⏳ ${formatRemainingTime(currentActive.expiresAt)}`;
                     const contentBox = document.getElementById('viewStatusContent');
                     contentBox.innerHTML = `
@@ -322,7 +328,7 @@
                     document.getElementById('viewStatusModal').style.display = 'flex';
                 });
 
-                statusBar.appendChild(item);
+                statusList.appendChild(item);
             });
         }
 
@@ -346,11 +352,4 @@
             const text = textInput.value.trim();
 
             if (!text && imgInput.files.length === 0) {
-                showToast('कृपया स्टेटस लिखें या फोटो चुनें! ⚠️');
-                return;
-            }
-
-            const saveStatus = (imgSrc = '') => {
-                const activeStatuses = getActiveStatuses();
-                const username = localStorage.getItem('dhaakad_username') || 'DHAAKAD_USER';
-  
+              
