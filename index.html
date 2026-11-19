@@ -1204,6 +1204,34 @@
     });
   })();
                                                </script>
+<script>
+  (function separateHomeAndVideoModes() {
+    const origOpenScreen = window.openScreen;
+    if (typeof origOpenScreen !== 'function') return;
+
+    window.openScreen = function(screenId, btn) {
+      origOpenScreen(screenId, btn);
+
+      const storiesStrip = document.getElementById('stories-strip');
+      const isVideoTab = btn && btn.id === 'nav-video';
+
+      if (screenId === 'feed-screen') {
+        document.body.classList.toggle('dhaakad-reels-only', Boolean(isVideoTab));
+        if (storiesStrip) {
+          storiesStrip.style.display = isVideoTab ? 'none' : 'flex';
+        }
+        document.querySelectorAll('#feed-screen .reel-card').forEach(function(card) {
+          card.style.height = isVideoTab ? 'calc(100vh - 122px)' : 'calc(100vh - 186px)';
+        });
+      } else {
+        document.body.classList.remove('dhaakad-reels-only');
+        if (storiesStrip && screenId !== 'upload-screen' && screenId !== 'status-screen') {
+          storiesStrip.style.display = 'flex';
+        }
+      }
+    };
+  })();
+</script>
   
 </body>
 </html>
