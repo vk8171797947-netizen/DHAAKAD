@@ -6,85 +6,232 @@
     <title>DHAAKAD Social</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --bg:#000; --txt:#fff; --nav:#111; --bdr:#2a2a2a; --post:#111; --box:#1a1a1a; --inp:#000; --muted:#9ca3af; --accent:#ff7900; }
-        .light-mode { --bg:#f0f2f5; --txt:#000; --nav:#fff; --bdr:#ddd; --post:#fff; --box:#f3f4f6; --inp:#fff; --muted:#555; }
+        :root {
+            --bg:#000; --txt:#fff; --nav:#111; --bdr:#262626; --post:#111;
+            --box:#1a1a1a; --inp:#0a0a0a; --muted:#9ca3af; --accent:#ff7900;
+            --danger:#ff3b30; --ok:#22c55e;
+        }
+        .light-mode {
+            --bg:#f2f4f7; --txt:#0f172a; --nav:#fff; --bdr:#e2e8f0; --post:#fff;
+            --box:#f8fafc; --inp:#fff; --muted:#64748b;
+        }
         * { margin:0; padding:0; box-sizing:border-box; font-family:Arial,sans-serif; -webkit-tap-highlight-color:transparent; }
-        body { background:var(--bg); color:var(--txt); padding-bottom:75px; transition:0.25s; }
-        .navbar { background:var(--nav); border-bottom:1px solid var(--bdr); position:sticky; top:0; z-index:30; padding:11px 15px; display:flex; justify-content:space-between; align-items:center; }
-        .logo { color:var(--accent); font-weight:bold; font-size:23px; letter-spacing:1px; }
-        .nav-icons { display:flex; gap:8px; align-items:center; }
-        .icon-btn { position:relative; background:none; border:none; color:var(--txt); font-size:19px; padding:6px; cursor:pointer; }
-        .badge { position:absolute; top:2px; right:1px; background:#ff3b30; color:#fff; font-size:10px; font-weight:bold; min-width:16px; height:16px; border-radius:999px; display:none; align-items:center; justify-content:center; padding:0 4px; }
-        .bottom-nav { position:fixed; bottom:0; left:0; width:100%; background:var(--nav); border-top:1px solid var(--bdr); display:flex; justify-content:space-around; align-items:center; padding:9px 0; z-index:30; }
-        .b-btn { background:none; border:none; color:var(--muted); font-size:21px; cursor:pointer; padding:4px 12px; display:flex; flex-direction:column; align-items:center; gap:2px; }
+        body { background:var(--bg); color:var(--txt); padding-bottom:78px; transition:0.25s; }
+        .navbar {
+            background:var(--nav); border-bottom:1px solid var(--bdr); position:sticky; top:0; z-index:30;
+            padding:11px 15px; display:flex; justify-content:space-between; align-items:center;
+        }
+        .logo {
+            background:linear-gradient(45deg,#ff7900,#ff3b30); -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+            font-weight:bold; font-size:22px; letter-spacing:1px;
+        }
+        .nav-icons { display:flex; gap:6px; align-items:center; }
+        .icon-btn { position:relative; background:none; border:none; color:var(--txt); font-size:19px; padding:7px; cursor:pointer; border-radius:50%; }
+        .icon-btn:active { background:var(--box); }
+        .badge {
+            position:absolute; top:2px; right:1px; background:var(--danger); color:#fff; font-size:10px;
+            font-weight:bold; min-width:16px; height:16px; border-radius:999px; display:none;
+            align-items:center; justify-content:center; padding:0 4px;
+        }
+        .bottom-nav {
+            position:fixed; bottom:0; left:0; width:100%; background:var(--nav); border-top:1px solid var(--bdr);
+            display:flex; justify-content:space-around; align-items:center; padding:8px 0; z-index:30;
+        }
+        .b-btn {
+            background:none; border:none; color:var(--muted); font-size:20px; cursor:pointer;
+            padding:4px 10px; display:flex; flex-direction:column; align-items:center; gap:2px;
+        }
         .b-btn span { font-size:10px; }
-        .b-btn.active { color:var(--accent); }
-        .container { max-width:470px; margin:0 auto; padding:10px; }
+        .b-btn.active { color:var(--accent); font-weight:bold; }
+        .container { max-width:480px; margin:0 auto; padding:10px; }
         .section { display:none; }
         .section.active { display:block; }
-        .status-bar { display:flex; gap:12px; overflow-x:auto; padding:6px 2px 12px; border-bottom:1px solid var(--bdr); margin-bottom:12px; scrollbar-width:none; }
+
+        /* Status Bar */
+        .status-bar {
+            display:flex; gap:12px; overflow-x:auto; padding:6px 2px 12px;
+            border-bottom:1px solid var(--bdr); margin-bottom:12px; scrollbar-width:none;
+        }
         .status-bar::-webkit-scrollbar { display:none; }
         #statusList { display:flex; gap:12px; }
-        .status-item { display:flex; flex-direction:column; align-items:center; min-width:66px; cursor:pointer; }
-        .status-ring { width:62px; height:62px; border-radius:50%; padding:2.5px; background:linear-gradient(45deg,#ff7900,#ff3b30); margin-bottom:4px; }
+        .status-item { display:flex; flex-direction:column; align-items:center; min-width:68px; cursor:pointer; }
+        .status-ring {
+            width:64px; height:64px; border-radius:50%; padding:2.5px;
+            background:linear-gradient(45deg,#ff7900,#ff3b30,#eab308); margin-bottom:4px;
+        }
         .status-ring.add-ring { background:none; border:2px dashed var(--accent); padding:0; }
-        .status-avatar { width:100%; height:100%; border-radius:50%; background:var(--post); color:var(--txt); display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:18px; overflow:hidden; border:2px solid var(--bg); }
+        .status-avatar {
+            width:100%; height:100%; border-radius:50%; background:var(--post); color:var(--txt);
+            display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:18px;
+            overflow:hidden; border:2px solid var(--bg);
+        }
         .status-avatar img { width:100%; height:100%; object-fit:cover; }
-        .status-name { font-size:11px; max-width:70px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-        .post { background:var(--post); border:1px solid var(--bdr); border-radius:10px; margin-bottom:16px; overflow:hidden; }
-        .post-header { padding:10px 12px; color:var(--accent); font-weight:bold; font-size:14px; display:flex; justify-content:space-between; align-items:center; }
+        .status-name { font-size:11px; max-width:72px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-align:center; }
+
+        /* Posts */
+        .post { background:var(--post); border:1px solid var(--bdr); border-radius:12px; margin-bottom:16px; overflow:hidden; }
+        .post-header {
+            padding:10px 12px; font-weight:bold; font-size:14px;
+            display:flex; justify-content:space-between; align-items:center;
+        }
+        .author-wrap { display:flex; align-items:center; gap:8px; color:var(--txt); }
+        .mini-ava {
+            width:30px; height:30px; border-radius:50%; background:var(--accent); color:#000;
+            display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:bold;
+        }
         .post-header-right { display:flex; gap:6px; align-items:center; }
-        .follow-btn { background:var(--accent); color:#000; border:none; padding:5px 11px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px; }
-        .follow-btn.following { background:#333; color:#fff; }
-        .del-btn { background:#ff3b30; color:#fff; border:none; padding:5px 9px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px; }
-        .post-media { position:relative; width:100%; min-height:230px; background:var(--box); display:flex; align-items:center; justify-content:center; font-size:18px; padding:12px; text-align:center; border-top:1px solid var(--bdr); border-bottom:1px solid var(--bdr); cursor:pointer; user-select:none; }
-        .post-media img, .post-media video { width:100%; max-height:390px; object-fit:cover; border-radius:6px; }
-        .heart-pop { position:absolute; font-size:64px; color:#ff3b30; opacity:0; transform:scale(0.5); transition:0.35s; pointer-events:none; }
+        .follow-btn {
+            background:var(--accent); color:#000; border:none; padding:5px 11px;
+            border-radius:7px; font-weight:bold; cursor:pointer; font-size:12px;
+        }
+        .follow-btn.following { background:var(--box); color:var(--txt); border:1px solid var(--bdr); }
+        .del-btn {
+            background:var(--danger); color:#fff; border:none; padding:5px 9px;
+            border-radius:7px; font-weight:bold; cursor:pointer; font-size:12px;
+        }
+        .post-media {
+            position:relative; width:100%; min-height:220px; background:var(--box);
+            display:flex; align-items:center; justify-content:center; font-size:18px;
+            padding:16px; text-align:center; border-top:1px solid var(--bdr);
+            border-bottom:1px solid var(--bdr); cursor:pointer; user-select:none;
+        }
+                .post-media.text-card {
+            background:linear-gradient(135deg,#1f2937,#ff7900); color:#fff; font-weight:bold;
+            min-height:240px; padding:24px;
+        }
+        .post-media img, .post-media video { width:100%; max-height:400px; object-fit:cover; border-radius:6px; }
+        .heart-pop {
+            position:absolute; font-size:68px; color:var(--danger); opacity:0;
+            transform:scale(0.5); transition:0.3s; pointer-events:none;
+        }
         .heart-pop.show { opacity:0.95; transform:scale(1.15); }
         .post-footer { padding:11px 12px; }
-        .post-actions { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
-        .post-actions-left { display:flex; gap:12px; }
-        .action-btn { background:none; border:none; color:var(--txt); font-size:22px; padding:3px; cursor:pointer; }
-        .liked { color:#ff3b30 !important; }
+        .post-actions { display:flex; justify-content:space-between; align-items:center; margin-bottom:7px; }
+        .post-actions-left { display:flex; gap:12px; align-items:center; }
+        .action-btn {
+            background:none; border:none; color:var(--txt); font-size:21px; padding:3px;
+            cursor:pointer; display:inline-flex; align-items:center; gap:4px;
+        }
+        .liked { color:var(--danger) !important; }
         .saved { color:var(--accent) !important; }
-        .post-footer p { font-size:14px; margin-bottom:5px; line-height:1.35; }
-        .comments-list { margin-top:6px; padding-top:6px; border-top:1px solid var(--bdr); font-size:13px; color:var(--muted); }
-        .comments-list p { margin-bottom:3px; }
+        .post-footer p { font-size:14px; margin-bottom:5px; line-height:1.38; }
+        .comments-list {
+            margin-top:6px; padding-top:6px; border-top:1px solid var(--bdr);
+            font-size:13px; color:var(--muted);
+        }
+        .cmt-item {
+            display:flex; justify-content:space-between; align-items:center;
+            gap:8px; margin-bottom:5px; padding:4px 6px; border-radius:6px; background:var(--box);
+        }
+        .cmt-del {
+            background:none; border:none; color:var(--danger); cursor:pointer; font-size:12px; padding:2px 4px;
+        }
         .comment-box { display:none; margin-top:8px; gap:6px; }
-        .comment-box input { flex:1; padding:8px 10px; background:var(--inp); border:1px solid var(--bdr); color:var(--txt); border-radius:6px; font-size:13px; }
-        .comment-box button { background:var(--accent); color:#000; border:none; padding:8px 13px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:13px; }
-        .inp { width:100%; padding:10px 12px; background:var(--inp); border:1px solid var(--bdr); color:var(--txt); border-radius:8px; font-size:14px; margin-bottom:10px; }
-        .btn { width:100%; background:var(--accent); color:#000; border:none; padding:11px; font-weight:bold; cursor:pointer; border-radius:8px; font-size:14px; }
-        .btn-sec { background:#333; color:#fff; }
-        .btn-danger { background:#ff3b30; color:#fff; }
-        .card { background:var(--post); border:1px solid var(--bdr); border-radius:10px; padding:14px; margin-bottom:14px; }
-        .reel-card { background:var(--post); border:1px solid var(--bdr); border-radius:12px; overflow:hidden; margin-bottom:16px; }
-        .reel-media { width:100%; height:360px; background:#000; display:flex; align-items:center; justify-content:center; color:#fff; position:relative; }
+        .comment-box.open { display:flex; }
+        .comment-box input {
+            flex:1; padding:8px 10px; background:var(--inp); border:1px solid var(--bdr);
+            color:var(--txt); border-radius:7px; font-size:13px;
+        }
+        .comment-box button {
+            background:var(--accent); color:#000; border:none; padding:8px 13px;
+            border-radius:7px; font-weight:bold; cursor:pointer; font-size:13px;
+        }
+
+        /* Forms & Cards */
+        .inp {
+            width:100%; padding:10px 12px; background:var(--inp); border:1px solid var(--bdr);
+            color:var(--txt); border-radius:8px; font-size:14px; margin-bottom:10px;
+        }
+        .btn {
+            width:100%; background:var(--accent); color:#000; border:none; padding:10px 12px;
+            font-weight:bold; cursor:pointer; border-radius:8px; font-size:14px;
+        }
+        .btn-sec { background:var(--box); color:var(--txt); border:1px solid var(--bdr); }
+        .btn-danger { background:var(--danger); color:#fff; }
+        .card {
+            background:var(--post); border:1px solid var(--bdr); border-radius:12px;
+            padding:14px; margin-bottom:14px;
+        }
+        .filter-row { display:flex; gap:6px; overflow-x:auto; margin-bottom:10px; padding-bottom:2px; }
+        .pill {
+            padding:6px 12px; border-radius:999px; border:1px solid var(--bdr);
+            background:var(--box); color:var(--txt); cursor:pointer; font-size:12px; white-space:nowrap;
+        }
+        .pill.active { background:var(--accent); color:#000; border-color:var(--accent); font-weight:bold; }
+
+        /* Reels */
+        .reel-card {
+            background:var(--post); border:1px solid var(--bdr); border-radius:12px;
+            overflow:hidden; margin-bottom:16px;
+        }
+        .reel-media {
+            width:100%; height:360px; background:linear-gradient(135deg,#111827,#374151);
+            display:flex; align-items:center; justify-content:center; color:#fff; position:relative;
+        }
         .reel-media video, .reel-media img { width:100%; height:100%; object-fit:cover; }
-        .reel-overlay { padding:12px; display:flex; justify-content:space-between; align-items:center; }
-        .chat-users { display:flex; gap:8px; overflow-x:auto; margin-bottom:10px; }
-        .chat-pill { padding:7px 13px; border-radius:999px; border:1px solid var(--bdr); background:var(--box); color:var(--txt); cursor:pointer; font-size:13px; white-space:nowrap; }
-        .chat-pill.active { background:var(--accent); color:#000; border-color:var(--accent); font-weight:bold; }
-        .chat-box { height:280px; overflow-y:auto; background:var(--box); border:1px solid var(--bdr); border-radius:8px; padding:10px; margin-bottom:10px; display:flex; flex-direction:column; gap:8px; }
-        .msg { max-width:78%; padding:8px 12px; border-radius:12px; font-size:13px; line-height:1.35; }
+        .reel-overlay { padding:12px; }
+        .reel-top { display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
+        .reel-actions { display:flex; gap:14px; align-items:center; margin-top:10px; padding-top:8px; border-top:1px solid var(--bdr); }
+
+        /* Chat / DM */
+        .chat-users { display:flex; gap:8px; overflow-x:auto; margin-bottom:10px; align-items:center; }
+        .chat-box {
+            height:280px; overflow-y:auto; background:var(--box); border:1px solid var(--bdr);
+            border-radius:10px; padding:10px; margin-bottom:10px; display:flex; flex-direction:column; gap:8px;
+        }
+        .msg { max-width:80%; padding:8px 12px; border-radius:12px; font-size:13px; line-height:1.35; word-break:break-word; }
         .msg.me { align-self:flex-end; background:var(--accent); color:#000; font-weight:bold; }
         .msg.them { align-self:flex-start; background:var(--post); border:1px solid var(--bdr); }
+
+        /* Profile */
         .profile-head { text-align:center; }
-        .profile-avatar { width:86px; height:86px; border-radius:50%; background:var(--accent); color:#000; font-size:34px; display:flex; align-items:center; justify-content:center; margin:0 auto 10px; overflow:hidden; font-weight:bold; }
+        .profile-avatar {
+            width:86px; height:86px; border-radius:50%; background:var(--accent); color:#000;
+            font-size:34px; display:flex; align-items:center; justify-content:center;
+            margin:0 auto 10px; overflow:hidden; font-weight:bold;
+        }
         .profile-avatar img { width:100%; height:100%; object-fit:cover; }
-        .stats-row { display:flex; justify-content:space-around; margin:12px 0; padding:10px 0; border-top:1px solid var(--bdr); border-bottom:1px solid var(--bdr); font-size:13px; }
-        .tabs-row { display:flex; gap:8px; margin:12px 0; }
-        .tab-btn { flex:1; padding:8px; border-radius:6px; border:1px solid var(--bdr); background:var(--box); color:var(--txt); font-weight:bold; cursor:pointer; font-size:13px; }
+        .stats-row {
+            display:flex; justify-content:space-around; margin:12px 0; padding:10px 0;
+            border-top:1px solid var(--bdr); border-bottom:1px solid var(--bdr); font-size:13px;
+        }
+        .stat-click { cursor:pointer; }
+        .tabs-row { display:flex; gap:6px; margin:12px 0; flex-wrap:wrap; }
+        .tab-btn {
+            flex:1; min-width:90px; padding:8px; border-radius:7px; border:1px solid var(--bdr);
+            background:var(--box); color:var(--txt); font-weight:bold; cursor:pointer; font-size:12px;
+        }
         .tab-btn.active { background:var(--accent); color:#000; border-color:var(--accent); }
-        .mini-post { background:var(--box); border:1px solid var(--bdr); border-radius:8px; padding:9px; margin-bottom:8px; font-size:13px; text-align:left; }
+        .mini-post {
+            background:var(--box); border:1px solid var(--bdr); border-radius:8px;
+            padding:9px; margin-bottom:8px; font-size:13px; text-align:left;
+        }
         .mini-post img { width:100%; max-height:180px; object-fit:cover; border-radius:6px; margin-bottom:6px; }
-        .modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:100; justify-content:center; align-items:center; padding:15px; }
-        .modal-content { background:var(--post); padding:18px; border-radius:12px; width:100%; max-width:360px; border:1px solid var(--bdr); text-align:center; }
+
+        /* Modals & Toast */
+        .modal {
+            display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85);
+            z-index:100; justify-content:center; align-items:center; padding:15px;
+        }
+        .modal.open { display:flex; }
+        .modal-content {
+            background:var(--post); padding:18px; border-radius:12px; width:100%;
+            max-width:370px; border:1px solid var(--bdr); text-align:center;
+        }
         .modal-content h3 { margin-bottom:12px; color:var(--accent); }
         .row { display:flex; gap:8px; }
-        .status-view-box { min-height:210px; background:var(--box); border-radius:10px; padding:14px; margin:10px 0 14px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; }
-        .status-view-box img { max-width:100%; max-height:250px; border-radius:8px; }
-        #toast { visibility:hidden; min-width:220px; background:var(--accent); color:#000; font-weight:bold; text-align:center; border-radius:25px; padding:10px 16px; position:fixed; z-index:200; left:50%; bottom:72px; transform:translateX(-50%); font-size:13px; }
+        .status-view-box {
+            min-height:200px; background:var(--box); border-radius:10px; padding:14px;
+            margin:10px 0 12px; display:flex; flex-direction:column; align-items:center;
+            justify-content:center; gap:10px;
+        }
+        .status-view-box img { max-width:100%; max-height:240px; border-radius:8px; }
+        #toast {
+            visibility:hidden; min-width:220px; max-width:90vw; background:var(--accent);
+            color:#000; font-weight:bold; text-align:center; border-radius:25px;
+            padding:10px 16px; position:fixed; z-index:200; left:50%; bottom:74px;
+            transform:translateX(-50%); font-size:13px;
+        }
         #toast.show { visibility:visible; }
     </style>
 </head>
@@ -102,25 +249,32 @@
     </div>
 
     <div class="container">
+        <!-- HOME -->
         <div class="section active" id="secHome">
             <div class="status-bar">
                 <div class="status-item" id="addStatusBtn">
                     <div class="status-ring add-ring"><div class="status-avatar"><i class="fa-solid fa-plus" style="color:var(--accent);"></i></div></div>
-                    <span class="status-name">स्टेटस लगाएं</span>
+                    <span class="status-name">स्टोरी लगाएं</span>
                 </div>
                 <div id="statusList"></div>
             </div>
+            <div class="filter-row" id="feedFilterBar">
+                <button type="button" class="pill active" data-filter="all">सभी पोस्ट्स</button>
+                <button type="button" class="pill" data-filter="following">फ़ॉलोइंग</button>
+                <button type="button" class="pill" data-filter="media">फ़ोटो वाली</button>
+            </div>
             <div id="feed"></div>
         </div>
-
+                <!-- EXPLORE -->
         <div class="section" id="secExplore">
-            <input type="text" class="inp" id="exploreSearchInp" placeholder="यूज़रनेम या पोस्ट खोजें...">
+            <input type="text" class="inp" id="exploreSearchInp" placeholder="यूज़रनेम या कैप्शन खोजें...">
             <div id="exploreResults"></div>
         </div>
 
+        <!-- REELS -->
         <div class="section" id="secReels">
             <div class="card">
-                <h3 style="color:var(--accent); margin-bottom:10px; font-size:16px;">नई रील अपलोड करें</h3>
+                <h3 style="color:var(--accent); margin-bottom:10px; font-size:16px;">नई रील बनाएं</h3>
                 <input type="text" class="inp" id="reelCaptionInp" placeholder="रील कैप्शन लिखें...">
                 <input type="file" class="inp" id="reelFileInp" accept="video/*,image/*">
                 <button type="button" class="btn" id="addReelBtn">रील पोस्ट करें</button>
@@ -128,6 +282,7 @@
             <div id="reelsList"></div>
         </div>
 
+        <!-- NOTIFICATIONS -->
         <div class="section" id="secNotif">
             <div class="card">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -138,9 +293,14 @@
             </div>
         </div>
 
+        <!-- DM -->
         <div class="section" id="secDm">
             <div class="card">
                 <h3 style="color:var(--accent); margin-bottom:10px; font-size:16px;">डायरेक्ट मैसेज (DM)</h3>
+                <div class="row" style="margin-bottom:10px;">
+                    <input type="text" class="inp" id="newChatUserInp" placeholder="नया यूज़र जोड़ें..." style="margin-bottom:0;">
+                    <button type="button" class="btn btn-sec" id="addChatUserBtn" style="width:auto; padding:0 12px; font-size:12px;">जोड़ें</button>
+                </div>
                 <div class="chat-users" id="chatUsersBar"></div>
                 <div class="chat-box" id="chatMessagesBox"></div>
                 <div class="row">
@@ -150,18 +310,19 @@
             </div>
         </div>
 
+        <!-- PROFILE -->
         <div class="section" id="secProfile">
             <div class="card profile-head">
                 <div class="profile-avatar" id="profileAvatarBox">D</div>
                 <h2 id="displayUsername">DHAAKAD_USER</h2>
                 <p id="displayBio" style="color:var(--muted); font-size:13px; margin-top:4px;">धाकड़ सोशल क्रिएटर 🚀</p>
                 <div class="stats-row">
-                    <div><b id="stPosts">0</b><br><span style="color:var(--muted);">पोस्ट्स</span></div>
-                    <div><b id="stFollowers">128</b><br><span style="color:var(--muted);">फॉलोअर्स</span></div>
-                    <div><b id="stFollowing">0</b><br><span style="color:var(--muted);">फॉलोइंग</span></div>
+                    <div class="stat-click" id="stPostsBox"><b id="stPosts">0</b><br><span style="color:var(--muted);">पोस्ट्स</span></div>
+                    <div class="stat-click" id="stFollowersBox"><b id="stFollowers">128</b><br><span style="color:var(--muted);">फ़ॉलोअर्स</span></div>
+                    <div class="stat-click" id="stFollowingBox"><b id="stFollowing">0</b><br><span style="color:var(--muted);">फ़ॉलोइंग</span></div>
                 </div>
                 <div class="row" style="margin-bottom:8px;">
-                    <input type="text" class="inp" id="newUsernameInput" placeholder="नया यूजरनेम..." style="margin-bottom:0;">
+                    <input type="text" class="inp" id="newUsernameInput" placeholder="नया यूज़रनेम..." style="margin-bottom:0;">
                     <button type="button" class="btn" id="saveUsernameBtn" style="width:auto; padding:0 14px;">बदलो</button>
                 </div>
                 <div class="row" style="margin-bottom:8px;">
@@ -170,14 +331,20 @@
                 </div>
                 <input type="file" accept="image/*" id="newAvatarInput" class="inp" style="font-size:12px;">
                 <div class="tabs-row">
-                    <button type="button" class="tab-btn active" id="tabMyPosts">मेरी पोस्ट्स</button>
-                    <button type="button" class="tab-btn" id="tabSavedPosts">सेव्ड पोस्ट्स</button>
+                    <button type="button" class="tab-btn active" data-ptab="my">मेरी पोस्ट्स</button>
+                    <button type="button" class="tab-btn" data-ptab="savedPosts">सेव्ड पोस्ट्स</button>
+                    <button type="button" class="tab-btn" data-ptab="savedReels">सेव्ड रील्स</button>
                 </div>
                 <div id="profileGrid"></div>
+                <div class="row" style="margin-top:14px;">
+                    <button type="button" class="btn btn-sec" id="exportDataBtn" style="font-size:12px;">बैकअप कॉपी करें</button>
+                    <button type="button" class="btn btn-danger" id="resetDataBtn" style="font-size:12px;">डेटा रीसेट</button>
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- BOTTOM NAV -->
     <nav class="bottom-nav">
         <button type="button" class="b-btn active" data-target="secHome"><i class="fa-solid fa-house"></i><span>होम</span></button>
         <button type="button" class="b-btn" data-target="secExplore"><i class="fa-solid fa-magnifying-glass"></i><span>खोजें</span></button>
@@ -186,6 +353,7 @@
         <button type="button" class="b-btn" data-target="secProfile"><i class="fa-regular fa-user"></i><span>प्रोफ़ाइल</span></button>
     </nav>
 
+    <!-- CREATE POST MODAL -->
     <div class="modal" id="postModal">
         <div class="modal-content">
             <h3>नई पोस्ट बनाएं</h3>
@@ -198,10 +366,11 @@
         </div>
     </div>
 
+    <!-- ADD STATUS MODAL -->
     <div class="modal" id="statusModal">
         <div class="modal-content">
-            <h3>24 घंटे का स्टेटस लगाएं</h3>
-            <input type="text" class="inp" id="statusTextInput" placeholder="अपना स्टेटस लिखें...">
+            <h3>24 घंटे की स्टोरी लगाएं</h3>
+            <input type="text" class="inp" id="statusTextInput" placeholder="अपनी स्टोरी लिखें...">
             <input type="file" class="inp" id="statusImageInput" accept="image/*">
             <div class="row">
                 <button type="button" class="btn btn-sec" id="cancelStatusBtn">बंद करें</button>
@@ -210,11 +379,16 @@
         </div>
     </div>
 
+    <!-- VIEW STATUS MODAL -->
     <div class="modal" id="viewStatusModal">
         <div class="modal-content">
             <h3 id="viewStatusUser">यूज़र</h3>
             <div id="viewStatusTime" style="font-size:12px; color:var(--muted);"></div>
             <div class="status-view-box" id="viewStatusContent"></div>
+            <div class="row" style="margin-bottom:8px;">
+                <input type="text" class="inp" id="statusReplyInp" placeholder="स्टोरी पर रिप्लाई भेजें..." style="margin-bottom:0;">
+                <button type="button" class="btn" id="sendStatusReplyBtn" style="width:auto; padding:0 12px;">भेजें</button>
+            </div>
             <div class="row">
                 <button type="button" class="btn btn-danger" id="deleteStatusBtn">डिलीट</button>
                 <button type="button" class="btn btn-sec" id="closeViewStatusBtn">बंद करें</button>
@@ -227,18 +401,32 @@
     <script>
         const $ = id => document.getElementById(id);
         const DAY_MS = 24 * 60 * 60 * 1000;
-        const STORE_KEY = "dhaakad_social_all_v1";
+        const STORE_KEY = "dhaakad_social_pro_v2";
+        const THEME_KEY = "dhaakad_social_theme_v2";
 
         const defaultData = {
             user: { name: "DHAAKAD_USER", bio: "धाकड़ सोशल क्रिएटर 🚀", avatar: "" },
-            following: [],
-            posts: [{ id: "p1", author: "DHAAKAD_OFFICIAL", caption: "🔥 DHAAKAD Social App — पोस्ट, रील्स, स्टेटस और चैट सब एक साथ!", media: "", likes: 1245, liked: false, saved: false, comments: ["बहुत बढ़िया ऐप है!"] }],
-            reels: [{ id: "r1", author: "DHAAKAD_REELS", caption: "🎬 पहला धाकड़ रील शोकेस!", media: "", isVideo: false, likes: 340, liked: false }],
+            following: ["DHAAKAD_OFFICIAL"],
+            posts: [
+                {
+                    id: "p1", author: "DHAAKAD_OFFICIAL",
+                    caption: "🔥 DHAAKAD Social — फ़ोटो, स्टोरी, रील्स, कमेंट और DM सब एक जगह!",
+                    media: "", likes: 1245, liked: false, saved: false,
+                    comments: [{ id: "c1", user: "RAHUL_VLOGS", text: "एकदम धाकड़ ऐप है भाई!" }]
+                }
+            ],
+            reels: [
+                {
+                    id: "r1", author: "DHAAKAD_REELS",
+                    caption: "🎬 पहला धाकड़ रील शोकेस!", media: "", isVideo: false,
+                    likes: 340, liked: false, saved: false, comments: []
+                }
+            ],
             statuses: [],
             notifications: [{ text: "DHAAKAD Social में आपका स्वागत है!", time: "अभी" }],
             chats: {
                 "DHAAKAD_OFFICIAL": [{ from: "them", text: "नमस्ते! DHAAKAD में आपका स्वागत है 🔥" }],
-                "RAHUL_VLOGS": [{ from: "them", text: "भाई नई पोस्ट कब आ रही है?" }]
+                "RAHUL_VLOGS": [{ from: "them", text: "भाई नई रील कब आ रही है?" }]
             }
         };
 
@@ -256,30 +444,53 @@
                     notifications: Array.isArray(d.notifications) ? d.notifications : [],
                     chats: d.chats && typeof d.chats === "object" ? d.chats : structuredClone(defaultData.chats)
                 };
-            } catch (e) { return structuredClone(defaultData); }
+            } catch (e) {
+                return structuredClone(defaultData);
+            }
         }
 
         let db = loadData();
         let activeStatusId = null;
         let activeChatUser = Object.keys(db.chats)[0] || "DHAAKAD_OFFICIAL";
         let profileTab = "my";
-                function saveData() {
-            try { localStorage.setItem(STORE_KEY, JSON.stringify(db)); }
-            catch (e) { toast("स्टोरेज फुल है, छोटी फ़ाइल चुनें!"); }
+        let feedFilter = "all";
+
+        function saveData() {
+            try {
+                localStorage.setItem(STORE_KEY, JSON.stringify(db));
+            } catch (e) {
+                toast("स्टोरेज भर गया है! छोटी फ़ाइल चुनें या डेटा रीसेट करें।");
+            }
         }
 
         function toast(msg) {
-            const t = $("toast"); t.innerText = msg; t.className = "show";
+            const t = $("toast");
+            t.innerText = msg;
+            t.className = "show";
             clearTimeout(window._toastTimer);
-            window._toastTimer = setTimeout(() => { t.className = ""; }, 2300);
+            window._toastTimer = setTimeout(() => { t.className = ""; }, 2400);
         }
 
         function notify(text) {
             const time = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
             db.notifications.unshift({ text, time });
-            if (db.notifications.length > 40) db.notifications.pop();
-            saveData(); renderNotifications();
+            if (db.notifications.length > 50) db.notifications.pop();
+            saveData();
+            renderNotifications();
         }
+
+        function applyTheme(isLight) {
+            document.body.classList.toggle("light-mode", isLight);
+            $("themeBtn").querySelector("i").className = isLight ? "fa-solid fa-sun" : "fa-solid fa-moon";
+            localStorage.setItem(THEME_KEY, isLight ? "1" : "0");
+        }
+                applyTheme(localStorage.getItem(THEME_KEY) === "1");
+
+        $("themeBtn").onclick = () => {
+            const nextLight = !document.body.classList.contains("light-mode");
+            applyTheme(nextLight);
+            toast(nextLight ? "लाइट मोड चालू ☀️" : "डार्क मोड चालू 🌙");
+        };
 
         function switchSection(secId) {
             document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
@@ -296,13 +507,7 @@
         $("notifOpenBtn").onclick = () => switchSection("secNotif");
         $("dmOpenBtn").onclick = () => switchSection("secDm");
 
-        $("themeBtn").onclick = () => {
-            document.body.classList.toggle("light-mode");
-            const light = document.body.classList.contains("light-mode");
-            $("themeBtn").querySelector("i").className = light ? "fa-solid fa-sun" : "fa-solid fa-moon";
-            toast(light ? "लाइट मोड चालू ☀️" : "डार्क मोड चालू 🌙");
-        };
-
+        /* STATUSES (24h) */
         function cleanStatuses() {
             const now = Date.now(), prev = db.statuses.length;
             db.statuses = db.statuses.filter(s => s.exp > now);
@@ -311,178 +516,509 @@
 
         function renderStatuses() {
             cleanStatuses();
-            const list = $("statusList"); list.innerHTML = "";
+            const list = $("statusList");
+            list.innerHTML = "";
             db.statuses.forEach(st => {
-                const div = document.createElement("div"); div.className = "status-item";
-                div.innerHTML = `<div class="status-ring"><div class="status-avatar">${st.img ? `<img src="${st.img}">` : st.author[0].toUpperCase()}</div></div><span class="status-name">${st.author}</span>`;
+                const div = document.createElement("div");
+                div.className = "status-item";
+                div.innerHTML = `
+                    <div class="status-ring">
+                        <div class="status-avatar">${st.img ? `<img src="${st.img}" alt="st">` : st.author.charAt(0).toUpperCase()}</div>
+                    </div>
+                    <span class="status-name">${st.author}</span>`;
                 div.onclick = () => {
                     cleanStatuses();
                     const cur = db.statuses.find(x => x.id === st.id);
-                    if (!cur) { renderStatuses(); return toast("स्टेटस 24 घंटे पूरे होने पर हट गया!"); }
+                    if (!cur) { renderStatuses(); return toast("स्टोरी के 24 घंटे पूरे हो गए!"); }
                     activeStatusId = cur.id;
-                    const hrs = Math.floor((cur.exp - Date.now()) / 3600000);
-                    const mins = Math.floor(((cur.exp - Date.now()) % 3600000) / 60000);
+                    const remMs = Math.max(0, cur.exp - Date.now());
+                    const hrs = Math.floor(remMs / 3600000);
+                    const mins = Math.floor((remMs % 3600000) / 60000);
                     $("viewStatusUser").innerText = cur.author;
-                    $("viewStatusTime").innerText = `⏳ ${hrs} घंटा ${mins} मिनट बाकी`;
-                    $("viewStatusContent").innerHTML = `${cur.img ? `<img src="${cur.img}">` : ""}${cur.text ? `<div>${cur.text}</div>` : ""}`;
-                    $("viewStatusModal").style.display = "flex";
+                    $("viewStatusTime").innerText = `बाकी समय: ${hrs} घंटे ${mins} मिनट`;
+                    $("viewStatusContent").innerHTML = `
+                        ${cur.img ? `<img src="${cur.img}" alt="status">` : ""}
+                        ${cur.text ? `<p style="font-size:15px; font-weight:bold;">${cur.text}</p>` : ""}`;
+                    $("statusReplyInp").value = "";
+                    $("viewStatusModal").classList.add("open");
                 };
                 list.appendChild(div);
             });
         }
 
-        $("addStatusBtn").onclick = () => { $("statusModal").style.display = "flex"; };
-        $("cancelStatusBtn").onclick = () => { $("statusModal").style.display = "none"; $("statusTextInput").value = ""; $("statusImageInput").value = ""; };
-        $("closeViewStatusBtn").onclick = () => { $("viewStatusModal").style.display = "none"; activeStatusId = null; };
+        $("addStatusBtn").onclick = () => $("statusModal").classList.add("open");
+        $("cancelStatusBtn").onclick = () => {
+            $("statusModal").classList.remove("open");
+            $("statusTextInput").value = ""; $("statusImageInput").value = "";
+        };
+        $("closeViewStatusBtn").onclick = () => {
+            $("viewStatusModal").classList.remove("open");
+            activeStatusId = null;
+        };
         $("deleteStatusBtn").onclick = () => {
             if (!activeStatusId) return;
             db.statuses = db.statuses.filter(s => s.id !== activeStatusId);
-            saveData(); renderStatuses(); $("viewStatusModal").style.display = "none"; activeStatusId = null; toast("स्टेटस डिलीट हो गया!");
+            activeStatusId = null;
+            saveData(); renderStatuses();
+            $("viewStatusModal").classList.remove("open");
+            toast("स्टोरी डिलीट हो गई! 🗑️");
         };
-
+        $("sendStatusReplyBtn").onclick = () => {
+            if (!activeStatusId) return;
+            const st = db.statuses.find(x => x.id === activeStatusId);
+            const txt = $("statusReplyInp").value.trim();
+            if (!st || !txt) return toast("रिप्लाई मैसेज लिखें!");
+            if (!db.chats[st.author]) db.chats[st.author] = [];
+            db.chats[st.author].push({ from: "me", text: `स्टोरी रिप्लाई: ${txt}` });
+            activeChatUser = st.author;
+            saveData();
+            $("statusReplyInp").value = "";
+            $("viewStatusModal").classList.remove("open");
+            toast(`${st.author} को DM में रिप्लाई भेजा गया! ✉️`);
+        };
         $("submitStatusBtn").onclick = () => {
             const text = $("statusTextInput").value.trim(), file = $("statusImageInput").files[0];
-            if (!text && !file) return toast("स्टेटस लिखें या फोटो चुनें!");
-            const addSt = (img = "") => {
-                db.statuses.unshift({ id: "st-" + Date.now(), author: db.user.name, text, img, exp: Date.now() + DAY_MS });
-                saveData(); renderStatuses(); $("statusModal").style.display = "none"; $("statusTextInput").value = ""; $("statusImageInput").value = "";
-                notify(`${db.user.name} ने 24 घंटे का स्टेटस लगाया।`); toast("24 घंटे के लिए स्टेटस लग गया! ⏱️");
+            if (!text && !file) return toast("स्टोरी टेक्स्ट या फ़ोटो चुनें!");
+            const pushStatus = (img = "") => {
+                db.statuses.unshift({ id: "s-" + Date.now(), author: db.user.name, text, img, exp: Date.now() + DAY_MS });
+                saveData(); renderStatuses();
+                $("statusModal").classList.remove("open");
+                $("statusTextInput").value = ""; $("statusImageInput").value = "";
+                notify(`${db.user.name} ने नई स्टोरी लगाई।`);
+                toast("स्टोरी लाइव हो गई! 🔥");
             };
-            if (file) { const r = new FileReader(); r.onload = e => addSt(e.target.result); r.readAsDataURL(file); } else addSt();
+            if (file) {
+                const r = new FileReader();
+                r.onload = e => pushStatus(e.target.result);
+                r.readAsDataURL(file);
+            } else {
+                pushStatus();
+            }
         };
 
+        /* CREATE POST */
+        $("openCreatePostBtn").onclick = () => $("postModal").classList.add("open");
+        $("cancelPostBtn").onclick = () => {
+            $("postModal").classList.remove("open");
+            $("captionInput").value = ""; $("imageInput").value = "";
+        };
+        $("submitPostBtn").onclick = () => {
+            const caption = $("captionInput").value.trim(), file = $("imageInput").files[0];
+            if (!caption && !file) return toast("कैप्शन या फ़ोटो चुनें!");
+            const pushPost = (media = "") => {
+                db.posts.unshift({
+                    id: "p-" + Date.now(), author: db.user.name,
+                    caption: caption || "धाकड़ पोस्ट 🚀", media,
+                    likes: 0, liked: false, saved: false, comments: []
+                });
+                saveData(); renderFeed(); renderProfile();
+                $("postModal").classList.remove("open");
+                $("captionInput").value = ""; $("imageInput").value = "";
+                notify(`${db.user.name} ने नई पोस्ट की।`);
+                toast("पोस्ट लाइव हो गई! ✅");
+            };
+            if (file) {
+                const r = new FileReader();
+                r.onload = e => pushPost(e.target.result);
+                r.readAsDataURL(file);
+            } else {
+                pushPost();
+            }
+        };
+
+        /* FEED */
+        $("feedFilterBar").onclick = e => {
+            const pill = e.target.closest(".pill");
+            if (!pill) return;
+            feedFilter = pill.dataset.filter;
+            document.querySelectorAll("#feedFilterBar .pill").forEach(p => p.classList.toggle("active", p === pill));
+            renderFeed();
+        };
+
+        function getFilteredPosts() {
+            if (feedFilter === "following") return db.posts.filter(p => db.following.includes(p.author));
+            if (feedFilter === "media") return db.posts.filter(p => Boolean(p.media));
+            return db.posts;
+        }
+
         function renderFeed() {
-            $("feed").innerHTML = db.posts.map(p => {
-                const isF = db.following.includes(p.author);
-                return `<div class="post" data-id="${p.id}"><div class="post-header"><div><i class="fa-solid fa-fire"></i> ${p.author}</div><div class="post-header-right"><button type="button" class="follow-btn ${isF ? "following" : ""}">${isF ? "Following" : "Follow"}</button><button type="button" class="del-btn">Delete</button></div></div><div class="post-media">${p.media ? `<img src="${p.media}" alt="Post">` : `<div>${p.caption}</div>`}<i class="fa-solid fa-heart heart-pop"></i></div><div class="post-footer"><div class="post-actions"><div class="post-actions-left"><button type="button" class="action-btn like-btn"><i class="${p.liked ? "fa-solid liked" : "fa-regular"} fa-heart"></i></button><button type="button" class="action-btn comment-toggle-btn"><i class="fa-regular fa-comment"></i></button><button type="button" class="action-btn share-btn"><i class="fa-regular fa-paper-plane"></i></button></div><button type="button" class="action-btn save-btn"><i class="${p.saved ? "fa-solid saved" : "fa-regular"} fa-bookmark"></i></button></div><p><b>${p.likes} likes</b></p><p><b>${p.author}</b> ${p.caption}</p><div class="comments-list">${p.comments.map(c => `<p><b>कमेंट:</b> ${c}</p>`).join("")}</div><div class="comment-box"><input type="text" placeholder="कमेंट लिखें..."><button type="button" class="send-comment-btn">Send</button></div></div></div>`;
+            const feedEl = $("feed");
+            const list = getFilteredPosts();
+            if (!list.length) {
+                feedEl.innerHTML = `<div class="card" style="text-align:center; color:var(--muted);">इस फ़िल्टर में अभी कोई पोस्ट नहीं है।</div>`;
+                return;
+            }
+            feedEl.innerHTML = list.map(p => {
+                const isFollowing = db.following.includes(p.author);
+                const canDelete = p.author === db.user.name || p.id.startsWith("p-");
+                const commentsHtml = (p.comments || []).map(c => `
+                    <div class="cmt-item" data-cid="${c.id}">
+                        <span><b>${c.user}:</b> ${c.text}</span>
+                        <button type="button" class="cmt-del" title="कमेंट हटाएं"><i class="fa-solid fa-xmark"></i></button>
+                    </div>`).join("");
+
+                return `
+                <div class="post" data-id="${p.id}">
+                    <div class="post-header">
+                        <div class="author-wrap">
+                            <div class="mini-ava">${p.author.charAt(0).toUpperCase()}</div>
+                            <span>@${p.author}</span>
+                        </div>
+                        <div class="post-header-right">
+                            ${p.author !== db.user.name ? `<button type="button" class="follow-btn ${isFollowing ? "following" : ""}">${isFollowing ? "फ़ॉलोइंग" : "फ़ॉलो करें"}</button>` : ""}
+                            ${canDelete ? `<button type="button" class="del-btn" title="पोस्ट डिलीट करें"><i class="fa-solid fa-trash"></i></button>` : ""}
+                        </div>
+                    </div>
+                    <div class="post-media ${p.media ? "" : "text-card"}">
+                        ${p.media ? `<img src="${p.media}" alt="post">` : `<div>${p.caption}</div>`}
+                        <i class="fa-solid fa-heart heart-pop"></i>
+                    </div>
+                    <div class="post-footer">
+                        <div class="post-actions">
+                            <div class="post-actions-left">
+                                <button type="button" class="action-btn like-btn" title="लाइक"><i class="${p.liked ? "fa-solid liked" : "fa-regular"} fa-heart"></i></button>
+                                <button type="button" class="action-btn cmt-toggle-btn" title="कमेंट"><i class="fa-regular fa-comment"></i></button>
+                                <button type="button" class="action-btn share-post-btn" title="शेयर"><i class="fa-regular fa-paper-plane"></i></button>
+                            </div>
+                            <button type="button" class="action-btn save-btn" title="सेव"><i class="${p.saved ? "fa-solid saved" : "fa-regular"} fa-bookmark"></i></button>
+                        </div>
+                        <p><b>${p.likes} लाइक्स</b></p>
+                        <p><b>@${p.author}</b> ${p.caption}</p>
+                        <div class="comments-list">${commentsHtml}</div>
+                        <div class="comment-box">
+                            <input type="text" placeholder="कमेंट लिखें...">
+                            <button type="button" class="cmt-send-btn">भेजें</button>
+                        </div>
+                    </div>
+                </div>`;
             }).join("");
         }
 
-        $("openCreatePostBtn").onclick = () => { $("postModal").style.display = "flex"; };
-        $("cancelPostBtn").onclick = () => { $("postModal").style.display = "none"; $("captionInput").value = ""; $("imageInput").value = ""; };
-
-        $("submitPostBtn").onclick = () => {
-            const caption = $("captionInput").value.trim(), file = $("imageInput").files[0];
-            if (!caption && !file) return toast("कैप्शन लिखें या फोटो चुनें!");
-            const create = (media = "") => {
-                db.posts.unshift({ id: "p-" + Date.now(), author: db.user.name, caption: caption || "नई पोस्ट", media, likes: 1, liked: false, saved: false, comments: [] });
-                saveData(); renderFeed(); $("postModal").style.display = "none"; $("captionInput").value = ""; $("imageInput").value = "";
-                switchSection("secHome"); notify(`${db.user.name} ने नई पोस्ट डाली।`); toast("नई पोस्ट लाइव हो गई! 🔥");
-            };
-            if (file) { const r = new FileReader(); r.onload = e => create(e.target.result); r.readAsDataURL(file); } else create();
-        };
-
         $("feed").onclick = e => {
-            const card = e.target.closest(".post"); if (!card) return;
-            const post = db.posts.find(x => x.id === card.dataset.id); if (!post) return;
+            const postEl = e.target.closest(".post");
+            if (!postEl) return;
+            const post = db.posts.find(x => x.id === postEl.dataset.id);
+            if (!post) return;
+
             if (e.target.closest(".like-btn")) {
-                post.liked = !post.liked; post.likes += post.liked ? 1 : -1; saveData(); renderFeed();
+                post.liked = !post.liked;
+                post.likes += post.liked ? 1 : -1;
+                saveData(); renderFeed();
                 if (post.liked) notify(`आपने ${post.author} की पोस्ट लाइक की।`);
+            } else if (e.target.closest(".cmt-toggle-btn")) {
+                const box = postEl.querySelector(".comment-box");
+                box.classList.toggle("open");
+                if (box.classList.contains("open")) box.querySelector("input").focus();
+            } else if (e.target.closest(".cmt-send-btn")) {
+                const inp = postEl.querySelector(".comment-box input");
+                const txt = inp.value.trim();
+                if (!txt) return toast("कमेंट लिखें!");
+                post.comments = post.comments || [];
+                post.comments.push({ id: "c-" + Date.now(), user: db.user.name, text: txt });
+                inp.value = "";
+                saveData(); renderFeed();
+                notify(`${db.user.name} ने ${post.author} की पोस्ट पर कमेंट किया।`);
+                toast("कमेंट जुड़ गया! 💬");
+            } else if (e.target.closest(".cmt-del")) {
+                const cmtEl = e.target.closest(".cmt-item");
+                if (!cmtEl) return;
+                post.comments = (post.comments || []).filter(c => c.id !== cmtEl.dataset.cid);
+                saveData(); renderFeed();
+                toast("कमेंट हट गया!");
+            } else if (e.target.closest(".share-post-btn")) {
+                if (!db.chats[post.author]) db.chats[post.author] = [];
+                db.chats[post.author].push({ from: "me", text: `पोस्ट शेयर की: "${post.caption}"` });
+                saveData();
+                toast(`${post.author} को पोस्ट शेयर कर दी गई! 🚀`);
             } else if (e.target.closest(".save-btn")) {
-                post.saved = !post.saved; saveData(); renderFeed(); toast(post.saved ? "पोस्ट सेव हो गई! 🔖" : "सेव लिस्ट से हटा दी गई!");
-            } else if (e.target.closest(".comment-toggle-btn")) {
-                const box = card.querySelector(".comment-box"); box.style.display = box.style.display === "flex" ? "none" : "flex";
-            } else if (e.target.closest(".send-comment-btn")) {
-                const inp = card.querySelector(".comment-box input"), txt = inp.value.trim();
-                if (!txt) return; post.comments.push(txt); saveData(); renderFeed(); notify(`${post.author} की पोस्ट पर कमेंट: "${txt}"`); toast("कमेंट जुड़ गया! 💬");
-            } else if (e.target.closest(".share-btn")) {
-                if (navigator.share) navigator.share({ title: "DHAAKAD", text: post.caption, url: location.href }).catch(() => {});
-                else { navigator.clipboard?.writeText(location.href); toast("लिंक कॉपी हो गया! 🔗"); }
+                post.saved = !post.saved;
+                saveData(); renderFeed(); renderProfile();
+                toast(post.saved ? "पोस्ट सेव हो गई! 🔖" : "सेव्ड से हटा दी गई।");
             } else if (e.target.closest(".follow-btn")) {
                 const idx = db.following.indexOf(post.author);
-                if (idx === -1) { db.following.push(post.author); notify(`आपने ${post.author} को फॉलो किया।`); toast(`${post.author} को फॉलो कर लिया! 🤝`); }
-                else { db.following.splice(idx, 1); toast(`${post.author} को अनफॉलो कर दिया! ❌`); }
-                saveData(); renderFeed();
+                if (idx === -1) {
+                    db.following.push(post.author);
+                    notify(`आपने ${post.author} को फ़ॉलो किया।`);
+                    toast(`${post.author} को फ़ॉलो कर लिया! 🤝`);
+                } else {
+                    db.following.splice(idx, 1);
+                    toast(`${post.author} को अनफ़ॉलो कर दिया! ❌`);
+                }
+                saveData(); renderFeed(); renderProfile();
             } else if (e.target.closest(".del-btn")) {
-                db.posts = db.posts.filter(x => x.id !== post.id); saveData(); renderFeed(); toast("पोस्ट डिलीट हो गई! 🗑️");
+                db.posts = db.posts.filter(x => x.id !== post.id);
+                saveData(); renderFeed(); renderProfile();
+                toast("पोस्ट डिलीट हो गई! 🗑️");
             }
         };
 
         $("feed").ondblclick = e => {
-            const media = e.target.closest(".post-media"); if (!media) return;
-            const post = db.posts.find(x => x.id === media.closest(".post").dataset.id); if (!post) return;
-            if (!post.liked) { post.liked = true; post.likes += 1; saveData(); renderFeed(); notify(`आपने ${post.author} की पोस्ट लाइक की।`); }
+            const media = e.target.closest(".post-media");
+            if (!media) return;
+            const post = db.posts.find(x => x.id === media.closest(".post").dataset.id);
+            if (!post) return;
+            if (!post.liked) {
+                post.liked = true; post.likes += 1;
+                saveData(); renderFeed();
+                notify(`आपने ${post.author} की पोस्ट लाइक की।`);
+            }
             const pop = $("feed").querySelector(`.post[data-id="${post.id}"] .heart-pop`);
-            if (pop) { pop.classList.add("show"); setTimeout(() => pop.classList.remove("show"), 650); }
+            if (pop) {
+                pop.classList.add("show");
+                setTimeout(() => pop.classList.remove("show"), 650);
+            }
         };
-
+                /* EXPLORE */
         function renderExplore() {
             const q = $("exploreSearchInp").value.trim().toLowerCase();
             const hits = db.posts.filter(p => !q || p.author.toLowerCase().includes(q) || p.caption.toLowerCase().includes(q));
             $("exploreResults").innerHTML = hits.length
-                ? hits.map(p => `<div class="mini-post">${p.media ? `<img src="${p.media}">` : ""}<b>${p.author}</b>: ${p.caption} <span style="color:var(--muted);">(${p.likes} likes)</span></div>`).join("")
+                ? hits.map(p => `<div class="mini-post">${p.media ? `<img src="${p.media}" alt="ex">` : ""}<b>@${p.author}</b>: ${p.caption} <span style="color:var(--muted);">(${p.likes} लाइक्स)</span></div>`).join("")
                 : `<p style="color:var(--muted); text-align:center; padding:20px;">कोई परिणाम नहीं मिला।</p>`;
         }
         $("exploreSearchInp").oninput = renderExplore;
 
+        /* REELS */
         function renderReels() {
-            $("reelsList").innerHTML = db.reels.map(r => `<div class="reel-card" data-id="${r.id}"><div class="reel-media">${r.media ? (r.isVideo ? `<video src="${r.media}" controls loop playsinline></video>` : `<img src="${r.media}">`) : `<div style="padding:20px; text-align:center;">${r.caption}</div>`}</div><div class="reel-overlay"><div><b>@${r.author}</b><br><span style="font-size:13px; color:var(--muted);">${r.caption}</span></div><button type="button" class="action-btn reel-like-btn"><i class="${r.liked ? "fa-solid liked" : "fa-regular"} fa-heart"></i> <span style="font-size:14px;">${r.likes}</span></button></div></div>`).join("");
+            $("reelsList").innerHTML = db.reels.map(r => {
+                const canDelReel = r.author === db.user.name || r.id.startsWith("r-");
+                const cmtList = (r.comments || []).map(c => `<div class="cmt-item"><span><b>${c.user}:</b> ${c.text}</span></div>`).join("");
+                return `
+                <div class="reel-card" data-id="${r.id}">
+                    <div class="reel-media">
+                        ${r.media ? (r.isVideo ? `<video src="${r.media}" controls loop playsinline></video>` : `<img src="${r.media}" alt="reel">`) : `<div style="padding:20px; text-align:center; font-size:18px; font-weight:bold;">${r.caption}</div>`}
+                    </div>
+                    <div class="reel-overlay">
+                        <div class="reel-top">
+                            <div>
+                                <b>@${r.author}</b>
+                                <div style="font-size:13px; color:var(--muted); margin-top:2px;">${r.caption}</div>
+                            </div>
+                            ${canDelReel ? `<button type="button" class="del-btn reel-del-btn"><i class="fa-solid fa-trash"></i></button>` : ""}
+                        </div>
+                        <div class="reel-actions">
+                            <button type="button" class="action-btn reel-like-btn"><i class="${r.liked ? "fa-solid liked" : "fa-regular"} fa-heart"></i> <span style="font-size:14px;">${r.likes}</span></button>
+                            <button type="button" class="action-btn reel-save-btn"><i class="${r.saved ? "fa-solid saved" : "fa-regular"} fa-bookmark"></i></button>
+                            <button type="button" class="action-btn reel-share-btn"><i class="fa-regular fa-paper-plane"></i></button>
+                        </div>
+                        <div class="comments-list">${cmtList}</div>
+                        <div class="row" style="margin-top:8px;">
+                            <input type="text" class="inp reel-cmt-inp" placeholder="रील पर कमेंट लिखें..." style="margin-bottom:0;">
+                            <button type="button" class="btn reel-cmt-btn" style="width:auto; padding:0 12px;">भेजें</button>
+                        </div>
+                    </div>
+                </div>`;
+            }).join("");
         }
 
         $("addReelBtn").onclick = () => {
             const caption = $("reelCaptionInp").value.trim(), file = $("reelFileInp").files[0];
             if (!caption && !file) return toast("रील कैप्शन या वीडियो/फ़ोटो चुनें!");
             const pushReel = (media = "", isVideo = false) => {
-                db.reels.unshift({ id: "r-" + Date.now(), author: db.user.name, caption: caption || "धाकड़ रील", media, isVideo, likes: 1, liked: false });
-                saveData(); renderReels(); $("reelCaptionInp").value = ""; $("reelFileInp").value = "";
-                notify(`${db.user.name} ने नई रील अपलोड की।`); toast("रील लाइव हो गई! 🎬");
+                db.reels.unshift({
+                    id: "r-" + Date.now(), author: db.user.name,
+                    caption: caption || "धाकड़ रील 🎬", media, isVideo,
+                    likes: 1, liked: false, saved: false, comments: []
+                });
+                saveData(); renderReels();
+                $("reelCaptionInp").value = ""; $("reelFileInp").value = "";
+                notify(`${db.user.name} ने नई रील अपलोड की।`);
+                toast("रील लाइव हो गई! 🎬");
             };
-            if (file) { const isVideo = file.type.startsWith("video/"), r = new FileReader(); r.onload = e => pushReel(e.target.result, isVideo); r.readAsDataURL(file); }
-            else pushReel();
+            if (file) {
+                const isVideo = file.type.startsWith("video/");
+                const r = new FileReader();
+                r.onload = e => pushReel(e.target.result, isVideo);
+                r.readAsDataURL(file);
+            } else {
+                pushReel();
+            }
         };
 
         $("reelsList").onclick = e => {
-            const btn = e.target.closest(".reel-like-btn"); if (!btn) return;
-            const reel = db.reels.find(x => x.id === btn.closest(".reel-card").dataset.id); if (!reel) return;
-            reel.liked = !reel.liked; reel.likes += reel.liked ? 1 : -1; saveData(); renderReels();
+            const card = e.target.closest(".reel-card");
+            if (!card) return;
+            const reel = db.reels.find(x => x.id === card.dataset.id);
+            if (!reel) return;
+
+            if (e.target.closest(".reel-like-btn")) {
+                reel.liked = !reel.liked;
+                reel.likes += reel.liked ? 1 : -1;
+                saveData(); renderReels();
+            } else if (e.target.closest(".reel-save-btn")) {
+                reel.saved = !reel.saved;
+                saveData(); renderReels(); renderProfile();
+                toast(reel.saved ? "रील सेव हो गई! 🔖" : "सेव्ड रील्स से हटाई गई।");
+            } else if (e.target.closest(".reel-share-btn")) {
+                if (!db.chats[reel.author]) db.chats[reel.author] = [];
+                db.chats[reel.author].push({ from: "me", text: `रील शेयर की: "${reel.caption}"` });
+                saveData();
+                toast(`${reel.author} को रील शेयर कर दी गई! 🚀`);
+            } else if (e.target.closest(".reel-cmt-btn")) {
+                const inp = card.querySelector(".reel-cmt-inp");
+                const txt = inp.value.trim();
+                if (!txt) return toast("कमेंट लिखें!");
+                reel.comments = reel.comments || [];
+                reel.comments.push({ user: db.user.name, text: txt });
+                inp.value = "";
+                saveData(); renderReels();
+                toast("रील कमेंट जुड़ गया! 💬");
+            } else if (e.target.closest(".reel-del-btn")) {
+                db.reels = db.reels.filter(x => x.id !== reel.id);
+                saveData(); renderReels(); renderProfile();
+                toast("रील डिलीट हो गई! 🗑️");
+            }
         };
 
+        /* NOTIFICATIONS */
         function renderNotifications() {
             const badge = $("notifBadge");
-            if (db.notifications.length) { badge.style.display = "flex"; badge.innerText = db.notifications.length > 9 ? "9+" : db.notifications.length; }
-            else badge.style.display = "none";
+            if (db.notifications.length) {
+                badge.style.display = "flex";
+                badge.innerText = db.notifications.length > 9 ? "9+" : db.notifications.length;
+            } else {
+                badge.style.display = "none";
+            }
             $("notifList").innerHTML = db.notifications.length
                 ? db.notifications.map(n => `<div class="mini-post">${n.text}<div style="font-size:11px; color:var(--muted); margin-top:3px;">${n.time}</div></div>`).join("")
                 : `<p style="color:var(--muted); font-size:13px;">कोई नया नोटिफिकेशन नहीं है।</p>`;
         }
-        $("clearNotifBtn").onclick = () => { db.notifications = []; saveData(); renderNotifications(); toast("नोटिफिकेशन साफ़ हो गए!"); };
+        $("clearNotifBtn").onclick = () => {
+            db.notifications = [];
+            saveData(); renderNotifications();
+            toast("नोटिफिकेशन साफ़ हो गए!");
+        };
 
+        /* DM */
         function renderChats() {
             const users = Object.keys(db.chats);
-            $("chatUsersBar").innerHTML = users.map(u => `<button type="button" class="chat-pill ${u === activeChatUser ? "active" : ""}" data-u="${u}">${u}</button>`).join("");
-            const msgs = db.chats[activeChatUser] || [], box = $("chatMessagesBox");
-            box.innerHTML = msgs.map(m => `<div class="msg ${m.from}">${m.text}</div>`).join("");
+            if (!db.chats[activeChatUser] && users.length) activeChatUser = users[0];
+            $("chatUsersBar").innerHTML = users.map(u => `
+                <button type="button" class="pill ${u === activeChatUser ? "active" : ""}" data-u="${u}">${u}</button>`).join("");
+            const msgs = db.chats[activeChatUser] || [];
+            const box = $("chatMessagesBox");
+            box.innerHTML = msgs.length
+                ? msgs.map(m => `<div class="msg ${m.from}">${m.text}</div>`).join("")
+                : `<p style="color:var(--muted); font-size:12px; text-align:center;">बातचीत शुरू करें...</p>`;
             box.scrollTop = box.scrollHeight;
         }
 
-        $("chatUsersBar").onclick = e => { const pill = e.target.closest(".chat-pill"); if (pill) { activeChatUser = pill.dataset.u; renderChats(); } };
-
-        $("sendChatBtn").onclick = () => {
-            const txt = $("chatMsgInp").value.trim(); if (!txt) return;
-            if (!db.chats[activeChatUser]) db.chats[activeChatUser] = [];
-            db.chats[activeChatUser].push({ from: "me", text: txt });
-            $("chatMsgInp").value = ""; saveData(); renderChats();
-            setTimeout(() => { db.chats[activeChatUser].push({ from: "them", text: "बढ़िया भाई! 🔥 संदेश मिल गया।" }); saveData(); renderChats(); }, 600);
+        $("addChatUserBtn").onclick = () => {
+            const uname = $("newChatUserInp").value.trim().toUpperCase();
+            if (!uname) return toast("यूज़रनेम लिखें!");
+            if (!db.chats[uname]) db.chats[uname] = [];
+            activeChatUser = uname;
+            $("newChatUserInp").value = "";
+            saveData(); renderChats();
+            toast(`${uname} चैट में जुड़ गया!`);
         };
 
+        $("chatUsersBar").onclick = e => {
+            const pill = e.target.closest(".pill");
+            if (pill) { activeChatUser = pill.dataset.u; renderChats(); }
+        };
+
+        $("sendChatBtn").onclick = () => {
+            const txt = $("chatMsgInp").value.trim();
+            if (!txt) return;
+            if (!db.chats[activeChatUser]) db.chats[activeChatUser] = [];
+            db.chats[activeChatUser].push({ from: "me", text: txt });
+            $("chatMsgInp").value = "";
+            saveData(); renderChats();
+            setTimeout(() => {
+                db.chats[activeChatUser].push({ from: "them", text: "बढ़िया भाई! 🔥 मैसेज मिल गया।" });
+                saveData(); renderChats();
+            }, 600);
+        };
+
+        /* PROFILE */
         function renderProfile() {
-            $("displayUsername").innerText = db.user.name; $("displayBio").innerText = db.user.bio;
-            $("profileAvatarBox").innerHTML = db.user.avatar ? `<img src="${db.user.avatar}">` : db.user.name.charAt(0).toUpperCase();
-            const myPosts = db.posts.filter(p => p.author === db.user.name), savedPosts = db.posts.filter(p => p.saved);
-            $("stPosts").innerText = myPosts.length; $("stFollowing").innerText = db.following.length;
-            const items = profileTab === "my" ? myPosts : savedPosts;
-            $("profileGrid").innerHTML = items.length
-                ? items.map(p => `<div class="mini-post">${p.media ? `<img src="${p.media}">` : ""}<b>${p.author}</b>: ${p.caption}</div>`).join("")
-                : `<p style="color:var(--muted); font-size:13px;">${profileTab === "my" ? "अभी आपकी कोई पोस्ट नहीं है।" : "कोई सेव्ड पोस्ट नहीं है।"}</p>`;
+            $("displayUsername").innerText = db.user.name;
+            $("displayBio").innerText = db.user.bio;
+            $("profileAvatarBox").innerHTML = db.user.avatar ? `<img src="${db.user.avatar}" alt="ava">` : db.user.name.charAt(0).toUpperCase();
+            const myPosts = db.posts.filter(p => p.author === db.user.name);
+            const savedPosts = db.posts.filter(p => p.saved);
+            const savedReels = db.reels.filter(r => r.saved);
+            $("stPosts").innerText = myPosts.length;
+            $("stFollowing").innerText = db.following.length;
+
+            if (profileTab === "my") {
+                $("profileGrid").innerHTML = myPosts.length
+                    ? myPosts.map(p => `<div class="mini-post">${p.media ? `<img src="${p.media}" alt="mp">` : ""}<b>@${p.author}</b>: ${p.caption}</div>`).join("")
+                    : `<p style="color:var(--muted); font-size:13px;">अभी आपकी कोई पोस्ट नहीं है।</p>`;
+            } else if (profileTab === "savedPosts") {
+                $("profileGrid").innerHTML = savedPosts.length
+                    ? savedPosts.map(p => `<div class="mini-post">${p.media ? `<img src="${p.media}" alt="sp">` : ""}<b>@${p.author}</b>: ${p.caption}</div>`).join("")
+                    : `<p style="color:var(--muted); font-size:13px;">कोई सेव्ड पोस्ट नहीं है।</p>`;
+            } else {
+                $("profileGrid").innerHTML = savedReels.length
+                    ? savedReels.map(r => `<div class="mini-post"><b>@${r.author}</b>: ${r.caption}</div>`).join("")
+                    : `<p style="color:var(--muted); font-size:13px;">कोई सेव्ड रील नहीं है।</p>`;
+            }
         }
 
-        $("saveUsernameBtn").onclick = () => { const n = $("newUsernameInput").value.trim(); if (!n) return toast("सही नाम लिखें!"); db.user.name = n; $("newUsernameInput").value = ""; saveData(); renderProfile(); toast("यूजरनेम बदल गया! ✅"); };
-        $("saveBioBtn").onclick = () => { const b = $("newBioInput").value.trim(); if (!b) return toast("सही बायो लिखें!"); db.user.bio = b; $("newBioInput").value = ""; saveData(); renderProfile(); toast("बायो अपडेट हो गया! ✅"); };
-        $("newAvatarInput").onchange = e => { const file = e.target.files[0]; if (!file) return; const r = new FileReader(); r.onload = ev => { db.user.avatar = ev.target.result; saveData(); renderProfile(); toast("प्रोफ़ाइल फ़ोटो बदल गई!"); }; r.readAsDataURL(file); };
-        $("tabMyPosts").onclick = () => { profileTab = "my"; $("tabMyPosts").classList.add("active"); $("tabSavedPosts").classList.remove("active"); renderProfile(); };
-        $("tabSavedPosts").onclick = () => { profileTab = "saved"; $("tabSavedPosts").classList.add("active"); $("tabMyPosts").classList.remove("active"); renderProfile(); };
+        document.querySelectorAll(".tab-btn[data-ptab]").forEach(btn => {
+            btn.onclick = () => {
+                profileTab = btn.dataset.ptab;
+                document.querySelectorAll(".tab-btn[data-ptab]").forEach(b => b.classList.toggle("active", b === btn));
+                renderProfile();
+            };
+        });
 
-        renderStatuses(); renderFeed(); renderNotifications(); renderProfile();
+        $("stFollowingBox").onclick = () => {
+            toast(db.following.length ? `फ़ॉलोइंग: ${db.following.join(", ")}` : "अभी किसी को फ़ॉलो नहीं किया है।");
+        };
+
+        $("saveUsernameBtn").onclick = () => {
+            const n = $("newUsernameInput").value.trim();
+            if (!n) return toast("सही नाम लिखें!");
+            db.user.name = n;
+            $("newUsernameInput").value = "";
+            saveData(); renderProfile(); renderFeed();
+            toast("यूज़रनेम बदल गया! ✅");
+        };
+        $("saveBioBtn").onclick = () => {
+            const b = $("newBioInput").value.trim();
+            if (!b) return toast("सही बायो लिखें!");
+            db.user.bio = b;
+            $("newBioInput").value = "";
+            saveData(); renderProfile();
+            toast("बायो अपडेट हो गया! ✅");
+        };
+        $("newAvatarInput").onchange = e => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const r = new FileReader();
+            r.onload = ev => {
+                db.user.avatar = ev.target.result;
+                saveData(); renderProfile();
+                toast("प्रोफ़ाइल फ़ोटो बदल गई!");
+            };
+            r.readAsDataURL(file);
+        };
+        $("exportDataBtn").onclick = () => {
+            const text = JSON.stringify(db);
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => toast("बैकअप JSON क्लिपबोर्ड में कॉपी हो गया! 📋")).catch(() => toast("कॉपी नहीं हो सका।"));
+            } else {
+                toast("बैकअप तैयार है।");
+            }
+        };
+        $("resetDataBtn").onclick = () => {
+            localStorage.removeItem(STORE_KEY);
+            db = loadData();
+            activeChatUser = Object.keys(db.chats)[0] || "DHAAKAD_OFFICIAL";
+            renderStatuses(); renderFeed(); renderReels(); renderNotifications(); renderChats(); renderProfile();
+            toast("सारा डेटा रीसेट हो गया! 🔄");
+        };
+
+        /* INITIAL RENDER */
+        renderStatuses();
+        renderFeed();
+        renderReels();
+        renderNotifications();
+        renderChats();
+        renderProfile();
         setInterval(renderStatuses, 60000);
     </script>
 </body>
