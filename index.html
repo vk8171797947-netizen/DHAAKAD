@@ -1577,6 +1577,119 @@
     renderTrackChips();
   })();
 </script>
+<!-- धाकड़ स्मार्ट म्यूज़िक पैनल -->
+<div id="dhaakad-music-box" style="background:#141414; color:#fff; padding:14px; border-radius:14px; font-family:sans-serif; max-width:420px; margin:12px auto; border:1px solid #2a2a2a;">
+  
+  <!-- ऊपर चुना हुआ गाना दिखेगा -->
+  <div id="selected-song-banner" style="display:flex; justify-content:space-between; align-items:center; background:#222; padding:10px 12px; border-radius:10px; margin-bottom:10px;">
+    <span id="current-song-name" style="font-size:14px; color:#ff9800; font-weight:bold;">🎵 कोई गाना नहीं चुना गया</span>
+    <button onclick="clearDhaakadSong()" style="background:none; border:none; color:#aaa; font-size:13px; cursor:pointer;">हटाएं</button>
+  </div>
+
+  <!-- लाइव गाना सर्च बॉक्स -->
+  <div style="display:flex; gap:8px; margin-bottom:10px;">
+    <input type="text" id="dhaakad-song-input" placeholder="गाना या सिंगर का नाम लिखें (जैसे: Sidhu, Arijit)..." 
+           onkeyup="searchDhaakadSongs(this.value)"
+           style="flex:1; padding:10px 12px; border-radius:10px; border:1px solid #333; background:#1f1f1f; color:#fff; font-size:14px; outline:none;">
+  </div>
+
+  <!-- ट्रेंडिंग क्विक टैग्स -->
+  <div style="display:flex; gap:6px; overflow-x:auto; padding-bottom:8px; margin-bottom:8px;">
+    <button onclick="quickSearch('Trending Hindi')" style="background:#ff5722; color:#fff; border:none; padding:5px 10px; border-radius:20px; font-size:12px; cursor:pointer;">🔥 ट्रेंडिंग</button>
+    <button onclick="quickSearch('Punjabi Hits')" style="background:#262626; color:#fff; border:none; padding:5px 10px; border-radius:20px; font-size:12px; cursor:pointer;">पंजाबी</button>
+    <button onclick="quickSearch('Haryanvi')" style="background:#262626; color:#fff; border:none; padding:5px 10px; border-radius:20px; font-size:12px; cursor:pointer;">हरियाणवी</button>
+    <button onclick="quickSearch('Bhojpuri')" style="background:#262626; color:#fff; border:none; padding:5px 10px; border-radius:20px; font-size:12px; cursor:pointer;">भोजपुरी</button>
+  </div>
+
+  <!-- गानों की लाइव लिस्ट -->
+  <div id="dhaakad-song-list" style="max-height:220px; overflow-y:auto; display:flex; flex-direction:column; gap:8px;">
+    <div style="text-align:center; color:#777; font-size:13px; padding:15px;">ऊपर गाना लिखें या ट्रेंडिंग बटन दबाएं</div>
+  </div>
+
+  <!-- छुपा हुआ ऑडियो प्लेयर -->
+  <audio id="dhaakad-audio-player"></audio>
+</div>
+  <script>
+let searchTimer;
+
+// क्विक बटन से सर्च
+function quickSearch(term) {
+  document.getElementById('dhaakad-song-input').value = term;
+  searchDhaakadSongs(term);
+}
+
+// लाइव म्यूज़िक सर्च (iTunes API से लाखों गाने)
+function searchDhaakadSongs(query) {
+  clearTimeout(searchTimer);
+  const listBox = document.getElementById('dhaakad-song-list');
+  
+  if (!query || query.trim().length < 2) {
+    listBox.innerHTML = '<div style="text-align:center; color:#777; font-size:13px; padding:15px;">गाने का नाम लिखें...</div>';
+    return;
+  }
+
+  listBox.innerHTML = '<div style="text-align:center; color:#ff9800; font-size:13px; padding:15px;">गाने खोजे जा रहे हैं...</div>';
+
+  searchTimer = setTimeout(() => {
+    fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&media=music&limit=10`)
+      .then(res => res.json())
+      .then(data => {
+        if (!data.results || data.results.length === 0) {
+          listBox.innerHTML = '<div style="text-align:center; color:#888; font-size:13px; padding:15px;">कोई गाना नहीं मिला</div>';
+          return;
+        }
+
+        listBox.innerHTML = data.results.map(track => `
+          <div style="display:flex; align-items:center; justify-content:space-between; background:#1e1e1e; padding:8px; border-radius:10px; gap:10px;">
+            <img src="${track.artworkUrl60}" style="width:42px; height:42px; border-radius:8px; object-fit:cover;">
+            <div style="flex:1; overflow:hidden;">
+              <div style="font-size:13px; font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${track.trackName}</div>
+              <div style="font-size:11px; color:#aaa; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${track.artistName}</div>
+            </div>
+            <button onclick="selectDhaakadSong('${track.trackName.replace(/'/g, "")}', '${track.previewUrl}')" 
+                    style="background:#ff5722; color:#fff; border:none; padding:6px 12px; border-radius:8px; font-size:12px; font-weight:bold; cursor:pointer;">
+              लगाएं
+            </button>
+          </div>
+        `).join('');
+      })
+      .catch(() => {
+        listBox.innerHTML = '<div style="text-align:center; color:#f44336; font-size:13px; padding:15px;">इंटरनेट चेक करें</div>';
+      });
+  }, 400);
+}
+
+// गाना चुनते ही वीडियो के साथ सिंक करें
+function selectDhaakadSong(title, audioUrl) {
+  const audio = document.getElementById('dhaakad-audio-player');
+  const video = document.querySelector('video'); // पेज का मुख्य वीडियो ढूंढेगा
+  
+  document.getElementById('current-song-name').innerText = '🎵 ' + title;
+  audio.src = audioUrl;
+  audio.play();
+
+  // अगर वीडियो मौजूद है तो वीडियो की आवाज़ म्यूट करके गाना साथ चलाएं
+  if (video) {
+    video.muted = true;
+    video.currentTime = 0;
+    video.play();
+
+    // वीडियो प्ले/पॉज़ होने पर गाना भी साथ चलेगा
+    video.onplay = () => audio.play();
+    video.onpause = () => audio.pause();
+  }
+}
+
+// गाना हटाने के लिए
+function clearDhaakadSong() {
+  const audio = document.getElementById('dhaakad-audio-player');
+  const video = document.querySelector('video');
+  audio.pause();
+  audio.src = '';
+  document.getElementById('current-song-name').innerText = '🎵 कोई गाना नहीं चुना गया';
+  if (video) video.muted = false;
+}
+  </script>
   
 </body>
 </html>
