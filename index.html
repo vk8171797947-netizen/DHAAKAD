@@ -2877,6 +2877,21 @@ document.addEventListener("DOMContentLoaded", () => {
   // पेज लोड होते ही कैमरा स्टार्ट करें
   window.onload = startCamera;
   </script>
+<script>
+  function openTab(tabId) {
+    // 1. पहले सभी सेक्शन (होम, वीडियो, अपलोड, प्रोफ़ाइल) को छिपाएं
+    const allTabs = document.querySelectorAll('.page-section');
+    allTabs.forEach(tab => {
+      tab.style.display = 'none';
+    });
+
+    // 2. जिस बटन पर क्लिक हुआ है, सिर्फ़ उसी सेक्शन को दिखाएं
+    const activeTab = document.getElementById(tabId);
+    if (activeTab) {
+      activeTab.style.display = 'block';
+    }
+  }
+</script>
   
 </body>
 </html>
