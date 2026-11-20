@@ -1719,6 +1719,257 @@ function clearDhaakadSong() {
   }
 })();
 </script>
+ <!-- 1. Instagram Reel Studio Container (जहाँ अपलोड बॉक्स है वहाँ रखें) -->
+<div id="instaReelStudio" style="position:relative; width:100%; max-width:420px; height:78vh; margin:auto; background:#000; border-radius:18px; overflow:hidden; font-family:sans-serif; color:#fff; user-select:none;">
+  
+  <!-- Live Camera / Selected Video Preview -->
+  <video id="reelCamVideo" autoplay playsinline muted style="width:100%; height:100%; object-fit:cover; transform:scaleX(-1);"></video>
+  <canvas id="reelRenderCanvas" style="display:none;"></canvas>
+
+  <!-- Top Controls (Close, Flash/Mute, Speed, Timer) -->
+  <div style="position:absolute; top:14px; left:14px; right:14px; display:flex; justify-content:space-between; align-items:center; z-index:10;">
+    <button onclick="stopReelCamera()" style="background:rgba(0,0,0,0.45); border:none; color:#fff; width:36px; height:36px; border-radius:50%; font-size:18px;">✕</button>
+    <div style="display:flex; gap:10px;">
+      <button id="speedBtn" onclick="cycleSpeed()" style="background:rgba(0,0,0,0.45); border:none; color:#fff; padding:6px 12px; border-radius:20px; font-weight:bold;">1x</button>
+      <button id="timerBtn" onclick="cycleLength()" style="background:rgba(0,0,0,0.45); border:none; color:#fff; padding:6px 12px; border-radius:20px; font-weight:bold;">15s</button>
+    </div>
+  </div>
+
+  <!-- Top Center "Add Audio" Pill -->
+  <div style="position:absolute; top:60px; left:50%; transform:translateX(-50%); z-index:10;">
+    <button onclick="document.getElementById('audioFileInput').click()" style="background:rgba(25,25,25,0.75); backdrop-filter:blur(6px); border:1px solid rgba(255,255,255,0.2); color:#fff; padding:8px 16px; border-radius:20px; font-size:13px; display:flex; align-items:center; gap:6px;">
+      <span>🎵</span> <span id="selectedSongLabel">Add audio</span>
+    </button>
+    <input type="file" id="audioFileInput" accept="audio/*" style="display:none;" onchange="loadReelSong(event)">
+  </div>
+
+  <!-- Left Side Vertical Toolbar (Instagram Style) -->
+  <div style="position:absolute; left:14px; top:28%; display:flex; flex-direction:column; gap:18px; z-index:10;">
+    <button onclick="document.getElementById('audioFileInput').click()" style="background:none; border:none; color:#fff; display:flex; flex-direction:column; align-items:center; gap:4px; font-size:11px;">
+      <span style="font-size:20px; background:rgba(0,0,0,0.45); padding:8px; border-radius:50%;">🎵</span>Audio
+    </button>
+    <button onclick="cycleFilter()" style="background:none; border:none; color:#fff; display:flex; flex-direction:column; align-items:center; gap:4px; font-size:11px;">
+      <span style="font-size:20px; background:rgba(0,0,0,0.45); padding:8px; border-radius:50%;">✨</span>Effects
+    </button>
+    <button onclick="toggleTouchUp()" style="background:none; border:none; color:#fff; display:flex; flex-direction:column; align-items:center; gap:4px; font-size:11px;">
+      <span style="font-size:20px; background:rgba(0,0,0,0.45); padding:8px; border-radius:50%;">🪄</span>Touch up
+    </button>
+    <button onclick="cycleLength()" style="background:none; border:none; color:#fff; display:flex; flex-direction:column; align-items:center; gap:4px; font-size:11px;">
+      <span style="font-size:20px; background:rgba(0,0,0,0.45); padding:8px; border-radius:50%;">⏱️</span><span id="sideLengthText">15s</span>
+    </button>
+  </div>
+
+  <!-- Active Filter Name Badge -->
+  <div id="filterBadge" style="position:absolute; bottom:125px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.55); padding:4px 12px; border-radius:12px; font-size:12px; display:none;">
+    Normal
+  </div>
+
+  <!-- Bottom Controls: Gallery Picker, Shutter Record Button, Camera Flip -->
+  <div style="position:absolute; bottom:24px; left:18px; right:18px; display:flex; justify-content:space-between; align-items:center; z-index:10;">
+    <!-- Gallery Upload -->
+    <button onclick="document.getElementById('galleryVideoInput').click()" style="width:42px; height:42px; border-radius:10px; border:2px solid #fff; background:rgba(255,255,255,0.2); color:#fff; font-size:18px;">🖼️</button>
+    <input type="file" id="galleryVideoInput" accept="video/*" style="display:none;" onchange="loadGalleryVideo(event)">
+
+    <!-- Main Record Button -->
+    <button id="recordTriggerBtn" onclick="toggleReelRecording()" style="width:72px; height:72px; border-radius:50%; border:4px solid #fff; background:#ff2e55; cursor:pointer; transition:0.2s;"></button>
+
+    <!-- Flip Camera -->
+    <button onclick="flipReelCamera()" style="width:42px; height:42px; border-radius:50%; border:none; background:rgba(0,0,0,0.5); color:#fff; font-size:20px;">🔄</button>
+  </div>
+
+  <!-- Hidden Audio Element for Song Sync -->
+  <audio id="reelBgAudio" crossorigin="anonymous"></audio>
+</div>
+
+<!-- 2. Self-Contained Logic Script -->
+<script>
+  let camStream = null;
+  let facingMode = "user";
+  let isRecording = false;
+  let mediaRecorder = null;
+  let recordedChunks = [];
+  let maxDuration = 15;
+  let speedOptions = [1, 1.5, 2, 0.5];
+  let speedIdx = 0;
+  let touchUpActive = false;
+
+  const filters = [
+    { name: "Normal", css: "none" },
+    { name: "Dhaakad Vibe", css: "contrast(1.25) saturate(1.4)" },
+    { name: "Vintage", css: "sepia(0.45) contrast(1.1) brightness(0.95)" },
+    { name: "B&W Classic", css: "grayscale(1) contrast(1.3)" },
+    { name: "Warm Glow", css: "brightness(1.1) saturate(1.3) hue-rotate(-10deg)" }
+  ];
+  let filterIdx = 0;
+
+  async function startReelCamera() {
+    try {
+      if (camStream) camStream.getTracks().forEach(t => t.stop());
+      camStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: facingMode },
+        audio: true
+      });
+      const vid = document.getElementById("reelCamVideo");
+      vid.srcObject = camStream;
+      vid.style.transform = facingMode === "user" ? "scaleX(-1)" : "scaleX(1)";
+    } catch (e) {
+      alert("कैमरा परमिशन दें या गैलरी से वीडियो चुनें।");
+    }
+  }
+
+  function flipReelCamera() {
+    facingMode = facingMode === "user" ? "environment" : "user";
+    startReelCamera();
+  }
+
+  function applyVisualEffects() {
+    const vid = document.getElementById("reelCamVideo");
+    const baseFilter = filters[filterIdx].css === "none" ? "" : filters[filterIdx].css;
+    const beauty = touchUpActive ? "brightness(1.08) contrast(0.96) blur(0.3px)" : "";
+    vid.style.filter = `${baseFilter} ${beauty}`.trim() || "none";
+  }
+
+  function cycleFilter() {
+    filterIdx = (filterIdx + 1) % filters.length;
+    applyVisualEffects();
+    const badge = document.getElementById("filterBadge");
+    badge.innerText = filters[filterIdx].name;
+    badge.style.display = "block";
+    clearTimeout(window.badgeTimer);
+    window.badgeTimer = setTimeout(() => badge.style.display = "none", 1500);
+  }
+
+  function toggleTouchUp() {
+    touchUpActive = !touchUpActive;
+    applyVisualEffects();
+    alert(touchUpActive ? "Touch up ON" : "Touch up OFF");
+  }
+
+  function cycleSpeed() {
+    speedIdx = (speedIdx + 1) % speedOptions.length;
+    const rate = speedOptions[speedIdx];
+    document.getElementById("speedBtn").innerText = rate + "x";
+    document.getElementById("reelCamVideo").playbackRate = rate;
+    document.getElementById("reelBgAudio").playbackRate = rate;
+  }
+
+  function cycleLength() {
+    maxDuration = maxDuration === 15 ? 30 : maxDuration === 30 ? 60 : 15;
+    document.getElementById("timerBtn").innerText = maxDuration + "s";
+    document.getElementById("sideLengthText").innerText = maxDuration + "s";
+  }
+
+  // गाना चुनने और रील पर सेट करने का फंक्शन
+  function loadReelSong(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const audioEl = document.getElementById("reelBgAudio");
+    audioEl.src = URL.createObjectURL(file);
+    audioEl.load();
+    document.getElementById("selectedSongLabel").innerText = file.name.slice(0, 18);
+  }
+
+  // गैलरी वीडियो पर भी गाना और फ़िल्टर सिंक करने का फंक्शन
+  function loadGalleryVideo(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    if (camStream) camStream.getTracks().forEach(t => t.stop());
+    const vid = document.getElementById("reelCamVideo");
+    const audioEl = document.getElementById("reelBgAudio");
+
+    vid.srcObject = null;
+    vid.src = URL.createObjectURL(file);
+    vid.style.transform = "none";
+    vid.loop = true;
+
+    // अगर गाना चुना है तो वीडियो म्यूट करके गाना साथ चलाएँ
+    if (audioEl.src) {
+      vid.muted = true;
+      audioEl.currentTime = 0;
+      audioEl.play();
+    } else {
+      vid.muted = false;
+    }
+    vid.play();
+  }
+
+  // रिकॉर्डिंग के समय लाइव वीडियो + फ़िल्टर + बैकग्राउंड गाने को एक साथ मर्ज करना
+  function toggleReelRecording() {
+    const btn = document.getElementById("recordTriggerBtn");
+    const audioEl = document.getElementById("reelBgAudio");
+
+    if (!isRecording) {
+      recordedChunks = [];
+      const vid = document.getElementById("reelCamVideo");
+      const canvas = document.getElementById("reelRenderCanvas");
+      canvas.width = 720;
+      canvas.height = 1280;
+      const ctx = canvas.getContext("2d");
+
+      // Canvas पर फ़िल्टर सहित वीडियो ड्रॉ करें
+      function drawFrame() {
+        if (!isRecording) return;
+        ctx.filter = vid.style.filter || "none";
+        ctx.drawImage(vid, 0, 0, canvas.width, canvas.height);
+        requestAnimationFrame(drawFrame);
+      }
+
+      const canvasStream = canvas.captureStream(30);
+      const combinedTracks = [...canvasStream.getVideoTracks()];
+
+      // अगर गाना लगा है तो गाने का ऑडियो ट्रैक जोड़ें, वरना माइक ऑडियो
+      if (audioEl.src) {
+        audioEl.currentTime = 0;
+        audioEl.play();
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const srcNode = audioCtx.createMediaElementSource(audioEl);
+        const dest = audioCtx.createMediaStreamDestination();
+        srcNode.connect(dest);
+        srcNode.connect(audioCtx.destination);
+        combinedTracks.push(...dest.stream.getAudioTracks());
+      } else if (camStream && camStream.getAudioTracks().length > 0) {
+        combinedTracks.push(...camStream.getAudioTracks());
+      }
+
+      const finalStream = new MediaStream(combinedTracks);
+      mediaRecorder = new MediaRecorder(finalStream, { mimeType: "video/webm" });
+
+      mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedChunks.push(e.data); };
+      mediaRecorder.onstop = () => {
+        audioEl.pause();
+        const blob = new Blob(recordedChunks, { type: "video/webm" });
+        const finalUrl = URL.createObjectURL(blob);
+        vid.srcObject = null;
+        vid.src = finalUrl;
+        vid.muted = false;
+        vid.loop = true;
+        vid.play();
+        window.latestDhaakadReelBlob = blob; // इसे आप अपने पोस्ट/अपलोड बटन में इस्तेमाल कर सकते हैं
+      };
+
+      isRecording = true;
+      btn.style.borderRadius = "16px";
+      btn.style.transform = "scale(0.85)";
+      drawFrame();
+      mediaRecorder.start();
+
+      setTimeout(() => { if (isRecording) toggleReelRecording(); }, maxDuration * 1000);
+    } else {
+      isRecording = false;
+      btn.style.borderRadius = "50%";
+      btn.style.transform = "scale(1)";
+      mediaRecorder.stop();
+    }
+  }
+
+  function stopReelCamera() {
+    if (camStream) camStream.getTracks().forEach(t => t.stop());
+    document.getElementById("reelBgAudio").pause();
+  }
+
+  // पेज खुलते ही कैमरा चालू करें
+  startReelCamera();
+</script>
   
 </body>
 </html>
