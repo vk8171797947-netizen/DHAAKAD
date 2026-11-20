@@ -1948,6 +1948,18 @@ function clearDhaakadSong() {
     });
   });
 </script>
-  
+<script>
+  window.addEventListener("load", function () {
+    document.querySelectorAll("div, section").forEach(function (el) {
+      var t = el.innerText || "";
+      if (t.indexOf("Add audio") !== -1 && t.indexOf("Effects") !== -1 && t.indexOf("Touch up") !== -1) {
+        if (el.tagName !== "BODY" && el.offsetHeight < window.innerHeight) {
+          el.style.display = "none";
+        }
+      }
+    });
+  });
+</script>
+          
 </body>
 </html>
