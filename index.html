@@ -1947,6 +1947,153 @@ function clearDhaakadSong() {
     });
   });
 </script>
-          
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  // 1. असली कैमरा और ऑनलाइन म्यूज़िक/एडिटर पॉपअप बनाएँ
+  const modal = document.createElement("div");
+  modal.id = "dhaakadMediaTool";
+  modal.style.cssText = "display:none;position:fixed;inset:0;background:#000;z-index:99999;flex-direction:column;color:#fff;font-family:sans-serif;padding:16px;overflow-y:auto;";
+  modal.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <strong id="toolTitle">धाकड़ स्टूडियो</strong>
+      <button id="closeTool" style="background:#333;color:#fff;border:none;padding:6px 12px;border-radius:8px;">✕ बंद करें</button>
+    </div>
+
+    <!-- कैमरा सेक्शन -->
+    <div id="camBox" style="display:none;text-align:center;">
+      <video id="liveCam" autoplay playsinline style="width:100%;max-height:60vh;background:#111;border-radius:12px;"></video>
+      <div style="margin-top:12px;display:flex;gap:10px;justify-content:center;">
+        <button id="switchCam" style="background:#333;color:#fff;border:none;padding:10px 16px;border-radius:20px;">🔄 कैमरा बदलें</button>
+        <button id="snapPhoto" style="background:#ff3b5c;color:#fff;border:none;padding:10px 20px;border-radius:20px;font-weight:bold;">📸 फोटो लें</button>
+      </div>
+      <canvas id="camCanvas" style="display:none;"></canvas>
+    </div>
+
+    <!-- ऑनलाइन गाने और एडिट सेक्शन -->
+    <div id="musicBox" style="display:none;">
+      <div style="display:flex;gap:8px;margin-bottom:12px;">
+        <input id="songQuery" type="text" placeholder="गाना या सिंगर खोजें (जैसे Arijit, Sidhu)..." style="flex:1;padding:10px;border-radius:8px;border:1px solid #444;background:#1a1a1a;color:#fff;">
+        <button id="searchSongBtn" style="background:#ff6b00;color:#fff;border:none;padding:10px 14px;border-radius:8px;font-weight:bold;">खोजें</button>
+      </div>
+      <div id="songResults" style="max-height:220px;overflow-y:auto;margin-bottom:14px;"></div>
+
+      <!-- गाना एडिट / ट्रिम कंट्रोल -->
+      <div id="songEditor" style="display:none;background:#161616;padding:12px;border-radius:10px;border:1px solid #333;">
+        <div id="selectedTrackName" style="color:#ff9800;font-weight:bold;margin-bottom:8px;"></div>
+        <audio id="audioPreview" controls style="width:100%;margin-bottom:10px;"></audio>
+        <label style="font-size:13px;">शुरू होने का सेकंड (Start): <span id="startVal">0</span>s</label>
+        <input id="trimStart" type="range" min="0" max="25" value="0" style="width:100%;">
+        <label style="font-size:13px;">वॉल्यूम (Volume): <span id="volVal">100</span>%</label>
+        <input id="trackVol" type="range" min="0" max="100" value="100" style="width:100%;">
+        <button id="applySongBtn" style="margin-top:10px;width:100%;background:#28a745;color:#fff;border:none;padding:10px;border-radius:8px;font-weight:bold;">✔ गाना स्टेटस में लगाएँ</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+
+  let stream = null, useFront = true, chosenSong = null;
+  const video = document.getElementById("liveCam");
+  const audio = document.getElementById("audioPreview");
+
+  async function startCamera() {
+    if (stream) stream.getTracks().forEach(t => t.stop());
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: useFront ? "user" : "environment" },
+        audio: false
+      });
+      video.srcObject = stream;
+    } catch (e) {
+      alert("कैमरा अनुमति नहीं मिली या HTTPS ज़रूरी है: " + e.message);
+    }
+  }
+
+  // मौजूदा 'कैमरा / गैलरी' और 'Music' बटन से जोड़ें
+  document.querySelectorAll("div, button").forEach(el => {
+    const txt = (el.innerText || "").trim();
+    if (txt === "कैमरा / गैलरी" || txt.startsWith("कैमरा / गैलरी")) {
+      el.style.cursor = "pointer";
+      el.onclick = () => {
+        modal.style.display = "flex";
+        document.getElementById("camBox").style.display = "block";
+        document.getElementById("musicBox").style.display = "none";
+        document.getElementById("toolTitle").innerText = "लाइव कैमरा";
+        startCamera();
+      };
+    }
+    if (txt === "Music" || txt === "Add audio") {
+      el.style.cursor = "pointer";
+      el.onclick = () => {
+        modal.style.display = "flex";
+        document.getElementById("camBox").style.display = "none";
+        document.getElementById("musicBox").style.display = "block";
+        document.getElementById("toolTitle").innerText = "ऑनलाइन गाने और एडिट";
+      };
+    }
+  });
+
+  document.getElementById("switchCam").onclick = () => { useFront = !useFront; startCamera(); };
+
+  document.getElementById("snapPhoto").onclick = () => {
+    const c = document.getElementById("camCanvas");
+    c.width = video.videoWidth; c.height = video.videoHeight;
+    c.getContext("2d").drawImage(video, 0, 0);
+    localStorage.setItem("dhaakad_captured_photo", c.toDataURL("image/jpeg", 0.85));
+    alert("फोटो कैप्चर हो गई!");
+    document.getElementById("closeTool").click();
+  };
+
+  // ऑनलाइन गाने खोजना (iTunes Public API - बिना API key के चलता है)
+  document.getElementById("searchSongBtn").onclick = async () => {
+    const q = document.getElementById("songQuery").value.trim() || "Bollywood";
+    const box = document.getElementById("songResults");
+    box.innerHTML = "गाने खोजे जा रहे हैं...";
+    const res = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(q)}&media=music&limit=10`);
+    const data = await res.json();
+    box.innerHTML = "";
+    data.results.forEach(track => {
+      if (!track.previewUrl) return;
+      const row = document.createElement("div");
+      row.style.cssText = "padding:8px;border-bottom:1px solid #222;cursor:pointer;display:flex;justify-content:space-between;";
+      row.innerHTML = `<span>🎵 ${track.trackName} - <small>${track.artistName}</small></span><span style="color:#ff6b00;">चुनें</span>`;
+      row.onclick = () => {
+        chosenSong = { title: track.trackName, artist: track.artistName, url: track.previewUrl, start: 0, vol: 1 };
+        document.getElementById("songEditor").style.display = "block";
+        document.getElementById("selectedTrackName").innerText = track.trackName + " (" + track.artistName + ")";
+        audio.src = track.previewUrl;
+        audio.play();
+      };
+      box.appendChild(row);
+    });
+  };
+
+  // गाना एडिट (Start Second और Volume)
+  document.getElementById("trimStart").oninput = (e) => {
+    const s = Number(e.target.value);
+    document.getElementById("startVal").innerText = s;
+    audio.currentTime = s;
+    if (chosenSong) chosenSong.start = s;
+  };
+  document.getElementById("trackVol").oninput = (e) => {
+    const v = Number(e.target.value);
+    document.getElementById("volVal").innerText = v;
+    audio.volume = v / 100;
+    if (chosenSong) chosenSong.vol = v / 100;
+  };
+  document.getElementById("applySongBtn").onclick = () => {
+    if (!chosenSong) return;
+    localStorage.setItem("dhaakad_selected_song", JSON.stringify(chosenSong));
+    alert("गाना सेव हो गया: " + chosenSong.title + " (" + chosenSong.start + "s से)");
+    document.getElementById("closeTool").click();
+  };
+
+  document.getElementById("closeTool").onclick = () => {
+    if (stream) stream.getTracks().forEach(t => t.stop());
+    audio.pause();
+    modal.style.display = "none";
+  };
+});
+</script>
+  
 </body>
 </html>
