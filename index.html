@@ -1690,6 +1690,35 @@ function clearDhaakadSong() {
   if (video) video.muted = false;
 }
   </script>
+<script>
+(function fixDhaakadMusicPlacement() {
+  const musicBox = document.getElementById('dhaakad-music-box');
+  if (!musicBox) return;
+
+  // 1. बॉक्स को स्क्रॉल होने लायक और नीचे के बार से ऊपर रखें
+  musicBox.style.marginBottom = '90px';
+  musicBox.style.position = 'relative';
+  musicBox.style.zIndex = '10';
+
+  // 2. पेज में "New reel" या "वीडियो चुनें" वाला कंटेनर ढूंढें (जो सिर्फ़ अपलोड टैब में खुलता है)
+  const allDivs = document.querySelectorAll('div, section');
+  let uploadContainer = null;
+
+  for (let el of allDivs) {
+    if (el.innerText && el.innerText.includes('New reel') && el.innerText.includes('वीडियो चुनें')) {
+      uploadContainer = el;
+    }
+  }
+
+  // अगर अपलोड सेक्शन मिल गया, तो म्यूज़िक बॉक्स को उसी के अंदर डाल दें
+  if (uploadContainer) {
+    uploadContainer.style.overflowY = 'auto';
+    uploadContainer.style.maxHeight = '85vh';
+    uploadContainer.style.paddingBottom = '90px';
+    uploadContainer.appendChild(musicBox);
+  }
+})();
+</script>
   
 </body>
 </html>
