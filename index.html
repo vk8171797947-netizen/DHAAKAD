@@ -1934,6 +1934,20 @@ function clearDhaakadSong() {
       const finalStream = new MediaStream(combinedTracks);
       mediaRecorder = new MediaRecorder(finalStream, { mimeType: "video/webm" });
 </script>
+
+  window.addEventListener("load", () => {
+    // स्क्रीन पर दिख रहे 'Add audio', 'Effects', 'Touch up' वाले पूरे बॉक्स को ढूँढें और हटाएं
+    document.querySelectorAll("div").forEach(el => {
+      const txt = el.innerText || "";
+      if (txt.includes("Add audio") && txt.includes("Touch up") && txt.includes("Effects")) {
+        // केवल उसी मुख्य ओवरले कंटेनर को छिपाएं (पूरे body या मुख्य ऐप को नहीं)
+        if (el.id !== "app" && el.tagName !== "BODY" && el.offsetHeight < window.innerHeight) {
+          el.style.display = "none";
+        }
+      }
+    });
+  });
+</script>
   
 </body>
 </html>
