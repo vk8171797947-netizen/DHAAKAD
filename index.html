@@ -2244,6 +2244,341 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("DOMContentLoaded", renderInstaStatuses);
 })();
  </script>
+ <!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Clone - Search Music for Status</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fafafa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+        .app-container {
+            width: 100%;
+            max-width: 450px;
+            background: #fff;
+            min-height: 100vh;
+            border-left: 1px solid #dbdbdb;
+            border-right: 1px solid #dbdbdb;
+            position: relative;
+        }
+        header {
+            padding: 15px;
+            border-bottom: 1px solid #dbdbdb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: #fff;
+            z-index: 10;
+        }
+        header h2 {
+            margin: 0;
+            font-family: 'Cursive', sans-serif;
+            font-size: 24px;
+        }
+        .upload-btn {
+            background-color: #0095f6;
+            color: white;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .stories-bar {
+            display: flex;
+            padding: 15px;
+            border-bottom: 1px solid #dbdbdb;
+            overflow-x: auto;
+            gap: 15px;
+        }
+        .story-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            min-width: 65px;
+        }
+        .story-ring {
+            width: 62px;
+            height: 62px;
+            border-radius: 50%;
+            padding: 2px;
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .story-ring.add-story {
+            background: #dbdbdb;
+        }
+        .story-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #0095f6;
+            overflow: hidden;
+        }
+        .story-avatar img, .story-avatar video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .story-name {
+            font-size: 12px;
+            margin-top: 5px;
+            color: #262626;
+        }
+        .feed {
+            padding-bottom: 50px;
+        }
+        .post {
+            border-bottom: 1px solid #dbdbdb;
+            margin-bottom: 15px;
+        }
+        .post-header {
+            padding: 10px 15px;
+            font-weight: bold;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .post-media {
+            width: 100%;
+            max-height: 500px;
+            background: #000;
+            display: block;
+        }
+        .post-caption {
+            padding: 10px 15px;
+            font-size: 14px;
+        }
+
+        /* Music Search Modal */
+        #musicSearchModal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 50;
+            justify-content: center;
+            align-items: flex-end;
+        }
+        .music-sheet {
+            background: #fff;
+            width: 100%;
+            max-width: 450px;
+            height: 75vh;
+            border-radius: 20px 20px 0 0;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+        .search-bar-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .search-bar-box input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #dbdbdb;
+            border-radius: 20px;
+            font-size: 14px;
+            outline: none;
+        }
+        .search-bar-box button {
+            background: #0095f6;
+            color: #fff;
+            border: none;
+            padding: 0 18px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .song-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+        .song-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #efefef;
+            gap: 12px;
+        }
+        .song-item img {
+            width: 48px;
+            height: 48px;
+            border-radius: 6px;
+        }
+        .song-info {
+            flex: 1;
+            overflow: hidden;
+        }
+        .song-title {
+            font-size: 14px;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .song-artist {
+            font-size: 12px;
+            color: #8e8e8e;
+        }
+        .select-song-btn {
+            background: #efefef;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .select-song-btn:hover {
+            background: #0095f6;
+            color: #fff;
+        }
+
+        /* Fullscreen Story Viewer */
+        #storyViewer {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .close-story {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+        .music-badge {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        input[type="file"] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <header>
+        <h2>Instagram</h2>
+        <label class="upload-btn">
+            + वीडियो अपलोड करें
+            <input type="file" id="videoUploadInput" accept="video/*">
+        </label>
+    </header>
+
+    <div class="stories-bar" id="storiesBar">
+        <label class="story-item">
+            <div class="story-ring add-story">
+                <div class="story-avatar">+</div>
+            </div>
+            <span class="story-name">स्टेटस लगाएं</span>
+            <input type="file" id="storyUploadInput" accept="image/*,video/*">
+        </label>
+    </div>
+
+    <div class="feed" id="feedContainer">
+        <p id="emptyMsg" style="text-align:center; color:#8e8e8e; margin-top:40px;">
+            अभी कोई वीडियो नहीं है। ऊपर नीले बटन से वीडियो अपलोड करें!
+        </p>
+    </div>
+</div>
+
+<!-- Music Search Bottom Sheet -->
+<div id="musicSearchModal">
+    <div class="music-sheet">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <h3 style="margin:0; font-size:16px;">🎵 गाना सर्च करें</h3>
+            <button onclick="skipMusic()" style="background:none; border:none; color:#0095f6; font-weight:bold; cursor:pointer;">बिना गाने के लगाएं</button>
+        </div>
+        <div class="search-bar-box">
+            <input type="text" id="songSearchInput" placeholder="गाने या सिंगर का नाम लिखें (जैसे: Arijit Singh)...">
+            <button onclick="searchSongs()">सर्च</button>
+        </div>
+        <div class="song-list" id="songList">
+            <p style="text-align:center; color:#8e8e8e; font-size:13px; margin-top:30px;">
+                ऊपर बॉक्स में कोई भी गाना सर्च करें...
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Fullscreen Story Viewer -->
+<div id="storyViewer">
+    <button class="close-story" onclick="closeStory()">×</button>
+    <div id="musicInfo" class="music-badge" style="display:none;"></div>
+    <div id="storyMediaContainer"></div>
+    <audio id="storyAudioPlayer" loop></audio>
+</div>
+
+<script>
+    const storyInput = document.getElementById('storyUploadInput');
+    const storiesBar = document.getElementById('storiesBar');
+    const musicSearchModal = document.getElementById('musicSearchModal');
+    const songSearchInput = document.getElementById('songSearchInput');
+    const songList = document.getElementById('songList');
+    
+    const storyViewer = document.getElementById('storyViewer');
+    const storyMediaContainer = document.getElementById('storyMediaContainer');
+    const storyAudioPlayer = document.getElementById('storyAudioPlayer');
+    const musicInfo = document.getElementById('musicInfo');
+
+    let tempMediaFile = null;
+
+    // 1. फोटो/वीडियो चुनने के बाद म्यूजिक सर्च बॉक्स खोलें
+    storyInput.addEventListener('change', function(event) {
+        const file = event.target.files;
+        if (!file) return;
+
+        tempMediaFile = file;
+        musicSearchModal.style.display = 'flex';
+        songSearchInput.focus();
+        storyInput.value = '';
+    });
+
+    // Enter दबाने पर भी सर्च हो
+    songSearchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') searchSongs();
+    });
+</script>
   
 </body>
 </html>
