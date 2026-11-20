@@ -1396,6 +1396,506 @@
 
     renderAll();
   </script>
+    <script>
+  (function () {
+    const NP_MODAL_ID = 'dhaakadNewPostStudio';
+    let stream = null;
+    let facingMode = 'user';
+    let speedVal = '1x';
+    let timerSec = 0;
+    let mutedState = false;
+    let activeFilter = 'none';
+    let activeAudio = '';
+    let activeTabMode = 'POST';
+    let chosenMedia = '';
+
+    const GALLERY_ITEMS = [
+      { title: 'शहर की रात', bg: '#881337' },
+      { title: 'पहाड़ व्यू', bg: '#7c2d12' },
+      { title: 'वर्कआउट', bg: '#14532d' },
+      { title: 'चाय और मूड', bg: '#451a03' },
+      { title: 'नियॉन स्वैग', bg: '#312e81' },
+      { title: 'सफ़र डायरी', bg: '#134e4a' }
+    ].map((item, i) => ({
+      id: i,
+      title: item.title,
+      src:
+        'data:image/svg+xml;charset=UTF-8,' +
+        encodeURIComponent(
+          `<svg xmlns="http://www.w3.org/2000/svg" width="500" height="500"><rect width="500" height="500" fill="${item.bg}"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#ffffff" font-family="sans-serif" font-size="30" font-weight="bold">${item.title}</text></svg>`
+        )
+    }));
+
+    const STUDIO_FILTERS = [
+      { badge: '✨', css: 'none' },
+      { badge: '🔥', css: 'saturate(1.65) contrast(1.15)' },
+      { badge: '🌅', css: 'sepia(0.32) saturate(1.35) brightness(1.05)' },
+      { badge: '💫', css: 'brightness(1.12) contrast(1.06) saturate(1.2)' },
+      { badge: '🎬', css: 'grayscale(1) contrast(1.35)' }
+    ];
+
+    const AUDIO_LIST = [
+      '🎵 धाकड़ बीट — देसी स्वैग',
+      '🎶 रात की रफ़्तार — लो-फ़ाई',
+      '🔥 जोश हाई — मोटिवेशन ट्रैक',
+      '✨ पहाड़ों की हवा — चिल वाइब'
+    ];
+
+    function buildNewPostStudio() {
+      if (document.getElementById(NP_MODAL_ID)) return;
+      chosenMedia = GALLERY_ITEMS[0].src;
+
+      const modal = document.createElement('div');
+      modal.id = NP_MODAL_ID;
+      modal.style.cssText =
+        'display:none;position:fixed;inset:0;z-index:10020;background:#09090b;color:#fff;flex-direction:column;overflow:hidden;';
+
+      modal.innerHTML = `
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #27272a;background:#09090b;z-index:15;">
+          <button type="button" id="npCloseBtn" style="background:none;border:none;color:#fff;font-size:22px;cursor:pointer;">✕</button>
+          <div id="npHeading" style="font-size:15px;font-weight:800;">नई पोस्ट</div>
+          <button type="button" id="npPublishBtn" style="background:linear-gradient(135deg,#e11d48,#f97316);border:none;color:#fff;font-size:12px;font-weight:800;padding:8px 14px;border-radius:999px;cursor:pointer;">पब्लिश करें</button>
+        </div>
+
+        <div id="npGalleryView" style="flex:1;overflow-y:auto;padding:14px 16px 88px;max-width:680px;width:100%;margin:0 auto;">
+          <div style="display:grid;grid-template-columns:104px 1fr;gap:12px;align-items:center;background:#18181b;border:1px solid #27272a;border-radius:18px;padding:10px;margin-bottom:14px;">
+            <img id="npPreviewImg" src="${chosenMedia}" alt="Preview" style="width:104px;height:104px;object-fit:cover;border-radius:14px;background:#09090b;" />
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <input id="npCaption" type="text" placeholder="नई पोस्ट का कैप्शन लिखें..." style="width:100%;background:#09090b;border:1px solid #27272a;border-radius:12px;padding:9px 12px;color:#fff;font-size:13px;outline:none;" />
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <button type="button" id="npOpenCamViewBtn" style="background:linear-gradient(135deg,#e11d48,#f97316);border:none;color:#fff;padding:7px 12px;border-radius:10px;font-size:12px;font-weight:800;cursor:pointer;">📷 कैमरा स्टूडियो</button>
+                <label style="background:#27272a;padding:7px 11px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;">
+                  📁 फ़ाइल चुनें
+                  <input id="npFileInput" type="file" accept="image/*" style="display:none;" />
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div style="font-size:12px;font-weight:700;color:#a1a1aa;margin-bottom:8px;">गैलरी पिक्चर्स और कैमरा टाइल</div>
+          <div id="npPicGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;"></div>
+        </div>
+
+        <div id="npCamView" style="display:none;position:relative;flex:1;background:#000;overflow:hidden;user-select:none;">
+          <video id="npVideo" autoplay playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#09090b;"></video>
+          <img id="npShotImg" alt="Shot" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2;" />
+          <canvas id="npCanvas" style="display:none;"></canvas>
+
+          <div style="position:absolute;top:12px;left:12px;right:12px;z-index:10;display:flex;align-items:center;justify-content:space-between;">
+            <button type="button" id="npBackToGalleryBtn" style="background:rgba(0,0,0,0.55);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:7px 12px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;">🖼️ गैलरी</button>
+
+            <div style="display:flex;align-items:center;gap:6px;">
+              <button type="button" id="npMuteBtn" style="background:rgba(0,0,0,0.55);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:6px 10px;border-radius:999px;font-size:11px;font-weight:700;cursor:pointer;">🎙️ ऑन</button>
+              <button type="button" id="npSpeedBtn" style="background:rgba(0,0,0,0.55);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:6px 10px;border-radius:999px;font-size:11px;font-weight:800;cursor:pointer;">1x</button>
+              <button type="button" id="npTimerBtn" style="background:rgba(0,0,0,0.55);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:6px 10px;border-radius:999px;font-size:11px;font-weight:700;cursor:pointer;">⏱️ ऑफ</button>
+            </div>
+
+            <button type="button" id="npUseShotBtn" style="background:linear-gradient(135deg,#e11d48,#f97316);border:none;color:#fff;padding:7px 12px;border-radius:999px;font-size:12px;font-weight:800;cursor:pointer;">चुनें ✓</button>
+          </div>
+
+          <div style="position:absolute;top:58px;left:50%;transform:translateX(-50%);z-index:10;">
+            <button type="button" id="npAudioPill" style="background:rgba(24,24,27,0.85);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:7px 15px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">
+              🎵 Add audio
+            </button>
+          </div>
+
+          <div style="position:absolute;left:12px;top:50%;transform:translateY(-50%);z-index:10;display:flex;flex-direction:column;gap:12px;">
+            <button type="button" id="npSideAudio" style="width:38px;height:38px;border-radius:999px;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.18);color:#fff;font-size:17px;cursor:pointer;">🎵</button>
+            <button type="button" id="npSideFx" style="width:38px;height:38px;border-radius:999px;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.18);color:#fff;font-size:17px;cursor:pointer;">✨</button>
+            <button type="button" id="npSideFrame" style="width:38px;height:38px;border-radius:999px;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.18);color:#fff;font-size:17px;cursor:pointer;">⛶</button>
+            <button type="button" id="npSideWand" style="width:38px;height:38px;border-radius:999px;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.18);color:#fff;font-size:17px;cursor:pointer;">🪄</button>
+            <button type="button" id="npSide15" style="width:38px;height:38px;border-radius:999px;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.18);color:#fff;font-size:11px;font-weight:800;cursor:pointer;">15</button>
+          </div>
+
+          <div id="npCountdown" style="display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:20;font-size:70px;font-weight:900;color:#fff;text-shadow:0 6px 24px rgba(0,0,0,0.85);"></div>
+
+          <div style="position:absolute;bottom:64px;left:0;right:0;z-index:10;padding:12px 16px;background:linear-gradient(to top,rgba(0,0,0,0.9),rgba(0,0,0,0.35),transparent);">
+            <div id="npFilterBubbles" style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:12px;"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;max-width:380px;margin:0 auto;">
+              <button type="button" id="npMiniGallery" style="width:42px;height:42px;border-radius:12px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);color:#fff;font-size:18px;cursor:pointer;">🖼️</button>
+              <button type="button" id="npShutter" style="width:70px;height:70px;border-radius:999px;background:#fff;border:5px solid rgba(255,255,255,0.38);cursor:pointer;"></button>
+              <button type="button" id="npFlipCam" style="width:42px;height:42px;border-radius:999px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);color:#fff;font-size:19px;cursor:pointer;">🔄</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="position:fixed;bottom:0;left:0;right:0;z-index:20;background:rgba(9,9,11,0.96);border-top:1px solid #27272a;padding:10px 12px;display:flex;align-items:center;justify-content:center;gap:14px;">
+          <button type="button" class="np-mode" data-mode="POST" style="background:none;border:none;font-size:12px;font-weight:800;cursor:pointer;padding:4px 8px;">POST</button>
+          <button type="button" class="np-mode" data-mode="STORY" style="background:none;border:none;font-size:12px;font-weight:800;cursor:pointer;padding:4px 8px;">STORY</button>
+          <button type="button" class="np-mode" data-mode="REEL" style="background:none;border:none;font-size:12px;font-weight:800;cursor:pointer;padding:4px 8px;">REEL</button>
+          <button type="button" class="np-mode" data-mode="LIVE" style="background:none;border:none;font-size:12px;font-weight:800;cursor:pointer;padding:4px 8px;">LIVE</button>
+        </div>
+      `;
+
+      document.body.appendChild(modal);
+      renderNpGalleryGrid();
+      renderNpFilterBubbles();
+      setNpMode('POST');
+      bindNpEvents();
+    }
+          function renderNpGalleryGrid() {
+      const grid = document.getElementById('npPicGrid');
+      if (!grid) return;
+
+      const camTile = `
+        <button type="button" id="npTileCam" style="aspect-ratio:1/1;border-radius:14px;background:#18181b;border:1.5px dashed #f97316;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;font-size:12px;font-weight:800;">
+          <span style="font-size:26px;">📷</span>
+          <span>कैमरा</span>
+        </button>
+      `;
+
+      const itemsHtml = GALLERY_ITEMS.map((g) => {
+        const active = chosenMedia === g.src;
+        return `
+          <button type="button" class="np-gitem" data-src="${g.src}" style="aspect-ratio:1/1;border-radius:14px;overflow:hidden;padding:0;background:#18181b;border:${active ? '2.5px solid #f43f5e' : '1px solid #27272a'};cursor:pointer;">
+            <img src="${g.src}" alt="${g.title}" style="width:100%;height:100%;object-fit:cover;display:block;" />
+          </button>
+        `;
+      }).join('');
+
+      grid.innerHTML = camTile + itemsHtml;
+      document.getElementById('npTileCam').addEventListener('click', showCameraInsideNewPost);
+      grid.querySelectorAll('.np-gitem').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          setChosenMedia(btn.getAttribute('data-src'));
+        });
+      });
+    }
+
+    function setChosenMedia(src) {
+      if (!src) return;
+      chosenMedia = src;
+      const prev = document.getElementById('npPreviewImg');
+      if (prev) {
+        prev.src = chosenMedia;
+        prev.style.filter = activeFilter;
+      }
+      renderNpGalleryGrid();
+    }
+
+    function renderNpFilterBubbles() {
+      const row = document.getElementById('npFilterBubbles');
+      if (!row) return;
+      row.innerHTML = STUDIO_FILTERS.map((f, idx) => {
+        const active = activeFilter === f.css;
+        return `
+          <button type="button" data-f="${idx}" class="np-fb" style="width:40px;height:40px;border-radius:999px;background:rgba(24,24,27,0.85);border:${active ? '2.5px solid #f43f5e' : '1.5px solid rgba(255,255,255,0.3)'};color:#fff;font-size:16px;cursor:pointer;">
+            ${f.badge}
+          </button>
+        `;
+      }).join('');
+
+      row.querySelectorAll('.np-fb').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const item = STUDIO_FILTERS[Number(btn.getAttribute('data-f'))] || STUDIO_FILTERS[0];
+          activeFilter = item.css;
+          const vid = document.getElementById('npVideo');
+          const shot = document.getElementById('npShotImg');
+          const prev = document.getElementById('npPreviewImg');
+          if (vid) vid.style.filter = activeFilter;
+          if (shot) shot.style.filter = activeFilter;
+          if (prev) prev.style.filter = activeFilter;
+          renderNpFilterBubbles();
+        });
+      });
+    }
+
+    function setNpMode(mode) {
+      activeTabMode = mode;
+      const titles = {
+        POST: 'नई पोस्ट',
+        STORY: 'नई पोस्ट • स्टोरी',
+        REEL: 'नई पोस्ट • रील',
+        LIVE: 'नई पोस्ट • लाइव'
+      };
+      const head = document.getElementById('npHeading');
+      if (head) head.textContent = titles[mode] || 'नई पोस्ट';
+
+      document.querySelectorAll('.np-mode').forEach((b) => {
+        const isAct = b.getAttribute('data-mode') === mode;
+        b.style.color = isAct ? '#ffffff' : 'rgba(255,255,255,0.5)';
+        b.style.borderBottom = isAct ? '2px solid #f43f5e' : 'none';
+      });
+
+      if (mode === 'REEL' || mode === 'STORY' || mode === 'LIVE') {
+        showCameraInsideNewPost();
+      }
+    }
+
+    function cycleNpAudio() {
+      const idx = AUDIO_LIST.indexOf(activeAudio);
+      activeAudio = AUDIO_LIST[(idx + 1) % AUDIO_LIST.length];
+      const pill = document.getElementById('npAudioPill');
+      if (pill) pill.textContent = activeAudio;
+    }
+
+    function bindNpEvents() {
+      document.getElementById('npCloseBtn').addEventListener('click', closeNewPostStudio);
+      document.getElementById('npPublishBtn').addEventListener('click', publishNewPostStudio);
+      document.getElementById('npOpenCamViewBtn').addEventListener('click', showCameraInsideNewPost);
+      document.getElementById('npBackToGalleryBtn').addEventListener('click', showGalleryInsideNewPost);
+      document.getElementById('npMiniGallery').addEventListener('click', showGalleryInsideNewPost);
+
+      document.getElementById('npFileInput').addEventListener('change', (ev) => {
+        const file = ev.target.files && ev.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => setChosenMedia(e.target.result);
+        reader.readAsDataURL(file);
+      });
+
+      document.getElementById('npMuteBtn').addEventListener('click', () => {
+        mutedState = !mutedState;
+        if (stream) stream.getAudioTracks().forEach((t) => (t.enabled = !mutedState));
+        document.getElementById('npMuteBtn').textContent = mutedState ? '🔇 म्यूट' : '🎙️ ऑन';
+      });
+
+      document.getElementById('npSpeedBtn').addEventListener('click', () => {
+        const list = ['0.5x', '1x', '2x'];
+        speedVal = list[(list.indexOf(speedVal) + 1) % list.length];
+        document.getElementById('npSpeedBtn').textContent = speedVal;
+      });
+
+      document.getElementById('npTimerBtn').addEventListener('click', () => {
+        const list = [0, 3, 10];
+        timerSec = list[(list.indexOf(timerSec) + 1) % list.length];
+        document.getElementById('npTimerBtn').textContent = timerSec ? `⏱️ ${timerSec}s` : '⏱️ ऑफ';
+      });
+
+      document.getElementById('npAudioPill').addEventListener('click', cycleNpAudio);
+      document.getElementById('npSideAudio').addEventListener('click', cycleNpAudio);
+
+      document.getElementById('npSideFx').addEventListener('click', () => {
+        const next = STUDIO_FILTERS[(STUDIO_FILTERS.findIndex((f) => f.css === activeFilter) + 1) % STUDIO_FILTERS.length];
+        activeFilter = next.css;
+        document.getElementById('npVideo').style.filter = activeFilter;
+        renderNpFilterBubbles();
+      });
+
+      document.getElementById('npSideFrame').addEventListener('click', () => {
+        const vid = document.getElementById('npVideo');
+        vid.style.borderRadius = vid.style.borderRadius === '24px' ? '0px' : '24px';
+      });
+
+      document.getElementById('npSideWand').addEventListener('click', () => {
+        activeFilter = 'brightness(1.14) contrast(1.08) saturate(1.25)';
+        document.getElementById('npVideo').style.filter = activeFilter;
+        renderNpFilterBubbles();
+      });
+
+      document.getElementById('npSide15').addEventListener('click', () => {
+        setNpMode('REEL');
+      });
+
+      document.getElementById('npFlipCam').addEventListener('click', async () => {
+        facingMode = facingMode === 'user' ? 'environment' : 'user';
+        await startNpCam();
+      });
+
+      document.getElementById('npShutter').addEventListener('click', () => {
+        if (timerSec > 0) {
+          runNpCountdown(timerSec, snapNpPhoto);
+        } else {
+          snapNpPhoto();
+        }
+      });
+
+      document.getElementById('npUseShotBtn').addEventListener('click', () => {
+        const shot = document.getElementById('npShotImg');
+        if (shot && shot.style.display === 'none') snapNpPhoto();
+        if (shot && shot.src) setChosenMedia(shot.src);
+        showGalleryInsideNewPost();
+      });
+
+      document.querySelectorAll('.np-mode').forEach((btn) => {
+        btn.addEventListener('click', () => setNpMode(btn.getAttribute('data-mode')));
+      });
+    }
+
+    function runNpCountdown(sec, cb) {
+      const el = document.getElementById('npCountdown');
+      let count = sec;
+      el.style.display = 'block';
+      el.textContent = count;
+      const timer = setInterval(() => {
+        count -= 1;
+        if (count > 0) {
+          el.textContent = count;
+        } else {
+          clearInterval(timer);
+          el.style.display = 'none';
+          cb();
+        }
+      }, 1000);
+    }
+
+    function snapNpPhoto() {
+      const vid = document.getElementById('npVideo');
+      const canvas = document.getElementById('npCanvas');
+      const shot = document.getElementById('npShotImg');
+      if (!vid || !canvas || !shot) return;
+
+      if (vid.videoWidth && vid.videoHeight) {
+        canvas.width = vid.videoWidth;
+        canvas.height = vid.videoHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.filter = activeFilter === 'none' ? 'none' : activeFilter;
+        ctx.drawImage(vid, 0, 0, canvas.width, canvas.height);
+        shot.src = canvas.toDataURL('image/jpeg', 0.9);
+      } else {
+        shot.src = chosenMedia;
+      }
+      shot.style.filter = activeFilter;
+      shot.style.display = 'block';
+    }
+
+    async function showCameraInsideNewPost() {
+      document.getElementById('npGalleryView').style.display = 'none';
+      document.getElementById('npCamView').style.display = 'block';
+      const shot = document.getElementById('npShotImg');
+      if (shot) shot.style.display = 'none';
+      await startNpCam();
+    }
+
+    function showGalleryInsideNewPost() {
+      stopNpCam();
+      document.getElementById('npCamView').style.display = 'none';
+      document.getElementById('npGalleryView').style.display = 'block';
+    }
+
+    async function startNpCam() {
+      stopNpCam();
+      const vid = document.getElementById('npVideo');
+      if (!vid) return;
+      vid.style.filter = activeFilter;
+      vid.style.transform = facingMode === 'user' ? 'scaleX(-1)' : 'none';
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode },
+          audio: !mutedState
+        });
+        vid.srcObject = stream;
+      } catch (e) {
+        console.warn('Camera stream info:', e);
+      }
+    }
+
+    function stopNpCam() {
+      if (stream) {
+        stream.getTracks().forEach((t) => t.stop());
+        stream = null;
+      }
+    }
+
+    function publishNewPostStudio() {
+      const shot = document.getElementById('npShotImg');
+      const camVisible = document.getElementById('npCamView').style.display !== 'none';
+      if (camVisible && shot && shot.style.display !== 'none' && shot.src) {
+        chosenMedia = shot.src;
+      }
+
+      const capInput = document.getElementById('npCaption');
+      const audioNote = activeAudio ? ` • ${activeAudio}` : '';
+      const captionText =
+        (capInput && capInput.value.trim()) || `धाकड़ ${activeTabMode} (${speedVal})${audioNote} 🔥`;
+
+      try {
+        if (window.state) {
+          const prof = window.state.profile || {};
+          const author = prof.name || 'वीर धाकड़';
+          const handle = prof.handle || '@veer_dhaakad';
+          const avatarColor = prof.avatarColor || 'from-rose-600 to-orange-500';
+          const initial = author.trim().charAt(0).toUpperCase() || 'ध';
+
+          if (activeTabMode === 'STORY' && Array.isArray(window.state.stories)) {
+            window.state.stories.unshift({
+              id: 'st_' + Date.now(),
+              author,
+              handle,
+              avatarInitial: initial,
+              avatarColor,
+              image: chosenMedia,
+              caption: captionText,
+              time: 'अभी-अभी',
+              seen: false
+            });
+          } else if (activeTabMode === 'REEL' && Array.isArray(window.state.reels)) {
+            window.state.reels.unshift({
+              id: 'r_' + Date.now(),
+              title: captionText,
+              creator: author,
+              handle,
+              views: '1',
+              likes: 1,
+              liked: true,
+              image: chosenMedia,
+              badge: 'नया रील'
+            });
+          } else if (Array.isArray(window.state.posts)) {
+            window.state.posts.unshift({
+              id: 'p_' + Date.now(),
+              author,
+              handle,
+              avatarInitial: initial,
+              avatarColor,
+              location: prof.city || 'भारत',
+              image: chosenMedia,
+              filter: 'filter-none',
+              caption: activeTabMode === 'LIVE' ? '🔴 LIVE: ' + captionText : captionText,
+              tags: '#धाकड़स्वैग',
+              time: 'अभी-अभी',
+              likes: 1,
+              liked: true,
+              comments: []
+            });
+          }
+          if (typeof window.saveState === 'function') window.saveState();
+          if (typeof window.switchTab === 'function') {
+            window.switchTab(activeTabMode === 'REEL' ? 'reels' : 'home');
+          } else if (typeof window.renderAll === 'function') {
+            window.renderAll();
+          }
+        }
+      } catch (err) {
+        console.warn('Publish info:', err);
+      }
+
+      if (capInput) capInput.value = '';
+      closeNewPostStudio();
+    }
+
+    function openNewPostStudio() {
+      buildNewPostStudio();
+      setNpMode('POST');
+      showGalleryInsideNewPost();
+      document.getElementById(NP_MODAL_ID).style.display = 'flex';
+    }
+
+    function closeNewPostStudio() {
+      stopNpCam();
+      const el = document.getElementById(NP_MODAL_ID);
+      if (el) el.style.display = 'none';
+    }
+
+    document.addEventListener(
+      'click',
+      (e) => {
+        const btn = e.target.closest('button');
+        if (!btn) return;
+        if (btn.closest(`#${NP_MODAL_ID}`)) return;
+        const text = (btn.textContent || '').trim();
+        if (text.includes('नई पोस्ट') || text === 'पोस्ट') {
+          e.preventDefault();
+          e.stopPropagation();
+          openNewPostStudio();
+        }
+      },
+      true
+    );
+  })();
+</script>
+    
 </body>
 </html>
 
