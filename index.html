@@ -1933,42 +1933,6 @@ function clearDhaakadSong() {
 
       const finalStream = new MediaStream(combinedTracks);
       mediaRecorder = new MediaRecorder(finalStream, { mimeType: "video/webm" });
-
-      mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedChunks.push(e.data); };
-      mediaRecorder.onstop = () => {
-        audioEl.pause();
-        const blob = new Blob(recordedChunks, { type: "video/webm" });
-        const finalUrl = URL.createObjectURL(blob);
-        vid.srcObject = null;
-        vid.src = finalUrl;
-        vid.muted = false;
-        vid.loop = true;
-        vid.play();
-        window.latestDhaakadReelBlob = blob; // इसे आप अपने पोस्ट/अपलोड बटन में इस्तेमाल कर सकते हैं
-      };
-
-      isRecording = true;
-      btn.style.borderRadius = "16px";
-      btn.style.transform = "scale(0.85)";
-      drawFrame();
-      mediaRecorder.start();
-
-      setTimeout(() => { if (isRecording) toggleReelRecording(); }, maxDuration * 1000);
-    } else {
-      isRecording = false;
-      btn.style.borderRadius = "50%";
-      btn.style.transform = "scale(1)";
-      mediaRecorder.stop();
-    }
-  }
-
-  function stopReelCamera() {
-    if (camStream) camStream.getTracks().forEach(t => t.stop());
-    document.getElementById("reelBgAudio").pause();
-  }
-
-  // पेज खुलते ही कैमरा चालू करें
-  startReelCamera();
 </script>
   
 </body>
