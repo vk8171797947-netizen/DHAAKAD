@@ -3672,6 +3672,26 @@
     dsCloseStudio();
   }
   </script>
+<script>
+  (function hideMiddleThreeButtons() {
+    function cleanButtons() {
+      const targets = ['Audio', 'Text', 'Aa', 'Speed', '1x'];
+      document.querySelectorAll('button, div, span').forEach(el => {
+        if (el.closest('#dhaakadStudioModal')) return;
+        const txt = (el.innerText || '').trim();
+        if (targets.includes(txt) && el.children.length <= 2) {
+          const btnWrap = el.closest('button') || el;
+          btnWrap.style.display = 'none';
+          btnWrap.remove();
+        }
+      });
+    }
+
+    cleanButtons();
+    setTimeout(cleanButtons, 300);
+    setTimeout(cleanButtons, 1000);
+  })();
+</script>
   
 </body>
 </html>
