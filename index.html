@@ -2243,7 +2243,664 @@
   });
 })();
   </script>
-    
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>धाकड़ - रील कैमरा और एडिटर</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      user-select: none;
+    }
+
+    body {
+      background-color: #000;
+      color: #fff;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 20;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+    }
+
+    .close-btn {
+      font-size: 24px;
+      background: none;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .title-text {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .publish-btn {
+      background: linear-gradient(45deg, #ff512f, #dd2476);
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .camera-container {
+      position: relative;
+      width: 100%;
+      height: calc(100vh - 60px);
+      background: #111;
+      border-radius: 0 0 20px 20px;
+      overflow: hidden;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: filter 0.3s ease;
+    }
+
+    .filter-normal { filter: none; }
+    .filter-warm { filter: sepia(0.35) saturate(1.4) contrast(1.05); }
+    .filter-cool { filter: hue-rotate(180deg) saturate(1.2) brightness(1.05); }
+    .filter-bw { filter: grayscale(1) contrast(1.2); }
+    .filter-vintage { filter: sepia(0.6) contrast(1.1) brightness(0.9); }
+
+    .sub-controls {
+      position: absolute;
+      top: 60px;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      z-index: 15;
+      padding: 0 10px;
+      flex-wrap: wrap;
+    }
+
+    .pill-btn {
+      background: rgba(30, 30, 30, 0.75);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+    }
+
+    .pill-btn.active {
+      background: #ff512f;
+      border-color: #ff512f;
+    }
+
+    .music-pill {
+      position: absolute;
+      top: 105px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(8px);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      z-index: 15;
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.2);
+      white-space: nowrap;
+    }
+
+    .side-tools {
+      position: absolute;
+      left: 14px;
+      top: 45%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      z-index: 15;
+    }
+
+    .tool-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(30, 30, 30, 0.7);
+      backdrop-filter: blur(5px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      border: 1px solid rgba(255,255,255,0.15);
+      cursor: pointer;
+    }
+
+    .filter-bar {
+      position: absolute;
+      bottom: 105px;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      z-index: 15;
+    }
+
+    .filter-dot {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .filter-dot.selected {
+      border-color: #ff2e63;
+      transform: scale(1.12);
+      background: rgba(255, 46, 99, 0.25);
+    }
+
+    .bottom-actions {
+      position: absolute;
+      bottom: 20px;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 15;
+    }
+
+    .gallery-thumb {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      border: 2px solid #fff;
+      background: #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .record-btn {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: #fff;
+      border: 5px solid rgba(255, 255, 255, 0.4);
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .record-btn.recording {
+      background: #ff2e63;
+      transform: scale(1.1);
+      border-color: #fff;
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(255, 46, 99, 0.7); }
+      70% { box-shadow: 0 0 0 15px rgba(255, 46, 99, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(255, 46, 99, 0); }
+    }
+
+    .flip-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(30, 30, 30, 0.7);
+      border: none;
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .mode-tabs {
+      height: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 24px;
+      background: #000;
+      font-size: 13px;
+      font-weight: 600;
+      color: #888;
+    }
+
+    .mode-tabs span.active {
+      color: #fff;
+      border-bottom: 2px solid #ff512f;
+      padding-bottom: 4px;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 50;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 12px 15px;
+      border-radius: 12px;
+      border: none;
+      background: #222;
+      color: #fff;
+      font-size: 15px;
+      margin-bottom: 15px;
+      outline: none;
+    }
+
+    .song-list {
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .song-item {
+      background: #1a1a1a;
+      padding: 12px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .song-item:hover {
+      background: #2a2a2a;
+    }
+
+    #editorScreen {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 40;
+      flex-direction: column;
+    }
+
+    .overlay-text {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 24px;
+      font-weight: bold;
+      color: #fff;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.9);
+      background: rgba(0,0,0,0.4);
+      padding: 6px 14px;
+      border-radius: 8px;
+      z-index: 25;
+      pointer-events: none;
+    }
+
+    .editor-tools {
+      position: absolute;
+      bottom: 30px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      z-index: 30;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="cameraScreen">
+    <div class="top-bar">
+      <button class="close-btn" onclick="alert('बंद किया जा रहा है')">✕</button>
+      <div class="title-text">नई पोस्ट • रील</div>
+      <button class="publish-btn" onclick="openEditor()">आगे बढ़ें ➔</button>
+    </div>
+
+    <div class="camera-container">
+      <video id="cameraFeed" autoplay playsinline muted class="filter-normal"></video>
+
+      <div class="sub-controls">
+        <button class="pill-btn" onclick="document.getElementById('galleryInput').click()">🖼️ गैलरी</button>
+        <button class="pill-btn active" id="micBtn" onclick="toggleMic()">🎙️ ऑन</button>
+        <button class="pill-btn" id="speedBtn" onclick="changeSpeed()">1x</button>
+        <button class="pill-btn" id="timerBtn" onclick="changeTimer()">⏱️ ऑफ</button>
+      </div>
+
+      <div class="music-pill" onclick="openMusicModal()">
+        <span>🎶</span>
+        <span id="selectedSongText">रात की रफ़्तार — लो-फ़ाई</span>
+      </div>
+
+      <div class="side-tools">
+        <div class="tool-icon" onclick="openMusicModal()" title="गाना बदलें">🎵</div>
+        <div class="tool-icon" onclick="cycleFilter()" title="फिल्टर बदलें">✨</div>
+        <div class="tool-icon" onclick="addTextPrompt()" title="टेक्स्ट लिखें">Aa</div>
+        <div class="tool-icon" id="durationBadge" onclick="toggleDuration()">15s</div>
+      </div>
+
+      <div id="liveTextOverlay" class="overlay-text" style="display:none;"></div>
+
+      <div class="filter-bar">
+        <div class="filter-dot selected" onclick="setFilter('filter-normal', this)">✨</div>
+        <div class="filter-dot" onclick="setFilter('filter-warm', this)">🔥</div>
+        <div class="filter-dot" onclick="setFilter('filter-vintage', this)">🌅</div>
+        <div class="filter-dot" onclick="setFilter('filter-cool', this)">💫</div>
+        <div class="filter-dot" onclick="setFilter('filter-bw', this)">🎬</div>
+      </div>
+
+      <div class="bottom-actions">
+        <div class="gallery-thumb" onclick="document.getElementById('galleryInput').click()">🖼️</div>
+        <button class="record-btn" id="recordBtn" onclick="toggleRecording()"></button>
+        <button class="flip-btn" onclick="flipCamera()">🔄</button>
+      </div>
+    </div>
+
+    <div class="mode-tabs">
+      <span>POST</span>
+      <span>STORY</span>
+      <span class="active">REEL</span>
+      <span>LIVE</span>
+    </div>
+  </div>
+
+  <input type="file" id="galleryInput" accept="video/*" style="display:none" onchange="handleGalleryVideo(event)" />
+
+  <div id="editorScreen">
+    <div class="top-bar">
+      <button class="close-btn" onclick="backToCamera()">← वापस</button>
+      <div class="title-text">रील एडिट करें</div>
+      <button class="publish-btn" onclick="publishReel()">पब्लिश करें</button>
+    </div>
+
+    <div class="camera-container">
+      <video id="previewVideo" loop controls playsinline></video>
+      <div id="editorTextOverlay" class="overlay-text" style="display:none;"></div>
+
+      <div class="editor-tools">
+        <button class="pill-btn" onclick="addTextPrompt()">Aa टेक्स्ट लिखें</button>
+        <button class="pill-btn" onclick="openMusicModal()">🎵 गाना बदलें</button>
+        <button class="pill-btn" onclick="cyclePreviewFilter()">✨ फिल्टर बदलें</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="musicModal">
+    <div class="modal-header">
+      <h3>🎶 गाना सर्च करें</h3>
+      <button class="close-btn" onclick="closeMusicModal()">✕</button>
+    </div>
+    <input type="text" class="search-input" id="songSearchInput" placeholder="गाने का नाम लिखें (जैसे: धाकड़, हरियाणवी, लो-फ़ाई)..." onkeyup="filterSongs()" />
+    <div class="song-list" id="songList"></div>
+  </div>
+
+  <audio id="bgMusicPlayer" loop></audio>
+    <script>
+    let currentStream = null;
+    let useFrontCamera = true;
+    let mediaRecorder = null;
+    let recordedChunks = [];
+    let isRecording = false;
+    let recordedVideoURL = null;
+    let currentFilter = 'filter-normal';
+    let micOn = true;
+    let speedList = ['1x', '1.5x', '2x', '0.5x'];
+    let speedIdx = 0;
+    let durationSec = 15;
+
+    const songsDatabase = [
+      { title: "रात की रफ़्तार — लो-फ़ाई", artist: "धाकड़ बीट्स", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
+      { title: "धाकड़ छोरा — हरियाणवी स्वैग", artist: "देसी स्टार", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
+      { title: "शाम की महफ़िल — रोमांटिक", artist: "अरिजीत वाइब्स", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
+      { title: "देसी ठाठ — डीजे रीमिक्स", artist: "डीजे भारत", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" },
+      { title: "सफ़रनामा — ट्रैवल वाइब", artist: "इंडी म्यूजिक", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" }
+    ];
+
+    window.onload = () => {
+      startCamera();
+      renderSongs(songsDatabase);
+    };
+
+    async function startCamera() {
+      if (currentStream) {
+        currentStream.getTracks().forEach(track => track.stop());
+      }
+      try {
+        const constraints = {
+          video: { facingMode: useFrontCamera ? "user" : "environment" },
+          audio: micOn
+        };
+        currentStream = await navigator.mediaDevices.getUserMedia(constraints);
+        document.getElementById('cameraFeed').srcObject = currentStream;
+      } catch (err) {
+        alert("कैमरा चालू नहीं हो पाया। कृपया ब्राउज़र में कैमरा की परमिशन दें।");
+      }
+    }
+
+    function flipCamera() {
+      useFrontCamera = !useFrontCamera;
+      startCamera();
+    }
+
+    function toggleMic() {
+      micOn = !micOn;
+      const btn = document.getElementById('micBtn');
+      btn.innerText = micOn ? "🎙️ ऑन" : "🔇 म्यूट";
+      btn.classList.toggle('active', micOn);
+      startCamera();
+    }
+
+    function changeSpeed() {
+      speedIdx = (speedIdx + 1) % speedList.length;
+      document.getElementById('speedBtn').innerText = speedList[speedIdx];
+    }
+
+    function changeTimer() {
+      const btn = document.getElementById('timerBtn');
+      btn.innerText = btn.innerText.includes('ऑफ') ? '⏱️ 3s' : '⏱️ ऑफ';
+    }
+
+    function toggleDuration() {
+      durationSec = durationSec === 15 ? 30 : 15;
+      document.getElementById('durationBadge').innerText = durationSec + "s";
+    }
+
+    function setFilter(filterClass, el) {
+      currentFilter = filterClass;
+      document.getElementById('cameraFeed').className = filterClass;
+      document.querySelectorAll('.filter-dot').forEach(dot => dot.classList.remove('selected'));
+      if (el) el.classList.add('selected');
+    }
+
+    function cycleFilter() {
+      const filters = ['filter-normal', 'filter-warm', 'filter-vintage', 'filter-cool', 'filter-bw'];
+      let nextIdx = (filters.indexOf(currentFilter) + 1) % filters.length;
+      setFilter(filters[nextIdx], document.querySelectorAll('.filter-dot')[nextIdx]);
+    }
+
+    function toggleRecording() {
+      const btn = document.getElementById('recordBtn');
+      const bgMusic = document.getElementById('bgMusicPlayer');
+
+      if (!isRecording) {
+        if (!currentStream) return alert("कैमरा तैयार नहीं है!");
+        recordedChunks = [];
+        mediaRecorder = new MediaRecorder(currentStream);
+
+        mediaRecorder.ondataavailable = (e) => {
+          if (e.data.size > 0) recordedChunks.push(e.data);
+        };
+
+        mediaRecorder.onstop = () => {
+          const blob = new Blob(recordedChunks, { type: 'video/webm' });
+          recordedVideoURL = URL.createObjectURL(blob);
+          openEditor();
+        };
+
+        mediaRecorder.start();
+        isRecording = true;
+        btn.classList.add('recording');
+        if (bgMusic.src) bgMusic.play().catch(() => {});
+      } else {
+        mediaRecorder.stop();
+        isRecording = false;
+        btn.classList.remove('recording');
+        bgMusic.pause();
+      }
+    }
+
+    function handleGalleryVideo(event) {
+      const file = event.target.files[0];
+      if (file) {
+        recordedVideoURL = URL.createObjectURL(file);
+        openEditor();
+      }
+    }
+
+    function openEditor() {
+      if (!recordedVideoURL) {
+        alert("पहले कैमरा से वीडियो रिकॉर्ड करें या गैलरी से कोई वीडियो चुनें!");
+        return;
+      }
+      document.getElementById('cameraScreen').style.display = 'none';
+      document.getElementById('editorScreen').style.display = 'flex';
+
+      const preview = document.getElementById('previewVideo');
+      preview.src = recordedVideoURL;
+      preview.className = currentFilter;
+      preview.play();
+
+      const bgMusic = document.getElementById('bgMusicPlayer');
+      if (bgMusic.src) bgMusic.play().catch(() => {});
+    }
+
+    function backToCamera() {
+      document.getElementById('editorScreen').style.display = 'none';
+      document.getElementById('cameraScreen').style.display = 'block';
+      document.getElementById('previewVideo').pause();
+      document.getElementById('bgMusicPlayer').pause();
+    }
+
+    function cyclePreviewFilter() {
+      const filters = ['filter-normal', 'filter-warm', 'filter-vintage', 'filter-cool', 'filter-bw'];
+      let nextIdx = (filters.indexOf(currentFilter) + 1) % filters.length;
+      currentFilter = filters[nextIdx];
+      document.getElementById('previewVideo').className = currentFilter;
+    }
+
+    function addTextPrompt() {
+      const txt = prompt("रील पर लिखने के लिए टेक्स्ट डालें:");
+      if (txt !== null) {
+        const liveEl = document.getElementById('liveTextOverlay');
+        const editEl = document.getElementById('editorTextOverlay');
+        if (txt.trim() === "") {
+          liveEl.style.display = 'none';
+          editEl.style.display = 'none';
+        } else {
+          liveEl.innerText = txt;
+          editEl.innerText = txt;
+          liveEl.style.display = 'block';
+          editEl.style.display = 'block';
+        }
+      }
+    }
+
+    function openMusicModal() {
+      document.getElementById('musicModal').style.display = 'flex';
+    }
+
+    function closeMusicModal() {
+      document.getElementById('musicModal').style.display = 'none';
+    }
+
+    function renderSongs(list) {
+      const container = document.getElementById('songList');
+      container.innerHTML = "";
+      list.forEach(song => {
+        const div = document.createElement('div');
+        div.className = 'song-item';
+        div.innerHTML = `
+          <div>
+            <div style="font-weight:bold; font-size:14px;">${song.title}</div>
+            <div style="font-size:12px; color:#aaa;">${song.artist}</div>
+          </div>
+          <button class="publish-btn" style="padding:5px 12px; font-size:12px;">चुनें ✓</button>
+        `;
+        div.onclick = () => selectSong(song);
+        container.appendChild(div);
+      });
+    }
+
+    function filterSongs() {
+      const query = document.getElementById('songSearchInput').value.toLowerCase();
+      const filtered = songsDatabase.filter(s =>
+        s.title.toLowerCase().includes(query) || s.artist.toLowerCase().includes(query)
+      );
+      renderSongs(filtered);
+    }
+
+    function selectSong(song) {
+      document.getElementById('selectedSongText').innerText = song.title;
+      const bgMusic = document.getElementById('bgMusicPlayer');
+      bgMusic.src = song.url;
+      bgMusic.play().catch(() => {});
+      closeMusicModal();
+    }
+
+    function publishReel() {
+      const songName = document.getElementById('selectedSongText').innerText;
+      const overlayTxt = document.getElementById('editorTextOverlay').innerText;
+      alert(`🎉 बधाई हो! आपकी धाकड़ रील पब्लिश हो गई है!\n\nगाना: ${songName}\nफिल्टर: ${currentFilter}\nटेक्स्ट: ${overlayTxt || 'कोई नहीं'}`);
+    }
+  </script>
+
 </body>
 </html>
 
