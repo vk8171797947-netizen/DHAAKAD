@@ -3334,6 +3334,44 @@
   // Initialize Camera on Load
   window.onload = startCamera;
 </script>
+<!-- Reel / Video Editor Modal (Sirf open karne par dikhega) -->
+<div id="reelEditorModal" style="display:none; position:fixed; inset:0; z-index:9999; background:#000; flex-direction:column;">
+  <div style="padding:12px; display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.8);">
+    <button type="button" onclick="closeReelEditor()" style="padding:8px 14px; border-radius:16px; border:none; background:#333; color:#fff;">✕ Band Karein</button>
+    <span style="font-weight:700; color:#fff;">धाकड़ Reel Studio</span>
+    <button type="button" onclick="postReel()" style="padding:8px 14px; border-radius:16px; border:none; background:#0095f6; color:#fff;">Post</button>
+  </div>
+
+  <!-- Yahan aapka videoPlayer, side-tools, filters aur record button aayega -->
+  <div id="editorBody" style="position:relative; flex:1; overflow:hidden;"></div>
+</div>
+
+<script>
+  function openReelEditor() {
+    const modal = document.getElementById('reelEditorModal');
+    const body = document.getElementById('editorBody');
+    const vp = document.getElementById('viewport');
+    const tools = document.querySelector('.side-tools');
+    const bottom = document.querySelector('.bottom-area');
+
+    if (vp && !body.contains(vp)) body.appendChild(vp);
+    if (tools && !body.contains(tools)) body.appendChild(tools);
+    if (bottom && !body.contains(bottom)) body.appendChild(bottom);
+
+    modal.style.display = 'flex';
+    if (typeof startCamera === 'function') startCamera();
+  }
+
+  function closeReelEditor() {
+    document.getElementById('reelEditorModal').style.display = 'none';
+    if (typeof currentStream !== 'undefined' && currentStream) {
+      currentStream.getTracks().forEach(track => track.stop());
+    }
+    if (typeof bgAudio !== 'undefined') {
+      bgAudio.pause();
+    }
+  }
+</script>
   
 </body>
 </html>
