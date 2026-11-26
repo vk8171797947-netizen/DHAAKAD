@@ -3263,44 +3263,6 @@
   function openTextModal() {
     document.getElementById('textModal').style.display = 'flex';
   }
-  function setTextColor(color) {
-    selectedTextColor = color;
-  }
-  function saveText() {
-    const val = document.getElementById('textInput').value.trim();
-    if (val) {
-      textOverlay.textContent = val;
-      textOverlay.style.color = selectedTextColor;
-      textOverlay.style.display = 'block';
-    } else {
-      textOverlay.style.display = 'none';
-    }
-    closeModals();
-  }
-
-  // Touch & Mouse Drag for Text Overlay
-  let isDragging = false;
-  textOverlay.addEventListener('touchstart', () => isDragging = true);
-  textOverlay.addEventListener('touchend', () => isDragging = false);
-  textOverlay.addEventListener('touchmove', (e) => {
-    if (!isDragging) return;
-    const touch = e.touches[0];
-    textOverlay.style.left = touch.clientX + 'px';
-    textOverlay.style.top = touch.clientY + 'px';
-  });
-
-  // 9. Music / Audio Picker
-  function openMusicModal() {
-    document.getElementById('musicModal').style.display = 'flex';
-  }
-  function loadMusicFile(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    bgAudio.src = URL.createObjectURL(file);
-    bgAudio.play();
-    video.muted = true; // Mute original video when song plays
-    document.getElementById('musicName').textContent = file.name.slice(0, 22);
-    document.getElementById('musicBadge').style.display = 'flex';
 
 </script>
  
