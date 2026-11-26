@@ -3217,52 +3217,7 @@
   function loadGalleryVideo(event) {
     const file = event.target.files[0];
     if (!file) return;
-    const url = URL.createObjectURL(file);
-    enterEditMode(url);
-  }
 
-  // Switch to Video Editing Mode
-  function enterEditMode(videoURL) {
-    if (currentStream) {
-      currentStream.getTracks().forEach(track => track.stop());
-    }
-    video.srcObject = null;
-    video.src = videoURL;
-    video.classList.remove('mirror');
-    video.loop = true;
-    video.muted = false;
-    video.play();
-    isEditMode = true;
-    document.getElementById('muteBtn').textContent = '🔊 Sound';
-    if (bgAudio.src) bgAudio.play();
-  }
-
-  // 5. Apply Instagram Filters
-  function applyFilter(filterValue, element) {
-    video.style.filter = filterValue;
-    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-    element.classList.add('active');
-  }
-
-  // 6. Playback Speed (0.5x, 1x, 1.5x, 2x)
-  function toggleSpeed() {
-    const speeds = [1, 1.5, 2, 0.5];
-    const nextIdx = (speeds.indexOf(currentSpeed) + 1) % speeds.length;
-    currentSpeed = speeds[nextIdx];
-    video.playbackRate = currentSpeed;
-    document.getElementById('speedLabel').textContent = currentSpeed + 'x';
-  }
-
-  // 7. Mute / Unmute Video Sound
-  function toggleMute() {
-    video.muted = !video.muted;
-    document.getElementById('muteBtn').textContent = video.muted ? '🔇 Mute' : '🔊 Sound';
-  }
-
-  // 8. Text Overlay & Dragging
-  function openTextModal() {
-    document.getElementById('textModal').style.display = 'flex';
-  }
 
 </script>
  
