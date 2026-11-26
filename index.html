@@ -1157,4 +1157,783 @@
         `}
       `;
       }
-        
+            function openCreatePost(mode = 'post') {
+      createMode = mode;
+      selectedPhotoData = PRESET_PHOTOS[0];
+      selectedFilterClass = 'filter-none';
+      document.getElementById('previewImage').src = selectedPhotoData;
+      document.getElementById('newPostCaption').value = '';
+      document.getElementById('newPostLocation').value = state.profile.city || '';
+      document.getElementById('newPostTag').value = '#धाकड़स्वैग';
+      clearSelectedStoryMusic();
+      renderStoryMusicList();
+      renderFilterButtons();
+      setCreateMode(mode);
+      document.getElementById('createModal').classList.remove('hidden');
+    }
+
+    function closeCreateModal() {
+      const aud = document.getElementById('storyPreviewAudio');
+      if (aud) aud.pause();
+      document.getElementById('createModal').classList.add('hidden');
+    }
+
+    function setCreateMode(mode) {
+      createMode = mode;
+      const postBtn = document.getElementById('modePostBtn');
+      const storyBtn = document.getElementById('modeStoryBtn');
+      const extraSec = document.getElementById('postExtraFields');
+      const filterSec = document.getElementById('filterSection');
+      const musicSec = document.getElementById('storyMusicSection');
+      const pubBtn = document.getElementById('publishBtn');
+
+      if (mode === 'post') {
+        postBtn.className = 'px-3.5 py-1.5 rounded-full text-xs font-bold dhaakad-gradient text-white';
+        storyBtn.className = 'px-3.5 py-1.5 rounded-full text-xs font-bold bg-zinc-800 text-zinc-300';
+        extraSec.classList.remove('hidden');
+        filterSec.classList.remove('hidden');
+        if (musicSec) musicSec.classList.add('hidden');
+        pubBtn.textContent = 'पोस्ट पब्लिश करें';
+      } else {
+        storyBtn.className = 'px-3.5 py-1.5 rounded-full text-xs font-bold dhaakad-gradient text-white';
+        postBtn.className = 'px-3.5 py-1.5 rounded-full text-xs font-bold bg-zinc-800 text-zinc-300';
+        extraSec.classList.add('hidden');
+        filterSec.classList.add('hidden');
+        if (musicSec) musicSec.classList.remove('hidden');
+        pubBtn.textContent = 'स्टोरी लगाएं';
+      }
+    }
+
+    function renderStoryMusicList() {
+      const box = document.getElementById('storyMusicList');
+      const searchEl = document.getElementById('storyMusicSearch');
+      if (!box) return;
+      const q = (searchEl ? searchEl.value : '').trim().toLowerCase();
+
+      const filtered = STORY_TRACKS.filter(t =>
+        !q || t.title.toLowerCase().includes(q) || t.artist.toLowerCase().includes(q)
+      );
+
+      if (!filtered.length) {
+        box.innerHTML = `<div class="text-[11px] text-zinc-500 py-1">कोई गाना नहीं मिला—आप "फ़ोन से ऑडियो चुनें" से फाइल लगा सकते हैं।</div>`;
+        return;
+      }
+
+      box.innerHTML = filtered.map(track => {
+        const isPicked = selectedStoryMusic && selectedStoryMusic.title === track.title;
+        return `
+          <div class="flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-xl ${isPicked ? 'bg-rose-600/20 border border-rose-500/60' : 'bg-zinc-900'}">
+            <div class="min-w-0">
+              <div class="text-xs font-bold text-white truncate">${escapeHtml(track.title)}</div>
+              <div class="text-[10px] text-zinc-400 truncate">${escapeHtml(track.artist)}</div>
+            </div>
+            <button type="button" onclick='pickStoryTrack(${JSON.stringify(track.title)}, ${JSON.stringify(track.url)})' class="px-2.5 py-1 rounded-lg text-[11px] font-bold shrink-0 ${
+              isPicked ? 'bg-emerald-500 text-black' : 'bg-zinc-800 text-amber-300'
+            }">
+              ${isPicked ? 'चुना गया ✓' : 'चुनें व सुनें'}
+            </button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function pickStoryTrack(title, url) {
+      selectedStoryMusic = { title, url };
+      const lbl = document.getElementById('selectedStoryMusicLabel');
+      const aud = document.getElementById('storyPreviewAudio');
+      if (lbl) lbl.textContent = `🎵 ${title}`;
+      if (aud) {
+        aud.src = url;
+        aud.classList.remove('hidden');
+        aud.play().catch(() => {});
+      }
+      renderStoryMusicList();
+    }
+
+    function handleStoryAudioFile(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const url = URL.createObjectURL(file);
+      pickStoryTrack(file.name, url);
+    }
+
+    function clearSelectedStoryMusic() {
+      selectedStoryMusic = null;
+      const lbl = document.getElementById('selectedStoryMusicLabel');
+      const aud = document.getElementById('storyPreviewAudio');
+      if (lbl) lbl.textContent = 'कोई ऑडियो नहीं चुना';
+      if (aud) {
+        aud.pause();
+        aud.removeAttribute('src');
+        aud.classList.add('hidden');
+      }
+      renderStoryMusicList();
+    }
+
+    function applyPresetPhoto(index) {
+      selectedPhotoData = PRESET_PHOTOS[index] || PRESET_PHOTOS[0];
+      document.getElementById('previewImage').src = selectedPhotoData;
+    }
+
+    function handleFileUpload(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        selectedPhotoData = ev.target.result;
+        document.getElementById('previewImage').src = selectedPhotoData;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function renderFilterButtons() {
+      const container = document.getElementById('filterButtons');
+      container.innerHTML = FILTERS.map(f => {
+        const active = selectedFilterClass === f.cls;
+        return `
+          <button type="button" onclick="selectFilter('${f.cls}')" class="px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 border transition ${
+            active
+              ? 'bg-rose-600/20 border-rose-500 text-rose-300'
+              : 'bg-zinc-950 border-zinc-800 text-zinc-300 hover:border-zinc-700'
+          }">
+            ${f.name}
+          </button>
+        `;
+      }).join('');
+    }
+
+    function selectFilter(cls) {
+      selectedFilterClass = cls;
+      const img = document.getElementById('previewImage');
+      FILTERS.forEach(f => img.classList.remove(f.cls));
+      img.classList.add(cls);
+      renderFilterButtons();
+    }
+
+    function submitNewCreation(e) {
+      e.preventDefault();
+      const caption = document.getElementById('newPostCaption').value.trim();
+      const initial = (state.profile.name || 'ध').trim().charAt(0).toUpperCase();
+
+      if (createMode === 'story') {
+        state.stories.unshift({
+          id: 'st_' + Date.now(),
+          author: state.profile.name,
+          handle: state.profile.handle,
+          avatarInitial: initial,
+          avatarColor: state.profile.avatarColor,
+          image: selectedPhotoData,
+          caption: caption || 'नई धाकड़ स्टोरी 🔥',
+          music: selectedStoryMusic ? selectedStoryMusic.title : '',
+          musicUrl: selectedStoryMusic ? selectedStoryMusic.url : '',
+          time: 'अभी-अभी',
+          seen: false
+        });
+      } else {
+        const location = document.getElementById('newPostLocation').value.trim();
+        const tags = document.getElementById('newPostTag').value.trim();
+        state.posts.unshift({
+          id: 'p_' + Date.now(),
+          author: state.profile.name,
+          handle: state.profile.handle,
+          avatarInitial: initial,
+          avatarColor: state.profile.avatarColor,
+          location: location || state.profile.city || '',
+          image: selectedPhotoData,
+          filter: selectedFilterClass,
+          caption: caption || 'नया धाकड़ अपडेट 🔥',
+          tags: tags,
+          time: 'अभी-अभी',
+          likes: 1,
+          liked: true,
+          comments: []
+        });
+      }
+
+      saveState();
+      closeCreateModal();
+      switchTab('home');
+      }
+                  function openStoryViewer(index) {
+      if (!state.stories.length) return;
+      currentStoryIndex = index;
+      storyProgress = 0;
+      storyPaused = false;
+      document.getElementById('storyPauseBtn').textContent = '⏸ पॉज़';
+      document.getElementById('storyModal').classList.remove('hidden');
+      showCurrentStory();
+      startStoryInterval();
+    }
+
+    function showCurrentStory() {
+      const st = state.stories[currentStoryIndex];
+      if (!st) return;
+      st.seen = true;
+      saveState();
+
+      document.getElementById('storyImage').src = st.image;
+      document.getElementById('storyAuthorName').textContent = st.author;
+      document.getElementById('storyTime').textContent = st.time;
+
+      const av = document.getElementById('storyAuthorAvatar');
+      av.className = `w-9 h-9 rounded-full bg-gradient-to-br ${st.avatarColor} flex items-center justify-center font-bold text-sm text-white`;
+      av.textContent = st.avatarInitial;
+
+      const capEl = document.getElementById('storyCaptionOverlay');
+      if (st.caption) {
+        capEl.textContent = st.caption;
+        capEl.classList.remove('hidden');
+      } else {
+        capEl.classList.add('hidden');
+      }
+
+      const musicTag = document.getElementById('storyViewerMusicTag');
+      if (musicTag) {
+        if (st.music) {
+          musicTag.textContent = `🎵 ${st.music}`;
+          musicTag.classList.remove('hidden');
+        } else {
+          musicTag.classList.add('hidden');
+        }
+      }
+
+      let stAudio = document.getElementById('storyViewerAudio');
+      if (!stAudio) {
+        stAudio = document.createElement('audio');
+        stAudio.id = 'storyViewerAudio';
+        stAudio.loop = true;
+        document.body.appendChild(stAudio);
+      }
+      if (st.musicUrl) {
+        if (stAudio.src !== st.musicUrl) stAudio.src = st.musicUrl;
+        if (!storyPaused) stAudio.play().catch(() => {});
+      } else {
+        stAudio.pause();
+        stAudio.removeAttribute('src');
+      }
+
+      const bars = document.getElementById('storyProgressBars');
+      bars.innerHTML = state.stories.map((_, i) => {
+        let pct = 0;
+        if (i < currentStoryIndex) pct = 100;
+        else if (i === currentStoryIndex) pct = storyProgress;
+        return `
+          <div class="h-1 flex-1 rounded-full bg-white/25 overflow-hidden">
+            <div class="h-full bg-white transition-all duration-100" style="width:${pct}%"></div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function startStoryInterval() {
+      clearInterval(storyTimer);
+      storyTimer = setInterval(() => {
+        if (storyPaused) return;
+        storyProgress += 2;
+        if (storyProgress >= 100) {
+          storyProgress = 0;
+          if (currentStoryIndex < state.stories.length - 1) {
+            currentStoryIndex += 1;
+            showCurrentStory();
+          } else {
+            closeStoryViewer();
+          }
+        } else {
+          showCurrentStory();
+        }
+      }, 100);
+    }
+
+    function toggleStoryPause() {
+      storyPaused = !storyPaused;
+      document.getElementById('storyPauseBtn').textContent = storyPaused ? '▶ चालू करें' : '⏸ पॉज़';
+      const stAudio = document.getElementById('storyViewerAudio');
+      if (stAudio && stAudio.src) {
+        if (storyPaused) stAudio.pause();
+        else stAudio.play().catch(() => {});
+      }
+    }
+
+    function handleStoryTap(e) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      storyProgress = 0;
+      if (clickX < rect.width * 0.35) {
+        currentStoryIndex = Math.max(0, currentStoryIndex - 1);
+        showCurrentStory();
+      } else {
+        if (currentStoryIndex < state.stories.length - 1) {
+          currentStoryIndex += 1;
+          showCurrentStory();
+        } else {
+          closeStoryViewer();
+        }
+      }
+    }
+
+    function sendStoryReply(e) {
+      e.preventDefault();
+      const input = document.getElementById('storyReplyInput');
+      const reply = input.value.trim();
+      if (!reply) return;
+      const st = state.stories[currentStoryIndex];
+      if (st && state.chats[st.handle]) {
+        state.chats[st.handle].messages.push({
+          sender: 'me',
+          text: `स्टोरी रिप्लाई: ${reply}`,
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        });
+        saveState();
+      }
+      input.value = '';
+      alert('स्टोरी रिप्लाई भेज दिया गया है!');
+    }
+
+    function closeStoryViewer() {
+      clearInterval(storyTimer);
+      const stAudio = document.getElementById('storyViewerAudio');
+      if (stAudio) stAudio.pause();
+      document.getElementById('storyModal').classList.add('hidden');
+      if (state.activeTab === 'home') renderAll();
+    }
+
+    function openEditProfile() {
+      tempAvatarColor = state.profile.avatarColor;
+      document.getElementById('editName').value = state.profile.name;
+      document.getElementById('editHandle').value = state.profile.handle;
+      document.getElementById('editCity').value = state.profile.city || '';
+      document.getElementById('editBio').value = state.profile.bio || '';
+      renderAvatarColorChoices();
+      document.getElementById('profileModal').classList.remove('hidden');
+    }
+
+    function closeEditProfile() {
+      document.getElementById('profileModal').classList.add('hidden');
+    }
+
+    function renderAvatarColorChoices() {
+      const box = document.getElementById('avatarColorChoices');
+      box.innerHTML = AVATAR_COLORS.map(col => {
+        const selected = tempAvatarColor === col;
+        return `
+          <button type="button" onclick="pickAvatarColor('${col}')" class="w-9 h-9 rounded-full bg-gradient-to-br ${col} ${
+            selected ? 'ring-2 ring-white scale-110' : 'opacity-75'
+          } transition"></button>
+        `;
+      }).join('');
+    }
+
+    function pickAvatarColor(col) {
+      tempAvatarColor = col;
+      renderAvatarColorChoices();
+    }
+
+    function saveProfileChanges(e) {
+      e.preventDefault();
+      state.profile.name = document.getElementById('editName').value.trim() || 'वीर धाकड़';
+      let handleVal = document.getElementById('editHandle').value.trim() || '@veer_dhaakad';
+      if (!handleVal.startsWith('@')) handleVal = '@' + handleVal;
+      state.profile.handle = handleVal;
+      state.profile.city = document.getElementById('editCity').value.trim();
+      state.profile.bio = document.getElementById('editBio').value.trim();
+      state.profile.avatarColor = tempAvatarColor;
+      saveState();
+      closeEditProfile();
+      renderAll();
+    }
+
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+      }
+          // Unified Clean Reel / Camera Studio
+    (function initDhaakadReelStudio() {
+      const STUDIO_ID = 'dhaakadCleanReelStudio';
+      const DEMO_BEATS = [
+        { title: 'धाकड़ बीट — देसी स्वैग', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+        { title: 'रात की रफ़्तार — लो-फ़ाई', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
+        { title: 'सुबह की ऊर्जा — मोटिवेशन', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3' }
+      ];
+
+      const STUDIO_FILTERS = [
+        { name: 'Normal', css: 'none' },
+        { name: 'Vivid', css: 'saturate(1.65) contrast(1.15)' },
+        { name: 'Warm', css: 'sepia(0.35) saturate(1.4) brightness(1.05)' },
+        { name: 'Vintage', css: 'sepia(0.55) contrast(0.95)' },
+        { name: 'Noir', css: 'grayscale(1) contrast(1.3)' }
+      ];
+
+      let camStream = null;
+      let recorder = null;
+      let chunks = [];
+      let recording = false;
+      let frontCam = true;
+      let activeFilterCss = 'none';
+      let mediaSrc = null;
+      let isVideoMedia = false;
+      let selectedMusicTitle = '';
+      let timerSec = 0;
+      let timerRef = null;
+
+      function ensureStudioModal() {
+        if (document.getElementById(STUDIO_ID)) return;
+        const modal = document.createElement('div');
+        modal.id = STUDIO_ID;
+        modal.className = 'hidden fixed inset-0 z-50 bg-black/95 flex flex-col justify-between p-3 sm:p-5';
+        modal.innerHTML = `
+          <div class="flex items-center justify-between gap-2 pb-2">
+            <button type="button" id="rsCloseBtn" class="px-3.5 py-2 rounded-full bg-zinc-800 text-xs font-bold text-white">← बंद करें</button>
+            <div class="flex items-center gap-2">
+              <span id="rsTimer" class="hidden px-2.5 py-1 rounded-full bg-rose-600 text-xs font-extrabold text-white">00:00</span>
+              <span class="text-sm font-extrabold text-white">धाकड़ रील स्टूडियो</span>
+            </div>
+            <button type="button" id="rsPostBtn" class="px-4 py-2 rounded-full dhaakad-gradient text-xs font-extrabold text-white">रील पोस्ट करें</button>
+          </div>
+
+          <div class="relative flex-1 min-h-[260px] rounded-3xl overflow-hidden bg-zinc-950 border border-zinc-800 flex items-center justify-center">
+            <video id="rsVideo" autoplay playsinline muted class="hidden w-full h-full object-cover"></video>
+            <img id="rsPhoto" src="" alt="Preview" class="hidden w-full h-full object-cover" />
+            <div id="rsTextBadge" class="hidden pointer-events-none absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 px-4 py-1.5 rounded-2xl bg-black/60 text-lg font-extrabold text-white text-center max-w-[85%]"></div>
+            <div id="rsMusicPill" class="hidden pointer-events-none absolute top-3 left-3 px-3 py-1 rounded-full bg-black/65 text-xs font-bold text-amber-300"></div>
+
+            <div class="absolute right-3 top-1/2 -translate-y-1/2 flex flex-col gap-2.5 z-10">
+              <button type="button" id="rsFlipBtn" class="w-10 h-10 rounded-full bg-black/65 border border-white/20 text-xs font-bold text-white flex flex-col items-center justify-center" title="कैमरा पलटें">🔄</button>
+              <button type="button" id="rsTextBtn" class="w-10 h-10 rounded-full bg-black/65 border border-white/20 text-xs font-extrabold text-white flex items-center justify-center" title="टेक्स्ट जोड़ें">Aa</button>
+              <button type="button" id="rsMusicBtn" class="w-10 h-10 rounded-full bg-black/65 border border-white/20 text-xs font-bold text-white flex items-center justify-center" title="म्यूज़िक चुनें">🎵</button>
+            </div>
+          </div>
+
+          <div class="pt-3 space-y-3">
+            <div id="rsFilters" class="flex gap-2 overflow-x-auto no-scrollbar"></div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <input id="rsTitleInput" type="text" placeholder="रील का कैप्शन या टाइटल लिखें..." class="bg-zinc-900 border border-zinc-800 rounded-2xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500" />
+              <div class="flex gap-2">
+                <select id="rsMusicSelect" class="flex-1 bg-zinc-900 border border-zinc-800 rounded-2xl px-3 py-2 text-xs text-white focus:outline-none">
+                  <option value="">बिना म्यूज़िक (No Music)</option>
+                  ${DEMO_BEATS.map((b, i) => `<option value="${i}">🎵 ${b.title}</option>`).join('')}
+                </select>
+                <label class="cursor-pointer px-3 py-2 rounded-2xl bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-amber-300 flex items-center shrink-0">
+                  📁 फ़ाइल
+                  <input id="rsFileInput" type="file" accept="video/*,image/*,audio/*" class="hidden" />
+                </label>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-around py-1">
+              <button type="button" id="rsGalleryBtn" class="px-3.5 py-2 rounded-2xl bg-zinc-800 text-xs font-bold text-zinc-200">🖼️ गैलरी</button>
+              <button type="button" id="rsRecBtn" class="w-16 h-16 rounded-full border-4 border-white flex items-center justify-center">
+                <span id="rsRecDot" class="w-11 h-11 rounded-full bg-rose-600 transition-all"></span>
+              </button>
+              <button type="button" id="rsSnapBtn" class="px-3.5 py-2 rounded-2xl bg-zinc-800 text-xs font-bold text-zinc-200">📸 फ़ोटो रील</button>
+            </div>
+          </div>
+
+          <audio id="rsAudio" loop class="hidden"></audio>
+        `;
+        document.body.appendChild(modal);
+        bindStudioEvents();
+      }
+            function renderStudioFilters() {
+        const box = document.getElementById('rsFilters');
+        if (!box) return;
+        box.innerHTML = STUDIO_FILTERS.map(f => {
+          const active = activeFilterCss === f.css;
+          return `
+            <button type="button" data-filter="${f.css}" class="rs-fbtn px-3 py-1.5 rounded-full text-xs font-bold shrink-0 ${
+              active ? 'bg-white text-black' : 'bg-zinc-800 text-zinc-200'
+            }">${f.name}</button>
+          `;
+        }).join('');
+
+        box.querySelectorAll('.rs-fbtn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            activeFilterCss = btn.getAttribute('data-filter');
+            applyStudioFilter();
+            renderStudioFilters();
+          });
+        });
+      }
+
+      function applyStudioFilter() {
+        const vid = document.getElementById('rsVideo');
+        const img = document.getElementById('rsPhoto');
+        if (vid) vid.style.filter = activeFilterCss;
+        if (img) img.style.filter = activeFilterCss;
+      }
+
+      async function startStudioCamera() {
+        stopStudioCamera();
+        const vid = document.getElementById('rsVideo');
+        const img = document.getElementById('rsPhoto');
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          useFallbackMedia();
+          return;
+        }
+        try {
+          camStream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: frontCam ? 'user' : 'environment' },
+            audio: true
+          });
+          isVideoMedia = true;
+          mediaSrc = null;
+          img.classList.add('hidden');
+          vid.classList.remove('hidden');
+          vid.srcObject = camStream;
+          vid.style.transform = frontCam ? 'scaleX(-1)' : 'scaleX(1)';
+          vid.muted = true;
+          applyStudioFilter();
+        } catch (err) {
+          useFallbackMedia();
+        }
+      }
+
+      function useFallbackMedia() {
+        const vid = document.getElementById('rsVideo');
+        const img = document.getElementById('rsPhoto');
+        isVideoMedia = false;
+        mediaSrc = PRESET_PHOTOS[1];
+        vid.classList.add('hidden');
+        img.classList.remove('hidden');
+        img.src = mediaSrc;
+        applyStudioFilter();
+      }
+
+      function stopStudioCamera() {
+        if (camStream) {
+          camStream.getTracks().forEach(t => t.stop());
+          camStream = null;
+        }
+      }
+
+      function toggleStudioRecording() {
+        const recDot = document.getElementById('rsRecDot');
+        const timerEl = document.getElementById('rsTimer');
+        const vid = document.getElementById('rsVideo');
+        const audioEl = document.getElementById('rsAudio');
+
+        if (!recording) {
+          if (!camStream || typeof MediaRecorder === 'undefined') {
+            alert('लाइव कैमरा रिकॉर्डिंग उपलब्ध नहीं है; आप गैलरी से वीडियो/फ़ोटो चुनकर या "फ़ोटो रील" से सीधे रील पोस्ट कर सकते हैं।');
+            return;
+          }
+          chunks = [];
+          try {
+            recorder = new MediaRecorder(camStream);
+          } catch (e) {
+            alert('इस ब्राउज़र में वीडियो रिकॉर्डर शुरू नहीं हो सका।');
+            return;
+          }
+          recorder.ondataavailable = ev => {
+            if (ev.data && ev.data.size > 0) chunks.push(ev.data);
+          };
+          recorder.onstop = () => {
+            const blob = new Blob(chunks, { type: recorder.mimeType || 'video/webm' });
+            mediaSrc = URL.createObjectURL(blob);
+            isVideoMedia = true;
+            stopStudioCamera();
+            vid.srcObject = null;
+            vid.src = mediaSrc;
+            vid.style.transform = 'none';
+            vid.muted = false;
+            vid.loop = true;
+            vid.play().catch(() => {});
+          };
+          recorder.start();
+          recording = true;
+          recDot.className = 'w-7 h-7 rounded-md bg-rose-500 transition-all';
+          if (audioEl && audioEl.src) audioEl.play().catch(() => {});
+
+          timerSec = 0;
+          timerEl.classList.remove('hidden');
+          timerEl.textContent = '00:00';
+          clearInterval(timerRef);
+          timerRef = setInterval(() => {
+            timerSec++;
+            const m = String(Math.floor(timerSec / 60)).padStart(2, '0');
+            const s = String(timerSec % 60).padStart(2, '0');
+            timerEl.textContent = `${m}:${s}`;
+          }, 1000);
+        } else {
+          recording = false;
+          recDot.className = 'w-11 h-11 rounded-full bg-rose-600 transition-all';
+          clearInterval(timerRef);
+          timerEl.classList.add('hidden');
+          if (recorder && recorder.state !== 'inactive') {
+            recorder.stop();
+          }
+        }
+      }
+
+      function snapPhotoReel() {
+        const vid = document.getElementById('rsVideo');
+        const img = document.getElementById('rsPhoto');
+        if (camStream && vid && vid.videoWidth && vid.videoHeight) {
+          const canvas = document.createElement('canvas');
+          canvas.width = vid.videoWidth;
+          canvas.height = vid.videoHeight;
+          const ctx = canvas.getContext('2d');
+          if (frontCam) {
+            ctx.translate(canvas.width, 0);
+            ctx.scale(-1, 1);
+          }
+          ctx.drawImage(vid, 0, 0, canvas.width, canvas.height);
+          mediaSrc = canvas.toDataURL('image/jpeg', 0.9);
+          isVideoMedia = false;
+          stopStudioCamera();
+          vid.classList.add('hidden');
+          img.classList.remove('hidden');
+          img.src = mediaSrc;
+          applyStudioFilter();
+        } else {
+          useFallbackMedia();
+        }
+      }
+
+      function publishStudioReel() {
+        const titleInput = document.getElementById('rsTitleInput');
+        const textBadge = document.getElementById('rsTextBadge');
+        const overlayText = textBadge && !textBadge.classList.contains('hidden') ? textBadge.textContent.trim() : '';
+        const finalTitle = (titleInput && titleInput.value.trim()) || overlayText || 'नई धाकड़ रील 🔥';
+
+        const newReel = {
+          id: 'r_' + Date.now(),
+          title: finalTitle,
+          creator: state.profile.name,
+          handle: state.profile.handle,
+          views: '1',
+          likes: 1,
+          liked: true,
+          image: (!isVideoMedia && mediaSrc) ? mediaSrc : PRESET_PHOTOS[1],
+          videoUrl: isVideoMedia ? mediaSrc : '',
+          music: selectedMusicTitle || '',
+          badge: 'नई रील'
+        };
+
+        state.reels.unshift(newReel);
+        saveState();
+        closeStudioModal();
+        switchTab('reels');
+      }
+            function bindStudioEvents() {
+        document.getElementById('rsCloseBtn').addEventListener('click', closeStudioModal);
+        document.getElementById('rsPostBtn').addEventListener('click', publishStudioReel);
+        document.getElementById('rsRecBtn').addEventListener('click', toggleStudioRecording);
+        document.getElementById('rsSnapBtn').addEventListener('click', snapPhotoReel);
+        document.getElementById('rsGalleryBtn').addEventListener('click', () => {
+          document.getElementById('rsFileInput').click();
+        });
+
+        document.getElementById('rsFlipBtn').addEventListener('click', () => {
+          frontCam = !frontCam;
+          startStudioCamera();
+        });
+
+        document.getElementById('rsTextBtn').addEventListener('click', () => {
+          const badge = document.getElementById('rsTextBadge');
+          const txt = prompt('रील पर दिखाने के लिए टेक्स्ट लिखें:', badge.textContent || '');
+          if (txt === null) return;
+          if (txt.trim()) {
+            badge.textContent = txt.trim();
+            badge.classList.remove('hidden');
+          } else {
+            badge.classList.add('hidden');
+          }
+        });
+
+        const musicSelect = document.getElementById('rsMusicSelect');
+        const audioEl = document.getElementById('rsAudio');
+        const musicPill = document.getElementById('rsMusicPill');
+
+        function applyBeatSelection() {
+          const idx = musicSelect.value;
+          if (idx === '') {
+            selectedMusicTitle = '';
+            audioEl.pause();
+            audioEl.removeAttribute('src');
+            musicPill.classList.add('hidden');
+            return;
+          }
+          const beat = DEMO_BEATS[Number(idx)];
+          if (!beat) return;
+          selectedMusicTitle = beat.title;
+          audioEl.src = beat.url;
+          audioEl.play().catch(() => {});
+          musicPill.textContent = `🎵 ${beat.title}`;
+          musicPill.classList.remove('hidden');
+        }
+
+        musicSelect.addEventListener('change', applyBeatSelection);
+        document.getElementById('rsMusicBtn').addEventListener('click', () => {
+          const current = musicSelect.value === '' ? -1 : Number(musicSelect.value);
+          const next = current + 1;
+          musicSelect.value = next < DEMO_BEATS.length ? String(next) : '';
+          applyBeatSelection();
+        });
+
+        document.getElementById('rsFileInput').addEventListener('change', ev => {
+          const file = ev.target.files && ev.target.files[0];
+          if (!file) return;
+          const url = URL.createObjectURL(file);
+          const vid = document.getElementById('rsVideo');
+          const img = document.getElementById('rsPhoto');
+
+          if (file.type.startsWith('audio/')) {
+            selectedMusicTitle = file.name;
+            audioEl.src = url;
+            audioEl.play().catch(() => {});
+            musicPill.textContent = `🎵 ${file.name}`;
+            musicPill.classList.remove('hidden');
+            return;
+          }
+
+          stopStudioCamera();
+          mediaSrc = url;
+          if (file.type.startsWith('video/')) {
+            isVideoMedia = true;
+            img.classList.add('hidden');
+            vid.classList.remove('hidden');
+            vid.srcObject = null;
+            vid.src = url;
+            vid.style.transform = 'none';
+            vid.muted = false;
+            vid.loop = true;
+            vid.play().catch(() => {});
+          } else {
+            isVideoMedia = false;
+            vid.classList.add('hidden');
+            img.classList.remove('hidden');
+            img.src = url;
+          }
+          applyStudioFilter();
+        });
+      }
+
+      function closeStudioModal() {
+        recording = false;
+        clearInterval(timerRef);
+        stopStudioCamera();
+        const audioEl = document.getElementById('rsAudio');
+        if (audioEl) audioEl.pause();
+        const modal = document.getElementById(STUDIO_ID);
+        if (modal) modal.classList.add('hidden');
+      }
+
+      window.openReelStudio = function() {
+        ensureStudioModal();
+        activeFilterCss = 'none';
+        renderStudioFilters();
+        document.getElementById(STUDIO_ID).classList.remove('hidden');
+        startStudioCamera();
+      };
+    })();
+
+    renderAll();
+  </script>
+</body>
+</html>
+
