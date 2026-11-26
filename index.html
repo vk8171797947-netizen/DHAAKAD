@@ -256,4 +256,343 @@
   <div id="exploreModal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
     <div id="exploreModalCard" class="w-full max-w-2xl rounded-3xl bg-zinc-900 border border-zinc-800 overflow-hidden grid grid-cols-1 md:grid-cols-2 shadow-2xl"></div>
   </div>
-  
+    <script>
+    const STORAGE_KEY = 'dhaakad_insta_app_v1';
+
+    const AVATAR_COLORS = [
+      'from-rose-600 to-orange-500',
+      'from-amber-500 to-red-600',
+      'from-fuchsia-600 to-rose-500',
+      'from-emerald-600 to-teal-500',
+      'from-indigo-600 to-purple-600'
+    ];
+
+    const FILTERS = [
+      { id: 'none', name: 'Normal', cls: 'filter-none' },
+      { id: 'clarendon', name: 'Clarendon', cls: 'filter-clarendon' },
+      { id: 'warm', name: 'Warm Glow', cls: 'filter-warm' },
+      { id: 'vivid', name: 'Dhaakad Vivid', cls: 'filter-vivid' },
+      { id: 'vintage', name: 'Vintage', cls: 'filter-vintage' },
+      { id: 'noir', name: 'Noir B&W', cls: 'filter-noir' }
+    ];
+
+    const STORY_TRACKS = [
+      { id: 'm1', title: 'धाकड़ बीट — देसी स्वैग', artist: 'Dhaakad Studio', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+      { id: 'm2', title: 'रात की रफ़्तार — लो-फ़ाई', artist: 'Night Vibes', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
+      { id: 'm3', title: 'सुबह की ऊर्जा — मोटिवेशन', artist: 'Morning Beats', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3' },
+      { id: 'm4', title: 'सफ़र और हवाएँ', artist: 'Travel Acoustic', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3' }
+    ];
+
+    function makeArtworkDataUrl(title, subtitle, bg1, bg2, accent) {
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
+        <defs>
+          <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="${bg1}"/>
+            <stop offset="100%" stop-color="${bg2}"/>
+          </linearGradient>
+        </defs>
+        <rect width="800" height="800" fill="url(#g)"/>
+        <circle cx="650" cy="150" r="190" fill="${accent}" opacity="0.22"/>
+        <circle cx="150" cy="660" r="240" fill="#ffffff" opacity="0.08"/>
+        <rect x="64" y="64" width="672" height="672" rx="44" fill="none" stroke="#ffffff" stroke-opacity="0.22" stroke-width="3"/>
+        <text x="90" y="540" fill="#ffffff" font-family="sans-serif" font-size="64" font-weight="800">${title}</text>
+        <text x="90" y="605" fill="#ffffff" fill-opacity="0.85" font-family="sans-serif" font-size="30">${subtitle}</text>
+      </svg>`;
+      return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
+    }
+
+    const PRESET_PHOTOS = [
+      makeArtworkDataUrl('हिमालय की सुबह', 'धाकड़ ट्रैवल • #मोटिवेशन', '#0f172a', '#ea580c', '#facc15'),
+      makeArtworkDataUrl('नियॉन शहर की रात', 'स्टाइल और रफ़्तार • #धाकड़स्वैग', '#18181b', '#be123c', '#fb7185'),
+      makeArtworkDataUrl('सुबह की कसरत', 'अनुशासन ही असली ताक़त • #फ़िटनेस', '#14532d', '#0f766e', '#4ade80'),
+      makeArtworkDataUrl('कड़क चाय और विचार', 'शाम की महफ़िल • #लाइफ़स्टाइल', '#451a03', '#9a3412', '#fbbf24')
+    ];
+           const DEFAULT_STATE = {
+      activeTab: 'home',
+      profile: {
+        name: 'वीर धाकड़',
+        handle: '@veer_dhaakad',
+        city: 'आगरा, भारत',
+        bio: 'जो ठान लिया, वो कर दिखाया 🔥 | क्रिएटर • फ़ोटोग्राफ़ी • धाकड़ माइंडसेट',
+        avatarColor: AVATAR_COLORS[0],
+        followers: 1240,
+        following: 185
+      },
+      followingHandles: ['@ananya_lens', '@rohit_reels'],
+      savedPostIds: [],
+      stories: [
+        {
+          id: 's1',
+          author: 'अनन्या शर्मा',
+          handle: '@ananya_lens',
+          avatarInitial: 'अ',
+          avatarColor: AVATAR_COLORS[2],
+          image: PRESET_PHOTOS[1],
+          caption: 'रात की रौशनी और नया कैमरा शॉट ✨',
+          music: 'रात की रफ़्तार — लो-फ़ाई',
+          musicUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+          time: '25 मिनट पहले',
+          seen: false
+        },
+        {
+          id: 's2',
+          author: 'रोहित वर्मा',
+          handle: '@rohit_reels',
+          avatarInitial: 'रो',
+          avatarColor: AVATAR_COLORS[1],
+          image: PRESET_PHOTOS[2],
+          caption: 'पसीना बहाए बिना धाकड़ रिज़ल्ट नहीं मिलता 💪',
+          music: 'सुबह की ऊर्जा — मोटिवेशन',
+          musicUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
+          time: '1 घंटा पहले',
+          seen: false
+        },
+        {
+          id: 's3',
+          author: 'काव्या सिंह',
+          handle: '@kavya_vibes',
+          avatarInitial: 'का',
+          avatarColor: AVATAR_COLORS[3],
+          image: PRESET_PHOTOS[0],
+          caption: 'नए सफ़र की शुरुआत 🏔️',
+          music: 'सफ़र और हवाएँ',
+          musicUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3',
+          time: '3 घंटे पहले',
+          seen: false
+        }
+      ],
+      posts: [
+        {
+          id: 'p1',
+          author: 'अनन्या शर्मा',
+          handle: '@ananya_lens',
+          avatarInitial: 'अ',
+          avatarColor: AVATAR_COLORS[2],
+          location: 'जयपुर, राजस्थान',
+          image: PRESET_PHOTOS[1],
+          filter: 'filter-vivid',
+          caption: 'भीड़ का हिस्सा बनने से बेहतर है, अपनी पहचान बनाना। आज का शाम का शॉट कैसा लगा?',
+          tags: '#धाकड़स्वैग #फ़ोटोग्राफ़ी',
+          time: '40 मिनट पहले',
+          likes: 342,
+          liked: false,
+          comments: [
+            { user: 'रोहित वर्मा', text: 'एकदम ज़बरदस्त शॉट है भाई! 🔥' },
+            { user: 'काव्या सिंह', text: 'कलर ग्रेडिंग कमाल की है।' }
+          ]
+        },
+        {
+          id: 'p2',
+          author: 'रोहित वर्मा',
+          handle: '@rohit_reels',
+          avatarInitial: 'रो',
+          avatarColor: AVATAR_COLORS[1],
+          location: 'मुंबई, महाराष्ट्र',
+          image: PRESET_PHOTOS[2],
+          filter: 'filter-clarendon',
+          caption: 'रोज़ थोड़ा-थोड़ा आगे बढ़ना ही बड़े बदलाव लाता है। #फ़िटनेस #मोटिवेशन',
+          tags: '#फ़िटनेस #मोटिवेशन',
+          time: '2 घंटे पहले',
+          likes: 519,
+          liked: true,
+          comments: [
+            { user: 'अनन्या शर्मा', text: 'कंसिस्टेंसी ही सब कुछ है 👏' }
+          ]
+        },
+        {
+          id: 'p3',
+          author: 'काव्या सिंह',
+          handle: '@kavya_vibes',
+          avatarInitial: 'का',
+          avatarColor: AVATAR_COLORS[3],
+          location: 'आगरा, उत्तर प्रदेश',
+          image: PRESET_PHOTOS[3],
+          filter: 'filter-warm',
+          caption: 'चाय की चुस्की और कुछ नए सपने। हर दिन एक नया मौका है।',
+          tags: '#लाइफ़स्टाइल #धाकड़',
+          time: '5 घंटे पहले',
+          likes: 278,
+          liked: false,
+          comments: []
+        }
+      ],
+      reels: [
+        {
+          id: 'r1',
+          title: 'धाकड़ एंट्री — स्पीड और स्टाइल',
+          creator: 'रोहित वर्मा',
+          handle: '@rohit_reels',
+          views: '48.2K',
+          likes: 4120,
+          liked: false,
+          image: PRESET_PHOTOS[1],
+          badge: 'ट्रेंडिंग #1'
+        },
+        {
+          id: 'r2',
+          title: '5 AM रूटीन चैलेंज',
+          creator: 'वीर धाकड़',
+          handle: '@veer_dhaakad',
+          views: '31.9K',
+          likes: 2890,
+          liked: true,
+          image: PRESET_PHOTOS[2],
+          badge: 'फ़िटनेस'
+        },
+        {
+          id: 'r3',
+          title: 'पहाड़ों की शांत वादियाँ',
+          creator: 'काव्या सिंह',
+          handle: '@kavya_vibes',
+          views: '19.5K',
+          likes: 1740,
+          liked: false,
+          image: PRESET_PHOTOS[0],
+          badge: 'ट्रैवल'
+        }
+      ],
+      chats: {
+        '@ananya_lens': {
+          name: 'अनन्या शर्मा',
+          avatarInitial: 'अ',
+          avatarColor: AVATAR_COLORS[2],
+          online: true,
+          messages: [
+            { sender: 'them', text: 'नमस्ते! धाकड़ ऐप पर तुम्हारी नई लोकेशन पोस्ट दिख रही है।', time: '10:15 AM' },
+            { sender: 'me', text: 'धन्यवाद अनन्या! तुम्हारी फ़ोटोज़ भी कमाल हैं 🔥', time: '10:16 AM' }
+          ]
+        },
+        '@rohit_reels': {
+          name: 'रोहित वर्मा',
+          avatarInitial: 'रो',
+          avatarColor: AVATAR_COLORS[1],
+          online: true,
+          messages: [
+            { sender: 'them', text: 'कल शाम वाली रील के लिए बेहतरीन बीट रेडी है—क्या?', time: '06:40 PM' }
+          ]
+        },
+        '@kavya_vibes': {
+          name: 'काव्या सिंह',
+          avatarInitial: 'का',
+          avatarColor: AVATAR_COLORS[3],
+          online: false,
+          messages: [
+            { sender: 'them', text: 'वीकेंड पर नया ट्रिप प्लान करें?', time: 'कल' }
+          ]
+        }
+      },
+      activeChatHandle: '@ananya_lens'
+    };
+                             let state = loadState();
+    let createMode = 'post';
+    let selectedPhotoData = PRESET_PHOTOS[0];
+    let selectedFilterClass = 'filter-none';
+    let selectedStoryMusic = null;
+    let currentStoryIndex = 0;
+    let storyTimer = null;
+    let storyProgress = 0;
+    let storyPaused = false;
+    let tempAvatarColor = state.profile.avatarColor;
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return structuredClone(DEFAULT_STATE);
+        const parsed = JSON.parse(raw);
+        return {
+          ...structuredClone(DEFAULT_STATE),
+          ...parsed,
+          profile: { ...structuredClone(DEFAULT_STATE.profile), ...(parsed.profile || {}) },
+          chats: { ...structuredClone(DEFAULT_STATE.chats), ...(parsed.chats || {}) }
+        };
+      } catch (e) {
+        return structuredClone(DEFAULT_STATE);
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {
+        console.warn('Storage save issue:', e);
+      }
+    }
+
+    function switchTab(tabName) {
+      state.activeTab = tabName;
+      saveState();
+      renderAll();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function renderNav() {
+      const items = [
+        { id: 'home', label: 'होम फ़ीड', icon: '🏠' },
+        { id: 'explore', label: 'एक्सप्लोर', icon: '🧭' },
+        { id: 'reels', label: 'रील्स', icon: '🎬' },
+        { id: 'messages', label: 'चैट (DM)', icon: '💬' },
+        { id: 'profile', label: 'प्रोफ़ाइल', icon: '👤' }
+      ];
+
+      const desktopNav = document.getElementById('desktopNav');
+      desktopNav.innerHTML = items.map(item => {
+        const active = state.activeTab === item.id;
+        return `
+          <button onclick="switchTab('${item.id}')" class="w-full flex items-center gap-3.5 px-3.5 py-3 rounded-2xl text-sm font-bold transition ${
+            active
+              ? 'bg-zinc-900 text-white border border-zinc-800 shadow-sm'
+              : 'text-zinc-400 hover:text-white hover:bg-zinc-900/50'
+          }">
+            <span class="text-lg">${item.icon}</span>
+            <span>${item.label}</span>
+          </button>
+        `;
+      }).join('') + `
+        <button onclick="openCreatePost('post')" class="w-full mt-3 flex items-center justify-center gap-2 px-3.5 py-3 rounded-2xl dhaakad-gradient text-sm font-extrabold text-white shadow-lg shadow-rose-600/20 hover:opacity-95 transition">
+          <span>+</span>
+          <span>नई पोस्ट बनाएं</span>
+        </button>
+      `;
+
+      const mobileNav = document.getElementById('mobileNav');
+      mobileNav.innerHTML = items.filter(i => i.id !== 'messages').map(item => {
+        const active = state.activeTab === item.id;
+        return `
+          <button onclick="switchTab('${item.id}')" class="flex flex-col items-center justify-center py-1 px-2 rounded-xl ${
+            active ? 'text-rose-400' : 'text-zinc-400'
+          }">
+            <span class="text-lg leading-none">${item.icon}</span>
+            <span class="text-[10px] font-bold mt-1">${item.label.split(' ')[0]}</span>
+          </button>
+        `;
+      }).join('') + `
+        <button onclick="openReelStudio()" class="flex flex-col items-center justify-center py-1 px-2 rounded-xl text-amber-400">
+          <span class="text-lg leading-none font-extrabold">+</span>
+          <span class="text-[10px] font-bold mt-1">स्टूडियो</span>
+        </button>
+      `;
+
+      const initial = (state.profile.name || 'ध').trim().charAt(0).toUpperCase();
+      const sbAvatar = document.getElementById('sidebarAvatar');
+      sbAvatar.className = `w-10 h-10 rounded-full bg-gradient-to-br ${state.profile.avatarColor} flex items-center justify-center font-bold text-white shrink-0`;
+      sbAvatar.textContent = initial;
+      document.getElementById('sidebarName').textContent = state.profile.name;
+      document.getElementById('sidebarHandle').textContent = state.profile.handle;
+    }
+
+    function renderAll() {
+      renderNav();
+      const container = document.getElementById('mainContainer');
+      if (state.activeTab === 'home') {
+        renderHomeFeed(container);
+      } else if (state.activeTab === 'explore') {
+        renderExplore(container);
+      } else if (state.activeTab === 'reels') {
+        renderReels(container);
+      } else if (state.activeTab === 'messages') {
+        renderMessages(container);
+      } else if (state.activeTab === 'profile') {
+        renderProfile(container);
+      }
+      }
+          
