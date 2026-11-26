@@ -45,7 +45,7 @@
     }
   </style>
 </head>
-  <body class="bg-zinc-950 text-zinc-100 min-h-screen">
+<body class="bg-zinc-950 text-zinc-100 min-h-screen">
 
   <div id="app" class="min-h-screen flex flex-col lg:flex-row">
     <!-- Desktop Sidebar -->
@@ -91,8 +91,7 @@
         </button>
       </div>
     </header>
-
-    <!-- Main Content Area -->
+        <!-- Main Content Area -->
     <main class="flex-1 lg:pl-64 pb-20 lg:pb-8">
       <div id="mainContainer" class="max-w-5xl mx-auto px-3 sm:px-6 pt-4 sm:pt-6"></div>
     </main>
@@ -100,7 +99,8 @@
     <!-- Mobile Bottom Nav -->
     <nav id="mobileNav" class="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-zinc-950/95 backdrop-blur-md border-t border-zinc-800/80 px-2 py-1.5 flex items-center justify-around"></nav>
   </div>
-      <!-- Story Viewer Modal -->
+
+  <!-- Story Viewer Modal -->
   <div id="storyModal" class="hidden fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-3">
     <div class="relative w-full max-w-md h-[84vh] max-h-[760px] rounded-3xl overflow-hidden bg-zinc-900 border border-zinc-800 flex flex-col justify-between shadow-2xl">
       <div class="absolute top-0 left-0 right-0 z-20 p-3 bg-gradient-to-b from-black/80 to-transparent">
@@ -133,8 +133,7 @@
       </div>
     </div>
   </div>
-
-  <!-- Create Post / Story Modal -->
+    <!-- Create Post / Story Modal -->
   <div id="createModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
     <div class="w-full max-w-lg rounded-3xl bg-zinc-900 border border-zinc-800 p-5 my-auto shadow-2xl">
       <div class="flex items-center justify-between mb-4">
@@ -191,7 +190,8 @@
       </form>
     </div>
   </div>
-      <!-- Edit Profile Modal -->
+
+  <!-- Edit Profile Modal -->
   <div id="profileModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="w-full max-w-md rounded-3xl bg-zinc-900 border border-zinc-800 p-5 shadow-2xl">
       <div class="flex items-center justify-between mb-4">
@@ -230,7 +230,8 @@
   <div id="exploreModal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
     <div id="exploreModalCard" class="w-full max-w-2xl rounded-3xl bg-zinc-900 border border-zinc-800 overflow-hidden grid grid-cols-1 md:grid-cols-2 shadow-2xl"></div>
   </div>
-      <script>
+
+  <script>
     const STORAGE_KEY = 'dhaakad_insta_app_v1';
 
     const AVATAR_COLORS = [
@@ -249,8 +250,7 @@
       { id: 'vintage', name: 'Vintage', cls: 'filter-vintage' },
       { id: 'noir', name: 'Noir B&W', cls: 'filter-noir' }
     ];
-
-    function makeArtworkDataUrl(title, subtitle, bg1, bg2, accent) {
+        function makeArtworkDataUrl(title, subtitle, bg1, bg2, accent) {
       const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
         <defs>
           <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -399,7 +399,7 @@
           likes: 2890,
           liked: true,
           image: PRESET_PHOTOS[2],
-          badge: 'फिटनेस'
+          badge: 'फ़िटनेस'
         },
         {
           id: 'r3',
@@ -420,7 +420,7 @@
           avatarColor: AVATAR_COLORS[2],
           online: true,
           messages: [
-            { sender: 'them', text: 'नमस्ते! धाकड़ ऐप पर तुम्हारी नई प्रोफ़ाइल बढ़िया दिख रही है।', time: '10:15 AM' },
+            { sender: 'them', text: 'नमस्ते! धाकड़ ऐप पर तुम्हारी नई लोकेशन पोस्ट दिख रही है।', time: '10:15 AM' },
             { sender: 'me', text: 'धन्यवाद अनन्या! तुम्हारी फ़ोटोज़ भी कमाल हैं 🔥', time: '10:16 AM' }
           ]
         },
@@ -430,7 +430,7 @@
           avatarColor: AVATAR_COLORS[1],
           online: true,
           messages: [
-            { sender: 'them', text: 'कल शाम वाली रील के लिए आइडिया रेडी है क्या?', time: '06:40 PM' }
+            { sender: 'them', text: 'कल शाम वाली रील के लिए बेहतरीन बीट रेडी है—क्या?', time: '06:40 PM' }
           ]
         },
         '@kavya_vibes': {
@@ -445,7 +445,7 @@
       },
       activeChatHandle: '@ananya_lens'
     };
-          let state = loadState();
+        let state = loadState();
     let createMode = 'post';
     let selectedPhotoData = PRESET_PHOTOS[0];
     let selectedFilterClass = 'filter-none';
@@ -463,7 +463,8 @@
         return {
           ...structuredClone(DEFAULT_STATE),
           ...parsed,
-          profile: { ...structuredClone(DEFAULT_STATE.profile), ...(parsed.profile || {}) }
+          profile: { ...structuredClone(DEFAULT_STATE.profile), ...(parsed.profile || {}) },
+          chats: { ...structuredClone(DEFAULT_STATE.chats), ...(parsed.chats || {}) }
         };
       } catch (e) {
         return structuredClone(DEFAULT_STATE);
@@ -508,7 +509,7 @@
           </button>
         `;
       }).join('') + `
-        <button onclick="openCreatePost()" class="w-full mt-3 flex items-center justify-center gap-2 px-3.5 py-3 rounded-2xl text-sm font-extrabold dhaakad-gradient text-white shadow-lg shadow-rose-600/20 hover:opacity-95 transition">
+        <button onclick="openCreatePost('post')" class="w-full mt-3 flex items-center justify-center gap-2 px-3.5 py-3 rounded-2xl dhaakad-gradient text-sm font-extrabold text-white shadow-lg shadow-rose-600/20 hover:opacity-95 transition">
           <span>+</span>
           <span>नई पोस्ट बनाएं</span>
         </button>
@@ -526,15 +527,15 @@
           </button>
         `;
       }).join('') + `
-        <button onclick="openCreatePost()" class="flex flex-col items-center justify-center py-1 px-2 text-amber-400">
-          <span class="text-lg leading-none font-extrabold">➕</span>
-          <span class="text-[10px] font-bold mt-1">पोस्ट</span>
+        <button onclick="openReelStudio()" class="flex flex-col items-center justify-center py-1 px-2 rounded-xl text-amber-400">
+          <span class="text-lg leading-none font-extrabold">+</span>
+          <span class="text-[10px] font-bold mt-1">स्टूडियो</span>
         </button>
       `;
 
       const initial = (state.profile.name || 'ध').trim().charAt(0).toUpperCase();
       const sbAvatar = document.getElementById('sidebarAvatar');
-      sbAvatar.className = `w-10 h-10 rounded-full bg-gradient-to-br ${state.profile.avatarColor} flex items-center justify-center font-extrabold text-white shrink-0`;
+      sbAvatar.className = `w-10 h-10 rounded-full bg-gradient-to-br ${state.profile.avatarColor} flex items-center justify-center font-bold text-white shrink-0`;
       sbAvatar.textContent = initial;
       document.getElementById('sidebarName').textContent = state.profile.name;
       document.getElementById('sidebarHandle').textContent = state.profile.handle;
@@ -554,17 +555,17 @@
       } else if (state.activeTab === 'profile') {
         renderProfile(container);
       }
-            }
-              function renderHomeFeed(container) {
+          }
+        function renderHomeFeed(container) {
       const myInitial = (state.profile.name || 'ध').trim().charAt(0).toUpperCase();
 
       const storiesHtml = `
         <div class="bg-zinc-900/60 border border-zinc-800/80 rounded-3xl p-3.5 mb-5">
           <div class="flex items-center gap-4 overflow-x-auto no-scrollbar">
             <button onclick="openCreatePost('story')" class="flex flex-col items-center gap-1.5 shrink-0 group">
-              <div class="relative w-16 h-16 rounded-full bg-gradient-to-br ${state.profile.avatarColor} flex items-center justify-center text-xl font-extrabold text-white border-2 border-dashed border-zinc-400 group-hover:scale-105 transition">
+              <div class="relative w-16 h-16 rounded-full bg-gradient-to-br ${state.profile.avatarColor} flex items-center justify-center font-extrabold text-lg text-white">
                 ${myInitial}
-                <span class="absolute -bottom-0.5 -right-0.5 w-6 h-6 rounded-full dhaakad-gradient text-white text-sm font-extrabold flex items-center justify-center border-2 border-zinc-950">+</span>
+                <span class="absolute -bottom-0.5 -right-0.5 w-6 h-6 rounded-full dhaakad-gradient text-white text-sm font-bold flex items-center justify-center border-2 border-zinc-950">+</span>
               </div>
               <span class="text-[11px] font-semibold text-zinc-200">आपकी स्टोरी</span>
             </button>
@@ -572,11 +573,11 @@
             ${state.stories.map((st, idx) => `
               <button onclick="openStoryViewer(${idx})" class="flex flex-col items-center gap-1.5 shrink-0 group">
                 <div class="${st.seen ? 'p-[2px] rounded-full bg-zinc-700' : 'dhaakad-ring'} group-hover:scale-105 transition">
-                  <div class="w-16 h-16 rounded-full bg-gradient-to-br ${st.avatarColor} flex items-center justify-center text-lg font-extrabold text-white border-2 border-zinc-950">
-                    ${st.avatarInitial}
+                  <div class="w-16 h-16 rounded-full bg-gradient-to-br ${st.avatarColor} flex items-center justify-center font-extrabold text-lg text-white">
+                    ${escapeHtml(st.avatarInitial)}
                   </div>
                 </div>
-                <span class="text-[11px] font-medium text-zinc-300 max-w-[72px] truncate">${st.author.split(' ')[0]}</span>
+                <span class="text-[11px] font-medium text-zinc-300 max-w-[72px] truncate">${escapeHtml(st.author.split(' ')[0])}</span>
               </button>
             `).join('')}
           </div>
@@ -590,10 +591,10 @@
 
         return `
           <article id="post-${post.id}" class="bg-zinc-900/65 border border-zinc-800/80 rounded-3xl overflow-hidden mb-5 shadow-lg">
-            <div class="flex items-center justify-between px-4 py-3">
+            <div class="flex items-center justify-between px-4 py-3 min-w-0">
               <div class="flex items-center gap-3 min-w-0">
-                <div class="w-10 h-10 rounded-full bg-gradient-to-br ${post.avatarColor} flex items-center justify-center font-extrabold text-white shrink-0">
-                  ${post.avatarInitial}
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br ${post.avatarColor} flex items-center justify-center font-bold text-white shrink-0">
+                  ${escapeHtml(post.avatarInitial)}
                 </div>
                 <div class="min-w-0">
                   <div class="flex items-center gap-2">
@@ -607,17 +608,17 @@
               </div>
 
               ${!isSelf ? `
-                <button onclick="toggleFollow('${post.handle}')" class="px-3.5 py-1.5 rounded-full text-xs font-bold transition ${
+                <button onclick="toggleFollow('${post.handle}')" class="px-3.5 py-1.5 rounded-full text-xs font-bold transition shrink-0 ${
                   isFollowing
                     ? 'bg-zinc-800 text-zinc-200 border border-zinc-700'
                     : 'dhaakad-gradient text-white shadow'
                 }">
-                  ${isFollowing ? 'फ़ॉलोइंग ✓' : 'फ़ॉलो करें'}
+                  ${isFollowing ? 'फ़ॉलोइंग ✓' : '+ फ़ॉलो करें'}
                 </button>
               ` : ''}
             </div>
 
-            <div ondblclick="doubleTapLike('${post.id}')" class="relative aspect-square max-h-[540px] w-full bg-zinc-950 select-none cursor-pointer overflow-hidden">
+            <div ondblclick="doubleTapLike('${post.id}')" class="relative aspect-square max-h-[540px] w-full bg-zinc-950 select-none cursor-pointer">
               <img src="${post.image}" alt="${escapeHtml(post.caption)}" class="w-full h-full object-cover ${post.filter || 'filter-none'}" />
               <div id="burst-${post.id}" class="hidden pointer-events-none absolute top-1/2 left-1/2 text-7xl text-rose-500 drop-shadow-2xl">
                 ❤️
@@ -627,14 +628,14 @@
             <div class="p-4">
               <div class="flex items-center justify-between mb-2.5">
                 <div class="flex items-center gap-4">
-                  <button onclick="toggleLike('${post.id}')" class="flex items-center gap-1.5 text-sm font-bold transition active:scale-125 ${
+                  <button onclick="toggleLike('${post.id}')" class="flex items-center gap-1.5 text-sm font-bold transition ${
                     post.liked ? 'text-rose-500' : 'text-zinc-200 hover:text-rose-400'
                   }">
                     <span class="text-xl">${post.liked ? '❤️' : '🤍'}</span>
                     <span>${post.likes}</span>
                   </button>
 
-                  <button onclick="focusComment('${post.id}')" class="flex items-center gap-1.5 text-sm font-bold text-zinc-200 hover:text-amber-400 transition">
+                  <button onclick="focusComment('${post.id}')" class="flex items-center gap-1.5 text-sm font-bold text-zinc-200 hover:text-amber-300 transition">
                     <span class="text-xl">💬</span>
                     <span>${post.comments.length}</span>
                   </button>
@@ -644,7 +645,7 @@
                   </button>
                 </div>
 
-                <button onclick="toggleSavePost('${post.id}')" class="text-xl transition ${isSaved ? 'text-amber-400' : 'text-zinc-400 hover:text-white'}">
+                <button onclick="toggleSavePost('${post.id}')" class="text-xl transition ${isSaved ? 'text-amber-400' : 'text-zinc-300 hover:text-amber-300'}">
                   ${isSaved ? '🔖' : '📑'}
                 </button>
               </div>
@@ -659,7 +660,7 @@
                 <div class="space-y-1.5 mt-3 pt-2.5 border-t border-zinc-800/70">
                   ${post.comments.map(c => `
                     <div class="text-xs text-zinc-300">
-                      <span class="font-bold text-white mr-1.5">${escapeHtml(c.user)}:</span>
+                      <span class="font-bold text-white mr-1.5">${escapeHtml(c.user)}</span>
                       <span>${escapeHtml(c.text)}</span>
                     </div>
                   `).join('')}
@@ -667,7 +668,7 @@
               ` : ''}
 
               <form onsubmit="addComment(event, '${post.id}')" class="flex items-center gap-2 mt-3 pt-2.5 border-t border-zinc-800/70">
-                <input id="comment-input-${post.id}" type="text" placeholder="कमेंट लिखें..." class="flex-1 bg-transparent text-xs sm:text-sm text-white placeholder-zinc-500 focus:outline-none" />
+                <input id="comment-input-${post.id}" type="text" placeholder="कमेंट लिखें..." class="flex-1 bg-transparent text-sm text-white placeholder-zinc-500 focus:outline-none" />
                 <button type="submit" class="text-xs font-extrabold text-rose-400 hover:text-rose-300 px-2 py-1">पोस्ट</button>
               </form>
             </div>
@@ -680,7 +681,7 @@
           <div class="bg-zinc-900/70 border border-zinc-800/80 rounded-3xl p-4">
             <div class="flex items-center justify-between mb-3">
               <div class="flex items-center gap-3">
-                <div class="w-12 h-12 rounded-full bg-gradient-to-br ${state.profile.avatarColor} flex items-center justify-center font-extrabold text-lg text-white">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-br ${state.profile.avatarColor} flex items-center justify-center font-bold text-white">
                   ${myInitial}
                 </div>
                 <div>
@@ -710,10 +711,8 @@
           <div class="bg-zinc-900/70 border border-zinc-800/80 rounded-3xl p-4">
             <div class="text-xs font-extrabold uppercase tracking-wider text-amber-400 mb-3">🔥 धाकड़ ट्रेंडिंग</div>
             <div class="flex flex-wrap gap-2">
-              ${['#धाकड़स्वैग', '#फ़िटनेस', '#फ़ोटोग्राफ़ी', '#मोटिवेशन', '#रील्स'].map(tag => `
-                <button onclick="switchTab('explore')" class="px-3 py-1.5 rounded-full bg-zinc-800 hover:bg-zinc-700 text-xs font-semibold text-zinc-200 transition">
-                  ${tag}
-                </button>
+              ${['#धाकड़स्वैग', '#फ़िटनेस', '#मोटिवेशन', '#लाइफ़स्टाइल', '#रील्स'].map(tag => `
+                <button onclick="switchTab('explore')" class="px-3 py-1.5 rounded-full bg-zinc-800 hover:bg-zinc-700 text-xs font-semibold text-zinc-200">${tag}</button>
               `).join('')}
             </div>
           </div>
@@ -805,24 +804,26 @@
         navigator.clipboard.writeText(shareText).catch(() => {});
       }
       alert('पोस्ट का टेक्स्ट कॉपी हो गया है!');
-        }
-          function renderExplore(container) {
+    }
+        function renderExplore(container) {
       container.innerHTML = `
         <div class="mb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h2 class="text-xl font-extrabold text-white">एक्सप्लोर ग्रिड</h2>
             <p class="text-xs text-zinc-400">किसी भी पोस्ट पर क्लिक करके बड़ी स्क्रीन पर देखें</p>
           </div>
-          <button onclick="openCreatePost()" class="px-4 py-2 rounded-2xl dhaakad-gradient text-xs font-bold text-white self-start sm:self-auto">
-            + ग्रिड में फ़ोटो जोड़ें
-          </button>
+          <div class="flex gap-2">
+            <button onclick="openCreatePost('post')" class="px-4 py-2 rounded-2xl dhaakad-gradient text-xs font-bold text-white shadow">
+              + ग्रिड में फ़ोटो जोड़ें
+            </button>
+          </div>
         </div>
 
         <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-4">
           ${state.posts.map(post => `
-            <button onclick="openExplorePost('${post.id}')" class="group relative aspect-square rounded-2xl overflow-hidden bg-zinc-900 border border-zinc-800 text-left">
-              <img src="${post.image}" alt="${escapeHtml(post.caption)}" class="w-full h-full object-cover ${post.filter || 'filter-none'} group-hover:scale-105 transition duration-300" />
-              <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-4 text-white font-extrabold text-sm">
+            <button onclick="openExplorePost('${post.id}')" class="group relative aspect-square rounded-2xl overflow-hidden bg-zinc-900 border border-zinc-800">
+              <img src="${post.image}" alt="${escapeHtml(post.caption)}" class="w-full h-full object-cover ${post.filter || 'filter-none'}" />
+              <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-4 text-sm font-bold text-white">
                 <span>❤️ ${post.likes}</span>
                 <span>💬 ${post.comments.length}</span>
               </div>
@@ -845,7 +846,9 @@
           <div>
             <div class="flex items-center justify-between pb-3 border-b border-zinc-800">
               <div class="flex items-center gap-2.5">
-                <div class="w-9 h-9 rounded-full bg-gradient-to-br ${post.avatarColor} flex items-center justify-center font-bold text-white">${post.avatarInitial}</div>
+                <div class="w-9 h-9 rounded-full bg-gradient-to-br ${post.avatarColor} flex items-center justify-center font-bold text-sm text-white">
+                  ${escapeHtml(post.avatarInitial)}
+                </div>
                 <div>
                   <div class="text-sm font-bold text-white">${escapeHtml(post.author)}</div>
                   <div class="text-[11px] text-zinc-400">${escapeHtml(post.location || post.handle)}</div>
@@ -856,12 +859,12 @@
             <p class="text-sm text-zinc-200 mt-3 leading-relaxed">${escapeHtml(post.caption)}</p>
             <div class="mt-4 space-y-2 max-h-44 overflow-y-auto">
               ${post.comments.length ? post.comments.map(c => `
-                <div class="text-xs bg-zinc-950/70 p-2 rounded-xl"><span class="font-bold text-white">${escapeHtml(c.user)}:</span> ${escapeHtml(c.text)}</div>
-              `).join('') : '<div class="text-xs text-zinc-500">अभी कोई कमेंट नहीं है।</div>'}
+                <div class="text-xs bg-zinc-950/70 p-2 rounded-xl"><span class="font-bold text-white mr-1.5">${escapeHtml(c.user)}</span>${escapeHtml(c.text)}</div>
+              `).join('') : `<div class="text-xs text-zinc-500">अभी कोई कमेंट नहीं है।</div>`}
             </div>
           </div>
           <div class="pt-4 border-t border-zinc-800 flex items-center justify-between">
-            <button onclick="toggleLike('${post.id}'); openExplorePost('${post.id}');" class="px-4 py-2 rounded-xl bg-zinc-800 text-sm font-bold ${post.liked ? 'text-rose-500' : 'text-white'}">
+            <button onclick="toggleLike('${post.id}'); openExplorePost('${post.id}');" class="px-4 py-2 rounded-xl bg-zinc-800 text-xs font-bold text-white">
               ${post.liked ? '❤️' : '🤍'} ${post.likes} लाइक
             </button>
             <button onclick="closeExploreModal(); switchTab('home');" class="text-xs font-bold text-amber-400">फ़ीड में देखें →</button>
@@ -877,24 +880,34 @@
 
     function renderReels(container) {
       container.innerHTML = `
-        <div class="mb-5">
-          <h2 class="text-xl font-extrabold text-white">धाकड़ रील्स (Reels)</h2>
-          <p class="text-xs text-zinc-400">शॉर्ट विजुअल रील्स को लाइक और फ़ॉलो करें</p>
+        <div class="mb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-xl font-extrabold text-white">धाकड़ रील्स (Reels)</h2>
+            <p class="text-xs text-zinc-400">शॉर्ट विज़ुअल रील्स को लाइक और फ़ॉलो करें, या अपना रील स्टूडियो खोलें</p>
+          </div>
+          <button onclick="openReelStudio()" class="px-4 py-2 rounded-2xl dhaakad-gradient text-xs font-extrabold text-white shadow-lg shadow-rose-600/20">
+            🎬 रील कैमरा / स्टूडियो खोलें
+          </button>
         </div>
+
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           ${state.reels.map(reel => {
             const following = state.followingHandles.includes(reel.handle);
             return `
               <div class="relative rounded-3xl overflow-hidden bg-zinc-900 border border-zinc-800 aspect-[9/14] flex flex-col justify-between shadow-xl">
-                <img src="${reel.image}" alt="${escapeHtml(reel.title)}" class="absolute inset-0 w-full h-full object-cover" />
-                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-black/40"></div>
+                ${reel.videoUrl ? `
+                  <video src="${reel.videoUrl}" controls playsinline loop class="absolute inset-0 w-full h-full object-cover"></video>
+                ` : `
+                  <img src="${reel.image}" alt="${escapeHtml(reel.title)}" class="absolute inset-0 w-full h-full object-cover" />
+                `}
+                <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/40 pointer-events-none"></div>
 
                 <div class="relative z-10 p-4 flex items-center justify-between">
-                  <span class="px-3 py-1 rounded-full bg-black/55 backdrop-blur-sm text-[11px] font-bold text-amber-300 border border-white/10">
-                    ${escapeHtml(reel.badge)}
+                  <span class="px-3 py-1 rounded-full bg-black/55 backdrop-blur-sm text-[11px] font-bold text-amber-300">
+                    ${escapeHtml(reel.badge || 'रील')}
                   </span>
                   <span class="px-2.5 py-1 rounded-full bg-black/55 text-[11px] font-semibold text-zinc-200">
-                    👁️ ${escapeHtml(reel.views)}
+                    👁 ${escapeHtml(reel.views || '1')}
                   </span>
                 </div>
 
@@ -909,9 +922,10 @@
                       </button>
                     </div>
                     <div class="text-xs font-semibold text-zinc-100 leading-snug">${escapeHtml(reel.title)}</div>
+                    ${reel.music ? `<div class="text-[11px] text-amber-300 mt-1 truncate">🎵 ${escapeHtml(reel.music)}</div>` : ''}
                   </div>
 
-                  <button onclick="toggleReelLike('${reel.id}')" class="flex flex-col items-center gap-1 bg-black/50 hover:bg-black/70 px-3 py-2 rounded-2xl shrink-0">
+                  <button onclick="toggleReelLike('${reel.id}')" class="flex flex-col items-center gap-1 bg-black/50 hover:bg-black/70 px-3 py-2 rounded-2xl transition shrink-0">
                     <span class="text-xl">${reel.liked ? '❤️' : '🤍'}</span>
                     <span class="text-xs font-bold text-white">${reel.likes}</span>
                   </button>
@@ -945,7 +959,7 @@
           <p class="text-xs text-zinc-400">दोस्तों के साथ तुरंत बातचीत करें</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-12 bg-zinc-900/70 border border-zinc-800/80 rounded-3xl overflow-hidden min-h-[520px]">
+        <div class="grid grid-cols-1 md:grid-cols-12 bg-zinc-900/70 border border-zinc-800/80 rounded-3xl overflow-hidden min-h-[460px]">
           <div class="md:col-span-4 border-b md:border-b-0 md:border-r border-zinc-800/80 p-3 space-y-1.5">
             ${handles.map(h => {
               const c = state.chats[h];
@@ -955,11 +969,11 @@
                 <button onclick="selectChat('${h}')" class="w-full flex items-center gap-3 p-2.5 rounded-2xl text-left transition ${
                   active ? 'bg-zinc-800 text-white' : 'hover:bg-zinc-800/50 text-zinc-300'
                 }">
-                  <div class="relative">
-                    <div class="w-11 h-11 rounded-full bg-gradient-to-br ${c.avatarColor} flex items-center justify-center font-extrabold text-white">
-                      ${c.avatarInitial}
+                  <div class="relative shrink-0">
+                    <div class="w-11 h-11 rounded-full bg-gradient-to-br ${c.avatarColor} flex items-center justify-center font-bold text-white">
+                      ${escapeHtml(c.avatarInitial)}
                     </div>
-                    ${c.online ? '<span class="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-500 border-2 border-zinc-900"></span>' : ''}
+                    ${c.online ? `<span class="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-500 border-2 border-zinc-900"></span>` : ''}
                   </div>
                   <div class="min-w-0 flex-1">
                     <div class="text-sm font-bold truncate">${escapeHtml(c.name)}</div>
@@ -972,8 +986,8 @@
 
           <div class="md:col-span-8 flex flex-col justify-between p-4">
             <div class="flex items-center gap-3 pb-3 border-b border-zinc-800">
-              <div class="w-10 h-10 rounded-full bg-gradient-to-br ${currentChat.avatarColor} flex items-center justify-center font-extrabold text-white">
-                ${currentChat.avatarInitial}
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br ${currentChat.avatarColor} flex items-center justify-center font-bold text-white">
+                ${escapeHtml(currentChat.avatarInitial)}
               </div>
               <div>
                 <div class="text-sm font-bold text-white">${escapeHtml(currentChat.name)}</div>
@@ -983,7 +997,7 @@
               </div>
             </div>
 
-            <div id="chatMessagesBox" class="flex-1 py-4 space-y-2.5 max-h-[340px] overflow-y-auto">
+            <div id="chatMessagesBox" class="flex-1 py-4 space-y-2.5 max-h-[300px] overflow-y-auto">
               ${currentChat.messages.map(m => `
                 <div class="flex ${m.sender === 'me' ? 'justify-end' : 'justify-start'}">
                   <div class="max-w-[78%] px-3.5 py-2 rounded-2xl text-sm ${
@@ -1000,7 +1014,7 @@
 
             <form onsubmit="sendChatMessage(event)" class="flex gap-2 pt-3 border-t border-zinc-800">
               <input id="chatInput" type="text" placeholder="मैसेज लिखें..." class="flex-1 bg-zinc-950 border border-zinc-800 rounded-full px-4 py-2 text-sm text-white focus:outline-none focus:border-rose-500" />
-              <button type="submit" class="px-5 py-2 rounded-full dhaakad-gradient text-sm font-bold text-white">भेजें</button>
+              <button type="submit" class="px-4 py-2 rounded-full dhaakad-gradient text-sm font-bold text-white">भेजें</button>
             </form>
           </div>
         </div>
@@ -1018,7 +1032,6 @@
       const input = document.getElementById('chatInput');
       const text = input.value.trim();
       if (!text) return;
-
       const chat = state.chats[state.activeChatHandle];
       const nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       chat.messages.push({ sender: 'me', text, time: nowTime });
@@ -1031,14 +1044,15 @@
         if (!target) return;
         target.messages.push({
           sender: 'them',
-          text: 'बढ़िया! बिल्कुल सही कहा 👌🔥',
+          text: 'बढ़िया! बिल्कुल सही कहा 🔥👍',
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         });
         saveState();
         if (state.activeTab === 'messages') renderAll();
       }, 650);
     }
-            function renderProfile(container) {
+
+    function renderProfile(container) {
       const p = state.profile;
       const initial = (p.name || 'ध').trim().charAt(0).toUpperCase();
       const myPosts = state.posts.filter(item => item.handle === p.handle);
@@ -1048,7 +1062,7 @@
         <div class="bg-zinc-900/70 border border-zinc-800/80 rounded-3xl p-5 sm:p-7 mb-6">
           <div class="flex flex-col sm:flex-row items-center sm:items-start gap-5">
             <div class="dhaakad-ring shrink-0">
-              <div class="w-24 h-24 rounded-full bg-gradient-to-br ${p.avatarColor} flex items-center justify-center text-3xl font-extrabold text-white border-4 border-zinc-950">
+              <div class="w-24 h-24 rounded-full bg-gradient-to-br ${p.avatarColor} flex items-center justify-center font-extrabold text-3xl text-white">
                 ${initial}
               </div>
             </div>
@@ -1058,10 +1072,10 @@
                 <h2 class="text-xl font-extrabold text-white">${escapeHtml(p.name)}</h2>
                 <span class="text-xs font-semibold text-zinc-400">${escapeHtml(p.handle)}</span>
                 <div class="flex items-center justify-center sm:justify-start gap-2 sm:ml-auto">
-                  <button onclick="openEditProfile()" class="px-4 py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-white border border-zinc-700">
+                  <button onclick="openEditProfile()" class="px-4 py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-white">
                     प्रोफ़ाइल बदलें
                   </button>
-                  <button onclick="openCreatePost()" class="px-4 py-1.5 rounded-xl dhaakad-gradient text-xs font-bold text-white">
+                  <button onclick="openCreatePost('post')" class="px-4 py-1.5 rounded-xl dhaakad-gradient text-xs font-bold text-white">
                     + नई पोस्ट
                   </button>
                 </div>
@@ -1087,7 +1101,7 @@
         ${myPosts.length === 0 ? `
           <div class="bg-zinc-900/50 border border-zinc-800 rounded-3xl p-10 text-center">
             <p class="text-sm text-zinc-400 mb-3">आपने अभी तक कोई पोस्ट नहीं बनाई है।</p>
-            <button onclick="openCreatePost()" class="px-5 py-2.5 rounded-2xl dhaakad-gradient text-xs font-extrabold text-white">
+            <button onclick="openCreatePost('post')" class="px-5 py-2.5 rounded-2xl dhaakad-gradient text-xs font-extrabold text-white">
               पहली पोस्ट बनाएं
             </button>
           </div>
@@ -1095,8 +1109,8 @@
           <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
             ${myPosts.map(post => `
               <button onclick="openExplorePost('${post.id}')" class="group relative aspect-square rounded-2xl overflow-hidden bg-zinc-900 border border-zinc-800">
-                <img src="${post.image}" alt="My post" class="w-full h-full object-cover ${post.filter || 'filter-none'} group-hover:scale-105 transition" />
-                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-3 text-xs font-extrabold text-white">
+                <img src="${post.image}" alt="My post" class="w-full h-full object-cover ${post.filter || 'filter-none'}" />
+                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-4 text-sm font-bold text-white">
                   <span>❤️ ${post.likes}</span>
                   <span>💬 ${post.comments.length}</span>
                 </div>
@@ -1106,8 +1120,7 @@
         `}
       `;
     }
-
-    function openCreatePost(mode = 'post') {
+        function openCreatePost(mode = 'post') {
       createMode = mode;
       selectedPhotoData = PRESET_PHOTOS[0];
       selectedFilterClass = 'filter-none';
@@ -1128,20 +1141,20 @@
       createMode = mode;
       const postBtn = document.getElementById('modePostBtn');
       const storyBtn = document.getElementById('modeStoryBtn');
-      const extraFields = document.getElementById('postExtraFields');
+      const extraSec = document.getElementById('postExtraFields');
       const filterSec = document.getElementById('filterSection');
       const pubBtn = document.getElementById('publishBtn');
 
       if (mode === 'post') {
         postBtn.className = 'px-3.5 py-1.5 rounded-full text-xs font-bold dhaakad-gradient text-white';
         storyBtn.className = 'px-3.5 py-1.5 rounded-full text-xs font-bold bg-zinc-800 text-zinc-300';
-        extraFields.classList.remove('hidden');
+        extraSec.classList.remove('hidden');
         filterSec.classList.remove('hidden');
         pubBtn.textContent = 'पोस्ट पब्लिश करें';
       } else {
         storyBtn.className = 'px-3.5 py-1.5 rounded-full text-xs font-bold dhaakad-gradient text-white';
         postBtn.className = 'px-3.5 py-1.5 rounded-full text-xs font-bold bg-zinc-800 text-zinc-300';
-        extraFields.classList.add('hidden');
+        extraSec.classList.add('hidden');
         filterSec.classList.add('hidden');
         pubBtn.textContent = 'स्टोरी लगाएं';
       }
@@ -1228,8 +1241,9 @@
       saveState();
       closeCreateModal();
       switchTab('home');
-        }
-                      function openStoryViewer(index) {
+    }
+
+    function openStoryViewer(index) {
       if (!state.stories.length) return;
       currentStoryIndex = index;
       storyProgress = 0;
@@ -1269,7 +1283,7 @@
         else if (i === currentStoryIndex) pct = storyProgress;
         return `
           <div class="h-1 flex-1 rounded-full bg-white/25 overflow-hidden">
-            <div class="h-full bg-white transition-all duration-100" style="width: ${pct}%"></div>
+            <div class="h-full bg-white transition-all duration-100" style="width:${pct}%"></div>
           </div>
         `;
       }).join('');
@@ -1296,7 +1310,7 @@
 
     function toggleStoryPause() {
       storyPaused = !storyPaused;
-      document.getElementById('storyPauseBtn').textContent = storyPaused ? '▶ चलाएं' : '⏸ पॉज़';
+      document.getElementById('storyPauseBtn').textContent = storyPaused ? '▶ चालू करें' : '⏸ पॉज़';
     }
 
     function handleStoryTap(e) {
@@ -1393,1516 +1407,390 @@
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
     }
+        // Unified Clean Reel / Camera Studio (कोई डुप्लिकेट पैच या कटी लाइन नहीं)
+    (function initDhaakadReelStudio() {
+      const STUDIO_ID = 'dhaakadCleanReelStudio';
+      const DEMO_BEATS = [
+        { title: 'धाकड़ बीट — देसी स्वैग', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+        { title: 'रात की रफ़्तार — लो-फ़ाई', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
+        { title: 'सुबह की ऊर्जा — मोटिवेशन', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3' }
+      ];
 
-    renderAll();
-  </script>
-    <script>
-  (function () {
-    const NP_MODAL_ID = 'dhaakadNewPostStudio';
-    let stream = null;
-    let facingMode = 'user';
-    let speedVal = '1x';
-    let timerSec = 0;
-    let mutedState = false;
-    let activeFilter = 'none';
-    let activeAudio = '';
-    let activeTabMode = 'POST';
-    let chosenMedia = '';
+      const STUDIO_FILTERS = [
+        { name: 'Normal', css: 'none' },
+        { name: 'Vivid', css: 'saturate(1.65) contrast(1.15)' },
+        { name: 'Warm', css: 'sepia(0.35) saturate(1.4) brightness(1.05)' },
+        { name: 'Vintage', css: 'sepia(0.55) contrast(0.95)' },
+        { name: 'Noir', css: 'grayscale(1) contrast(1.3)' }
+      ];
 
-    const GALLERY_ITEMS = [
-      { title: 'शहर की रात', bg: '#881337' },
-      { title: 'पहाड़ व्यू', bg: '#7c2d12' },
-      { title: 'वर्कआउट', bg: '#14532d' },
-      { title: 'चाय और मूड', bg: '#451a03' },
-      { title: 'नियॉन स्वैग', bg: '#312e81' },
-      { title: 'सफ़र डायरी', bg: '#134e4a' }
-    ].map((item, i) => ({
-      id: i,
-      title: item.title,
-      src:
-        'data:image/svg+xml;charset=UTF-8,' +
-        encodeURIComponent(
-          `<svg xmlns="http://www.w3.org/2000/svg" width="500" height="500"><rect width="500" height="500" fill="${item.bg}"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#ffffff" font-family="sans-serif" font-size="30" font-weight="bold">${item.title}</text></svg>`
-        )
-    }));
+      let camStream = null;
+      let recorder = null;
+      let chunks = [];
+      let recording = false;
+      let frontCam = true;
+      let activeFilterCss = 'none';
+      let mediaSrc = null;
+      let isVideoMedia = false;
+      let selectedMusicTitle = '';
+      let timerSec = 0;
+      let timerRef = null;
 
-    const STUDIO_FILTERS = [
-      { badge: '✨', css: 'none' },
-      { badge: '🔥', css: 'saturate(1.65) contrast(1.15)' },
-      { badge: '🌅', css: 'sepia(0.32) saturate(1.35) brightness(1.05)' },
-      { badge: '💫', css: 'brightness(1.12) contrast(1.06) saturate(1.2)' },
-      { badge: '🎬', css: 'grayscale(1) contrast(1.35)' }
-    ];
+      function ensureStudioModal() {
+        if (document.getElementById(STUDIO_ID)) return;
+        const modal = document.createElement('div');
+        modal.id = STUDIO_ID;
+        modal.className = 'hidden fixed inset-0 z-50 bg-black/95 flex flex-col justify-between p-3 sm:p-5';
+        modal.innerHTML = `
+          <div class="flex items-center justify-between gap-2 pb-2">
+            <button type="button" id="rsCloseBtn" class="px-3.5 py-2 rounded-full bg-zinc-800 text-xs font-bold text-white">✕ बंद करें</button>
+            <div class="flex items-center gap-2">
+              <span id="rsTimer" class="hidden px-2.5 py-1 rounded-full bg-rose-600 text-xs font-extrabold text-white">00:00</span>
+              <span class="text-sm font-extrabold text-white">धाकड़ रील स्टूडियो</span>
+            </div>
+            <button type="button" id="rsPostBtn" class="px-4 py-2 rounded-full dhaakad-gradient text-xs font-extrabold text-white">रील पोस्ट करें</button>
+          </div>
 
-    const AUDIO_LIST = [
-      '🎵 धाकड़ बीट — देसी स्वैग',
-      '🎶 रात की रफ़्तार — लो-फ़ाई',
-      '🔥 जोश हाई — मोटिवेशन ट्रैक',
-      '✨ पहाड़ों की हवा — चिल वाइब'
-    ];
+          <div class="relative flex-1 min-h-[260px] rounded-3xl overflow-hidden bg-zinc-950 border border-zinc-800 flex items-center justify-center">
+            <video id="rsVideo" autoplay playsinline muted class="hidden w-full h-full object-cover"></video>
+            <img id="rsPhoto" src="" alt="Preview" class="hidden w-full h-full object-cover" />
+            <div id="rsTextBadge" class="hidden pointer-events-none absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 px-4 py-1.5 rounded-2xl bg-black/60 text-lg font-extrabold text-white text-center max-w-[85%]"></div>
+            <div id="rsMusicPill" class="hidden pointer-events-none absolute top-3 left-3 px-3 py-1 rounded-full bg-black/65 text-xs font-bold text-amber-300"></div>
 
-    function buildNewPostStudio() {
-      if (document.getElementById(NP_MODAL_ID)) return;
-      chosenMedia = GALLERY_ITEMS[0].src;
+            <div class="absolute right-3 top-1/2 -translate-y-1/2 flex flex-col gap-2.5 z-10">
+              <button type="button" id="rsFlipBtn" class="w-10 h-10 rounded-full bg-black/65 border border-white/20 text-xs font-bold text-white flex flex-col items-center justify-center" title="कैमरा पलटें">🔄</button>
+              <button type="button" id="rsTextBtn" class="w-10 h-10 rounded-full bg-black/65 border border-white/20 text-xs font-extrabold text-white flex items-center justify-center" title="टेक्स्ट जोड़ें">Aa</button>
+              <button type="button" id="rsMusicBtn" class="w-10 h-10 rounded-full bg-black/65 border border-white/20 text-xs font-bold text-white flex items-center justify-center" title="म्यूज़िक चुनें">🎵</button>
+            </div>
+          </div>
 
-      const modal = document.createElement('div');
-      modal.id = NP_MODAL_ID;
-      modal.style.cssText =
-        'display:none;position:fixed;inset:0;z-index:10020;background:#09090b;color:#fff;flex-direction:column;overflow:hidden;';
+          <div class="pt-3 space-y-3">
+            <div id="rsFilters" class="flex gap-2 overflow-x-auto no-scrollbar"></div>
 
-      modal.innerHTML = `
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #27272a;background:#09090b;z-index:15;">
-          <button type="button" id="npCloseBtn" style="background:none;border:none;color:#fff;font-size:22px;cursor:pointer;">✕</button>
-          <div id="npHeading" style="font-size:15px;font-weight:800;">नई पोस्ट</div>
-          <button type="button" id="npPublishBtn" style="background:linear-gradient(135deg,#e11d48,#f97316);border:none;color:#fff;font-size:12px;font-weight:800;padding:8px 14px;border-radius:999px;cursor:pointer;">पब्लिश करें</button>
-        </div>
-
-        <div id="npGalleryView" style="flex:1;overflow-y:auto;padding:14px 16px 88px;max-width:680px;width:100%;margin:0 auto;">
-          <div style="display:grid;grid-template-columns:104px 1fr;gap:12px;align-items:center;background:#18181b;border:1px solid #27272a;border-radius:18px;padding:10px;margin-bottom:14px;">
-            <img id="npPreviewImg" src="${chosenMedia}" alt="Preview" style="width:104px;height:104px;object-fit:cover;border-radius:14px;background:#09090b;" />
-            <div style="display:flex;flex-direction:column;gap:8px;">
-              <input id="npCaption" type="text" placeholder="नई पोस्ट का कैप्शन लिखें..." style="width:100%;background:#09090b;border:1px solid #27272a;border-radius:12px;padding:9px 12px;color:#fff;font-size:13px;outline:none;" />
-              <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                <button type="button" id="npOpenCamViewBtn" style="background:linear-gradient(135deg,#e11d48,#f97316);border:none;color:#fff;padding:7px 12px;border-radius:10px;font-size:12px;font-weight:800;cursor:pointer;">📷 कैमरा स्टूडियो</button>
-                <label style="background:#27272a;padding:7px 11px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;">
-                  📁 फ़ाइल चुनें
-                  <input id="npFileInput" type="file" accept="image/*" style="display:none;" />
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <input id="rsTitleInput" type="text" placeholder="रील का कैप्शन या टाइटल लिखें..." class="bg-zinc-900 border border-zinc-800 rounded-2xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500" />
+              <div class="flex gap-2">
+                <select id="rsMusicSelect" class="flex-1 bg-zinc-900 border border-zinc-800 rounded-2xl px-3 py-2 text-xs text-white focus:outline-none">
+                  <option value="">बिना म्यूज़िक (No Music)</option>
+                  ${DEMO_BEATS.map((b, i) => `<option value="${i}">🎵 ${b.title}</option>`).join('')}
+                </select>
+                <label class="cursor-pointer px-3 py-2 rounded-2xl bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-amber-300 flex items-center shrink-0">
+                  📁 फ़ाइल
+                  <input id="rsFileInput" type="file" accept="video/*,image/*,audio/*" class="hidden" />
                 </label>
               </div>
             </div>
-          </div>
 
-          <div style="font-size:12px;font-weight:700;color:#a1a1aa;margin-bottom:8px;">गैलरी पिक्चर्स और कैमरा टाइल</div>
-          <div id="npPicGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;"></div>
-        </div>
-
-        <div id="npCamView" style="display:none;position:relative;flex:1;background:#000;overflow:hidden;user-select:none;">
-          <video id="npVideo" autoplay playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#09090b;"></video>
-          <img id="npShotImg" alt="Shot" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2;" />
-          <canvas id="npCanvas" style="display:none;"></canvas>
-
-          <div style="position:absolute;top:12px;left:12px;right:12px;z-index:10;display:flex;align-items:center;justify-content:space-between;">
-            <button type="button" id="npBackToGalleryBtn" style="background:rgba(0,0,0,0.55);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:7px 12px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;">🖼️ गैलरी</button>
-
-            <div style="display:flex;align-items:center;gap:6px;">
-              <button type="button" id="npMuteBtn" style="background:rgba(0,0,0,0.55);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:6px 10px;border-radius:999px;font-size:11px;font-weight:700;cursor:pointer;">🎙️ ऑन</button>
-              <button type="button" id="npSpeedBtn" style="background:rgba(0,0,0,0.55);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:6px 10px;border-radius:999px;font-size:11px;font-weight:800;cursor:pointer;">1x</button>
-              <button type="button" id="npTimerBtn" style="background:rgba(0,0,0,0.55);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:6px 10px;border-radius:999px;font-size:11px;font-weight:700;cursor:pointer;">⏱️ ऑफ</button>
-            </div>
-
-            <button type="button" id="npUseShotBtn" style="background:linear-gradient(135deg,#e11d48,#f97316);border:none;color:#fff;padding:7px 12px;border-radius:999px;font-size:12px;font-weight:800;cursor:pointer;">चुनें ✓</button>
-          </div>
-
-          <div style="position:absolute;top:58px;left:50%;transform:translateX(-50%);z-index:10;">
-            <button type="button" id="npAudioPill" style="background:rgba(24,24,27,0.85);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:7px 15px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">
-              🎵 Add audio
-            </button>
-          </div>
-
-          <div style="position:absolute;left:12px;top:50%;transform:translateY(-50%);z-index:10;display:flex;flex-direction:column;gap:12px;">
-            <button type="button" id="npSideAudio" style="width:38px;height:38px;border-radius:999px;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.18);color:#fff;font-size:17px;cursor:pointer;">🎵</button>
-            <button type="button" id="npSideFx" style="width:38px;height:38px;border-radius:999px;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.18);color:#fff;font-size:17px;cursor:pointer;">✨</button>
-            <button type="button" id="npSideFrame" style="width:38px;height:38px;border-radius:999px;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.18);color:#fff;font-size:17px;cursor:pointer;">⛶</button>
-            <button type="button" id="npSideWand" style="width:38px;height:38px;border-radius:999px;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.18);color:#fff;font-size:17px;cursor:pointer;">🪄</button>
-            <button type="button" id="npSide15" style="width:38px;height:38px;border-radius:999px;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.18);color:#fff;font-size:11px;font-weight:800;cursor:pointer;">15</button>
-          </div>
-
-          <div id="npCountdown" style="display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:20;font-size:70px;font-weight:900;color:#fff;text-shadow:0 6px 24px rgba(0,0,0,0.85);"></div>
-
-          <div style="position:absolute;bottom:64px;left:0;right:0;z-index:10;padding:12px 16px;background:linear-gradient(to top,rgba(0,0,0,0.9),rgba(0,0,0,0.35),transparent);">
-            <div id="npFilterBubbles" style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:12px;"></div>
-            <div style="display:flex;align-items:center;justify-content:space-between;max-width:380px;margin:0 auto;">
-              <button type="button" id="npMiniGallery" style="width:42px;height:42px;border-radius:12px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);color:#fff;font-size:18px;cursor:pointer;">🖼️</button>
-              <button type="button" id="npShutter" style="width:70px;height:70px;border-radius:999px;background:#fff;border:5px solid rgba(255,255,255,0.38);cursor:pointer;"></button>
-              <button type="button" id="npFlipCam" style="width:42px;height:42px;border-radius:999px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);color:#fff;font-size:19px;cursor:pointer;">🔄</button>
+            <div class="flex items-center justify-around py-1">
+              <button type="button" id="rsGalleryBtn" class="px-3.5 py-2 rounded-2xl bg-zinc-800 text-xs font-bold text-zinc-200">🖼️ गैलरी</button>
+              <button type="button" id="rsRecBtn" class="w-16 h-16 rounded-full border-4 border-white flex items-center justify-center">
+                <span id="rsRecDot" class="w-11 h-11 rounded-full bg-rose-600 transition-all"></span>
+              </button>
+              <button type="button" id="rsSnapBtn" class="px-3.5 py-2 rounded-2xl bg-zinc-800 text-xs font-bold text-zinc-200">📸 फ़ोटो रील</button>
             </div>
           </div>
-        </div>
 
-        <div style="position:fixed;bottom:0;left:0;right:0;z-index:20;background:rgba(9,9,11,0.96);border-top:1px solid #27272a;padding:10px 12px;display:flex;align-items:center;justify-content:center;gap:14px;">
-          <button type="button" class="np-mode" data-mode="POST" style="background:none;border:none;font-size:12px;font-weight:800;cursor:pointer;padding:4px 8px;">POST</button>
-          <button type="button" class="np-mode" data-mode="STORY" style="background:none;border:none;font-size:12px;font-weight:800;cursor:pointer;padding:4px 8px;">STORY</button>
-          <button type="button" class="np-mode" data-mode="REEL" style="background:none;border:none;font-size:12px;font-weight:800;cursor:pointer;padding:4px 8px;">REEL</button>
-          <button type="button" class="np-mode" data-mode="LIVE" style="background:none;border:none;font-size:12px;font-weight:800;cursor:pointer;padding:4px 8px;">LIVE</button>
-        </div>
-      `;
-
-      document.body.appendChild(modal);
-      renderNpGalleryGrid();
-      renderNpFilterBubbles();
-      setNpMode('POST');
-      bindNpEvents();
-    }
-          function renderNpGalleryGrid() {
-      const grid = document.getElementById('npPicGrid');
-      if (!grid) return;
-
-      const camTile = `
-        <button type="button" id="npTileCam" style="aspect-ratio:1/1;border-radius:14px;background:#18181b;border:1.5px dashed #f97316;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;font-size:12px;font-weight:800;">
-          <span style="font-size:26px;">📷</span>
-          <span>कैमरा</span>
-        </button>
-      `;
-
-      const itemsHtml = GALLERY_ITEMS.map((g) => {
-        const active = chosenMedia === g.src;
-        return `
-          <button type="button" class="np-gitem" data-src="${g.src}" style="aspect-ratio:1/1;border-radius:14px;overflow:hidden;padding:0;background:#18181b;border:${active ? '2.5px solid #f43f5e' : '1px solid #27272a'};cursor:pointer;">
-            <img src="${g.src}" alt="${g.title}" style="width:100%;height:100%;object-fit:cover;display:block;" />
-          </button>
+          <audio id="rsAudio" loop class="hidden"></audio>
         `;
-      }).join('');
-
-      grid.innerHTML = camTile + itemsHtml;
-      document.getElementById('npTileCam').addEventListener('click', showCameraInsideNewPost);
-      grid.querySelectorAll('.np-gitem').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          setChosenMedia(btn.getAttribute('data-src'));
-        });
-      });
+        document.body.appendChild(modal);
+        bindStudioEvents();
     }
+          function renderStudioFilters() {
+        const box = document.getElementById('rsFilters');
+        if (!box) return;
+        box.innerHTML = STUDIO_FILTERS.map(f => {
+          const active = activeFilterCss === f.css;
+          return `
+            <button type="button" data-filter="${f.css}" class="rs-fbtn px-3 py-1.5 rounded-full text-xs font-bold shrink-0 ${
+              active ? 'bg-white text-black' : 'bg-zinc-800 text-zinc-200'
+            }">${f.name}</button>
+          `;
+        }).join('');
 
-    function setChosenMedia(src) {
-      if (!src) return;
-      chosenMedia = src;
-      const prev = document.getElementById('npPreviewImg');
-      if (prev) {
-        prev.src = chosenMedia;
-        prev.style.filter = activeFilter;
+        box.querySelectorAll('.rs-fbtn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            activeFilterCss = btn.getAttribute('data-filter');
+            applyStudioFilter();
+            renderStudioFilters();
+          });
+        });
       }
-      renderNpGalleryGrid();
-    }
 
-    function renderNpFilterBubbles() {
-      const row = document.getElementById('npFilterBubbles');
-      if (!row) return;
-      row.innerHTML = STUDIO_FILTERS.map((f, idx) => {
-        const active = activeFilter === f.css;
-        return `
-          <button type="button" data-f="${idx}" class="np-fb" style="width:40px;height:40px;border-radius:999px;background:rgba(24,24,27,0.85);border:${active ? '2.5px solid #f43f5e' : '1.5px solid rgba(255,255,255,0.3)'};color:#fff;font-size:16px;cursor:pointer;">
-            ${f.badge}
-          </button>
-        `;
-      }).join('');
+      function applyStudioFilter() {
+        const vid = document.getElementById('rsVideo');
+        const img = document.getElementById('rsPhoto');
+        if (vid) vid.style.filter = activeFilterCss;
+        if (img) img.style.filter = activeFilterCss;
+      }
 
-      row.querySelectorAll('.np-fb').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          const item = STUDIO_FILTERS[Number(btn.getAttribute('data-f'))] || STUDIO_FILTERS[0];
-          activeFilter = item.css;
-          const vid = document.getElementById('npVideo');
-          const shot = document.getElementById('npShotImg');
-          const prev = document.getElementById('npPreviewImg');
-          if (vid) vid.style.filter = activeFilter;
-          if (shot) shot.style.filter = activeFilter;
-          if (prev) prev.style.filter = activeFilter;
-          renderNpFilterBubbles();
+      async function startStudioCamera() {
+        stopStudioCamera();
+        const vid = document.getElementById('rsVideo');
+        const img = document.getElementById('rsPhoto');
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          useFallbackMedia();
+          return;
+        }
+        try {
+          camStream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: frontCam ? 'user' : 'environment' },
+            audio: true
+          });
+          isVideoMedia = true;
+          mediaSrc = null;
+          img.classList.add('hidden');
+          vid.classList.remove('hidden');
+          vid.srcObject = camStream;
+          vid.style.transform = frontCam ? 'scaleX(-1)' : 'scaleX(1)';
+          vid.muted = true;
+          applyStudioFilter();
+        } catch (err) {
+          useFallbackMedia();
+        }
+      }
+
+      function useFallbackMedia() {
+        const vid = document.getElementById('rsVideo');
+        const img = document.getElementById('rsPhoto');
+        isVideoMedia = false;
+        mediaSrc = PRESET_PHOTOS[1];
+        vid.classList.add('hidden');
+        img.classList.remove('hidden');
+        img.src = mediaSrc;
+        applyStudioFilter();
+      }
+
+      function stopStudioCamera() {
+        if (camStream) {
+          camStream.getTracks().forEach(t => t.stop());
+          camStream = null;
+        }
+      }
+
+      function toggleStudioRecording() {
+        const recDot = document.getElementById('rsRecDot');
+        const timerEl = document.getElementById('rsTimer');
+        const vid = document.getElementById('rsVideo');
+        const audioEl = document.getElementById('rsAudio');
+
+        if (!recording) {
+          if (!camStream || typeof MediaRecorder === 'undefined') {
+            alert('लाइव कैमरा रिकॉर्डिंग उपलब्ध नहीं है; आप गैलरी से वीडियो/फ़ोटो चुनकर या "फ़ोटो रील" से सीधे रील पोस्ट कर सकते हैं।');
+            return;
+          }
+          chunks = [];
+          try {
+            recorder = new MediaRecorder(camStream);
+          } catch (e) {
+            alert('इस ब्राउज़र में वीडियो रिकॉर्डर शुरू नहीं हो सका।');
+            return;
+          }
+          recorder.ondataavailable = ev => {
+            if (ev.data && ev.data.size > 0) chunks.push(ev.data);
+          };
+          recorder.onstop = () => {
+            const blob = new Blob(chunks, { type: recorder.mimeType || 'video/webm' });
+            mediaSrc = URL.createObjectURL(blob);
+            isVideoMedia = true;
+            stopStudioCamera();
+            vid.srcObject = null;
+            vid.src = mediaSrc;
+            vid.style.transform = 'none';
+            vid.muted = false;
+            vid.loop = true;
+            vid.play().catch(() => {});
+          };
+          recorder.start();
+          recording = true;
+          recDot.className = 'w-7 h-7 rounded-md bg-rose-500 transition-all';
+          if (audioEl && audioEl.src) audioEl.play().catch(() => {});
+
+          timerSec = 0;
+          timerEl.classList.remove('hidden');
+          timerEl.textContent = '00:00';
+          clearInterval(timerRef);
+          timerRef = setInterval(() => {
+            timerSec++;
+            const m = String(Math.floor(timerSec / 60)).padStart(2, '0');
+            const s = String(timerSec % 60).padStart(2, '0');
+            timerEl.textContent = `${m}:${s}`;
+          }, 1000);
+        } else {
+          recording = false;
+          recDot.className = 'w-11 h-11 rounded-full bg-rose-600 transition-all';
+          clearInterval(timerRef);
+          timerEl.classList.add('hidden');
+          if (recorder && recorder.state !== 'inactive') {
+            recorder.stop();
+          }
+        }
+      }
+
+      function snapPhotoReel() {
+        const vid = document.getElementById('rsVideo');
+        const img = document.getElementById('rsPhoto');
+        if (camStream && vid && vid.videoWidth && vid.videoHeight) {
+          const canvas = document.createElement('canvas');
+          canvas.width = vid.videoWidth;
+          canvas.height = vid.videoHeight;
+          const ctx = canvas.getContext('2d');
+          if (frontCam) {
+            ctx.translate(canvas.width, 0);
+            ctx.scale(-1, 1);
+          }
+          ctx.drawImage(vid, 0, 0, canvas.width, canvas.height);
+          mediaSrc = canvas.toDataURL('image/jpeg', 0.9);
+          isVideoMedia = false;
+          stopStudioCamera();
+          vid.classList.add('hidden');
+          img.classList.remove('hidden');
+          img.src = mediaSrc;
+          applyStudioFilter();
+        } else {
+          useFallbackMedia();
+        }
+      }
+
+      function publishStudioReel() {
+        const titleInput = document.getElementById('rsTitleInput');
+        const textBadge = document.getElementById('rsTextBadge');
+        const overlayText = textBadge && !textBadge.classList.contains('hidden') ? textBadge.textContent.trim() : '';
+        const finalTitle = (titleInput && titleInput.value.trim()) || overlayText || 'नई धाकड़ रील 🔥';
+
+        const newReel = {
+          id: 'r_' + Date.now(),
+          title: finalTitle,
+          creator: state.profile.name,
+          handle: state.profile.handle,
+          views: '1',
+          likes: 1,
+          liked: true,
+          image: (!isVideoMedia && mediaSrc) ? mediaSrc : PRESET_PHOTOS[1],
+          videoUrl: isVideoMedia ? mediaSrc : '',
+          music: selectedMusicTitle || '',
+          badge: 'नई रील'
+        };
+
+        state.reels.unshift(newReel);
+        saveState();
+        closeStudioModal();
+        switchTab('reels');
+      }
+
+      function bindStudioEvents() {
+        document.getElementById('rsCloseBtn').addEventListener('click', closeStudioModal);
+        document.getElementById('rsPostBtn').addEventListener('click', publishStudioReel);
+        document.getElementById('rsRecBtn').addEventListener('click', toggleStudioRecording);
+        document.getElementById('rsSnapBtn').addEventListener('click', snapPhotoReel);
+        document.getElementById('rsGalleryBtn').addEventListener('click', () => {
+          document.getElementById('rsFileInput').click();
         });
-      });
-    }
 
-    function setNpMode(mode) {
-      activeTabMode = mode;
-      const titles = {
-        POST: 'नई पोस्ट',
-        STORY: 'नई पोस्ट • स्टोरी',
-        REEL: 'नई पोस्ट • रील',
-        LIVE: 'नई पोस्ट • लाइव'
+        document.getElementById('rsFlipBtn').addEventListener('click', () => {
+          frontCam = !frontCam;
+          startStudioCamera();
+        });
+
+        document.getElementById('rsTextBtn').addEventListener('click', () => {
+          const badge = document.getElementById('rsTextBadge');
+          const txt = prompt('रील पर दिखाने के लिए टेक्स्ट लिखें:', badge.textContent || '');
+          if (txt === null) return;
+          if (txt.trim()) {
+            badge.textContent = txt.trim();
+            badge.classList.remove('hidden');
+          } else {
+            badge.classList.add('hidden');
+          }
+        });
+
+        const musicSelect = document.getElementById('rsMusicSelect');
+        const audioEl = document.getElementById('rsAudio');
+        const musicPill = document.getElementById('rsMusicPill');
+
+        function applyBeatSelection() {
+          const idx = musicSelect.value;
+          if (idx === '') {
+            selectedMusicTitle = '';
+            audioEl.pause();
+            audioEl.removeAttribute('src');
+            musicPill.classList.add('hidden');
+            return;
+          }
+          const beat = DEMO_BEATS[Number(idx)];
+          if (!beat) return;
+          selectedMusicTitle = beat.title;
+          audioEl.src = beat.url;
+          audioEl.play().catch(() => {});
+          musicPill.textContent = `🎵 ${beat.title}`;
+          musicPill.classList.remove('hidden');
+        }
+
+        musicSelect.addEventListener('change', applyBeatSelection);
+        document.getElementById('rsMusicBtn').addEventListener('click', () => {
+          const current = musicSelect.value === '' ? -1 : Number(musicSelect.value);
+          const next = current + 1;
+          musicSelect.value = next < DEMO_BEATS.length ? String(next) : '';
+          applyBeatSelection();
+        });
+
+        document.getElementById('rsFileInput').addEventListener('change', ev => {
+          const file = ev.target.files && ev.target.files[0];
+          if (!file) return;
+          const url = URL.createObjectURL(file);
+          const vid = document.getElementById('rsVideo');
+          const img = document.getElementById('rsPhoto');
+
+          if (file.type.startsWith('audio/')) {
+            selectedMusicTitle = file.name;
+            audioEl.src = url;
+            audioEl.play().catch(() => {});
+            musicPill.textContent = `🎵 ${file.name}`;
+            musicPill.classList.remove('hidden');
+            return;
+          }
+
+          stopStudioCamera();
+          mediaSrc = url;
+          if (file.type.startsWith('video/')) {
+            isVideoMedia = true;
+            img.classList.add('hidden');
+            vid.classList.remove('hidden');
+            vid.srcObject = null;
+            vid.src = url;
+            vid.style.transform = 'none';
+            vid.muted = false;
+            vid.loop = true;
+            vid.play().catch(() => {});
+          } else {
+            isVideoMedia = false;
+            vid.classList.add('hidden');
+            img.classList.remove('hidden');
+            img.src = url;
+          }
+          applyStudioFilter();
+        });
+      }
+
+      function closeStudioModal() {
+        recording = false;
+        clearInterval(timerRef);
+        stopStudioCamera();
+        const audioEl = document.getElementById('rsAudio');
+        if (audioEl) audioEl.pause();
+        const modal = document.getElementById(STUDIO_ID);
+        if (modal) modal.classList.add('hidden');
+      }
+
+      window.openReelStudio = function() {
+        ensureStudioModal();
+        activeFilterCss = 'none';
+        renderStudioFilters();
+        document.getElementById(STUDIO_ID).classList.remove('hidden');
+        startStudioCamera();
       };
-      const head = document.getElementById('npHeading');
-      if (head) head.textContent = titles[mode] || 'नई पोस्ट';
+    })();
 
-      document.querySelectorAll('.np-mode').forEach((b) => {
-        const isAct = b.getAttribute('data-mode') === mode;
-        b.style.color = isAct ? '#ffffff' : 'rgba(255,255,255,0.5)';
-        b.style.borderBottom = isAct ? '2px solid #f43f5e' : 'none';
-      });
-
-      if (mode === 'REEL' || mode === 'STORY' || mode === 'LIVE') {
-        showCameraInsideNewPost();
-      }
-    }
-
-    function cycleNpAudio() {
-      const idx = AUDIO_LIST.indexOf(activeAudio);
-      activeAudio = AUDIO_LIST[(idx + 1) % AUDIO_LIST.length];
-      const pill = document.getElementById('npAudioPill');
-      if (pill) pill.textContent = activeAudio;
-    }
-
-    function bindNpEvents() {
-      document.getElementById('npCloseBtn').addEventListener('click', closeNewPostStudio);
-      document.getElementById('npPublishBtn').addEventListener('click', publishNewPostStudio);
-      document.getElementById('npOpenCamViewBtn').addEventListener('click', showCameraInsideNewPost);
-      document.getElementById('npBackToGalleryBtn').addEventListener('click', showGalleryInsideNewPost);
-      document.getElementById('npMiniGallery').addEventListener('click', showGalleryInsideNewPost);
-
-      document.getElementById('npFileInput').addEventListener('change', (ev) => {
-        const file = ev.target.files && ev.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (e) => setChosenMedia(e.target.result);
-        reader.readAsDataURL(file);
-      });
-
-      document.getElementById('npMuteBtn').addEventListener('click', () => {
-        mutedState = !mutedState;
-        if (stream) stream.getAudioTracks().forEach((t) => (t.enabled = !mutedState));
-        document.getElementById('npMuteBtn').textContent = mutedState ? '🔇 म्यूट' : '🎙️ ऑन';
-      });
-
-      document.getElementById('npSpeedBtn').addEventListener('click', () => {
-        const list = ['0.5x', '1x', '2x'];
-        speedVal = list[(list.indexOf(speedVal) + 1) % list.length];
-        document.getElementById('npSpeedBtn').textContent = speedVal;
-      });
-
-      document.getElementById('npTimerBtn').addEventListener('click', () => {
-        const list = [0, 3, 10];
-        timerSec = list[(list.indexOf(timerSec) + 1) % list.length];
-        document.getElementById('npTimerBtn').textContent = timerSec ? `⏱️ ${timerSec}s` : '⏱️ ऑफ';
-      });
-
-      document.getElementById('npAudioPill').addEventListener('click', cycleNpAudio);
-      document.getElementById('npSideAudio').addEventListener('click', cycleNpAudio);
-
-      document.getElementById('npSideFx').addEventListener('click', () => {
-        const next = STUDIO_FILTERS[(STUDIO_FILTERS.findIndex((f) => f.css === activeFilter) + 1) % STUDIO_FILTERS.length];
-        activeFilter = next.css;
-        document.getElementById('npVideo').style.filter = activeFilter;
-        renderNpFilterBubbles();
-      });
-
-      document.getElementById('npSideFrame').addEventListener('click', () => {
-        const vid = document.getElementById('npVideo');
-        vid.style.borderRadius = vid.style.borderRadius === '24px' ? '0px' : '24px';
-      });
-
-      document.getElementById('npSideWand').addEventListener('click', () => {
-        activeFilter = 'brightness(1.14) contrast(1.08) saturate(1.25)';
-        document.getElementById('npVideo').style.filter = activeFilter;
-        renderNpFilterBubbles();
-      });
-
-      document.getElementById('npSide15').addEventListener('click', () => {
-        setNpMode('REEL');
-      });
-
-      document.getElementById('npFlipCam').addEventListener('click', async () => {
-        facingMode = facingMode === 'user' ? 'environment' : 'user';
-        await startNpCam();
-      });
-
-      document.getElementById('npShutter').addEventListener('click', () => {
-        if (timerSec > 0) {
-          runNpCountdown(timerSec, snapNpPhoto);
-        } else {
-          snapNpPhoto();
-        }
-      });
-
-      document.getElementById('npUseShotBtn').addEventListener('click', () => {
-        const shot = document.getElementById('npShotImg');
-        if (shot && shot.style.display === 'none') snapNpPhoto();
-        if (shot && shot.src) setChosenMedia(shot.src);
-        showGalleryInsideNewPost();
-      });
-
-      document.querySelectorAll('.np-mode').forEach((btn) => {
-        btn.addEventListener('click', () => setNpMode(btn.getAttribute('data-mode')));
-      });
-    }
-
-    function runNpCountdown(sec, cb) {
-      const el = document.getElementById('npCountdown');
-      let count = sec;
-      el.style.display = 'block';
-      el.textContent = count;
-      const timer = setInterval(() => {
-        count -= 1;
-        if (count > 0) {
-          el.textContent = count;
-        } else {
-          clearInterval(timer);
-          el.style.display = 'none';
-          cb();
-        }
-      }, 1000);
-    }
-
-    function snapNpPhoto() {
-      const vid = document.getElementById('npVideo');
-      const canvas = document.getElementById('npCanvas');
-      const shot = document.getElementById('npShotImg');
-      if (!vid || !canvas || !shot) return;
-
-      if (vid.videoWidth && vid.videoHeight) {
-        canvas.width = vid.videoWidth;
-        canvas.height = vid.videoHeight;
-        const ctx = canvas.getContext('2d');
-        ctx.filter = activeFilter === 'none' ? 'none' : activeFilter;
-        ctx.drawImage(vid, 0, 0, canvas.width, canvas.height);
-        shot.src = canvas.toDataURL('image/jpeg', 0.9);
-      } else {
-        shot.src = chosenMedia;
-      }
-      shot.style.filter = activeFilter;
-      shot.style.display = 'block';
-    }
-
-    async function showCameraInsideNewPost() {
-      document.getElementById('npGalleryView').style.display = 'none';
-      document.getElementById('npCamView').style.display = 'block';
-      const shot = document.getElementById('npShotImg');
-      if (shot) shot.style.display = 'none';
-      await startNpCam();
-    }
-
-    function showGalleryInsideNewPost() {
-      stopNpCam();
-      document.getElementById('npCamView').style.display = 'none';
-      document.getElementById('npGalleryView').style.display = 'block';
-    }
-
-    async function startNpCam() {
-      stopNpCam();
-      const vid = document.getElementById('npVideo');
-      if (!vid) return;
-      vid.style.filter = activeFilter;
-      vid.style.transform = facingMode === 'user' ? 'scaleX(-1)' : 'none';
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode },
-          audio: !mutedState
-        });
-        vid.srcObject = stream;
-      } catch (e) {
-        console.warn('Camera stream info:', e);
-      }
-    }
-
-    function stopNpCam() {
-      if (stream) {
-        stream.getTracks().forEach((t) => t.stop());
-        stream = null;
-      }
-    }
-
-    function publishNewPostStudio() {
-      const shot = document.getElementById('npShotImg');
-      const camVisible = document.getElementById('npCamView').style.display !== 'none';
-      if (camVisible && shot && shot.style.display !== 'none' && shot.src) {
-        chosenMedia = shot.src;
-      }
-
-      const capInput = document.getElementById('npCaption');
-      const audioNote = activeAudio ? ` • ${activeAudio}` : '';
-      const captionText =
-        (capInput && capInput.value.trim()) || `धाकड़ ${activeTabMode} (${speedVal})${audioNote} 🔥`;
-
-      try {
-        if (window.state) {
-          const prof = window.state.profile || {};
-          const author = prof.name || 'वीर धाकड़';
-          const handle = prof.handle || '@veer_dhaakad';
-          const avatarColor = prof.avatarColor || 'from-rose-600 to-orange-500';
-          const initial = author.trim().charAt(0).toUpperCase() || 'ध';
-
-          if (activeTabMode === 'STORY' && Array.isArray(window.state.stories)) {
-            window.state.stories.unshift({
-              id: 'st_' + Date.now(),
-              author,
-              handle,
-              avatarInitial: initial,
-              avatarColor,
-              image: chosenMedia,
-              caption: captionText,
-              time: 'अभी-अभी',
-              seen: false
-            });
-          } else if (activeTabMode === 'REEL' && Array.isArray(window.state.reels)) {
-            window.state.reels.unshift({
-              id: 'r_' + Date.now(),
-              title: captionText,
-              creator: author,
-              handle,
-              views: '1',
-              likes: 1,
-              liked: true,
-              image: chosenMedia,
-              badge: 'नया रील'
-            });
-          } else if (Array.isArray(window.state.posts)) {
-            window.state.posts.unshift({
-              id: 'p_' + Date.now(),
-              author,
-              handle,
-              avatarInitial: initial,
-              avatarColor,
-              location: prof.city || 'भारत',
-              image: chosenMedia,
-              filter: 'filter-none',
-              caption: activeTabMode === 'LIVE' ? '🔴 LIVE: ' + captionText : captionText,
-              tags: '#धाकड़स्वैग',
-              time: 'अभी-अभी',
-              likes: 1,
-              liked: true,
-              comments: []
-            });
-          }
-          if (typeof window.saveState === 'function') window.saveState();
-          if (typeof window.switchTab === 'function') {
-            window.switchTab(activeTabMode === 'REEL' ? 'reels' : 'home');
-          } else if (typeof window.renderAll === 'function') {
-            window.renderAll();
-          }
-        }
-      } catch (err) {
-        console.warn('Publish info:', err);
-      }
-
-      if (capInput) capInput.value = '';
-      closeNewPostStudio();
-    }
-
-    function openNewPostStudio() {
-      buildNewPostStudio();
-      setNpMode('POST');
-      showGalleryInsideNewPost();
-      document.getElementById(NP_MODAL_ID).style.display = 'flex';
-    }
-
-    function closeNewPostStudio() {
-      stopNpCam();
-      const el = document.getElementById(NP_MODAL_ID);
-      if (el) el.style.display = 'none';
-    }
-
-    document.addEventListener(
-      'click',
-      (e) => {
-        const btn = e.target.closest('button');
-        if (!btn) return;
-        if (btn.closest(`#${NP_MODAL_ID}`)) return;
-        const text = (btn.textContent || '').trim();
-        if (text.includes('नई पोस्ट') || text === 'पोस्ट') {
-          e.preventDefault();
-          e.stopPropagation();
-          openNewPostStudio();
-        }
-      },
-      true
-    );
-  })();
-</script>
-  <script>
-  (function () {
-    const POST_EDIT_ID = 'dhaakadPostVideoEditor';
-    let editState = {
-      videoUrl: '',
-      audio: '',
-      textOverlay: '',
-      voiceNote: '',
-      captionText: '',
-      sticker: '',
-      filterCss: 'none'
-    };
-
-    function ensurePostEditorDom() {
-      if (document.getElementById(POST_EDIT_ID)) return;
-
-      const wrap = document.createElement('div');
-      wrap.id = POST_EDIT_ID;
-      wrap.style.cssText =
-        'display:none;position:fixed;inset:0;z-index:10050;background:#000;color:#fff;flex-direction:column;justify-content:space-between;overflow:hidden;';
-
-      wrap.innerHTML = `
-        <video id="dpeVideo" autoplay loop playsinline controls style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#09090b;"></video>
-
-        <!-- Top Bar -->
-        <div style="position:relative;z-index:15;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(to bottom,rgba(0,0,0,0.72),transparent);">
-          <button type="button" id="dpeBackBtn" style="width:40px;height:40px;border-radius:999px;background:rgba(39,39,42,0.85);border:none;color:#fff;font-size:20px;cursor:pointer;">←</button>
-          <div id="dpeStatusPill" style="display:none;background:rgba(24,24,27,0.85);border:1px solid rgba(255,255,255,0.2);padding:5px 12px;border-radius:999px;font-size:12px;font-weight:700;"></div>
-          <div style="width:40px;"></div>
-        </div>
-
-        <!-- Overlays on Video (Text, Sticker, Captions) -->
-        <div style="position:relative;z-index:12;pointer-events:none;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;text-align:center;gap:12px;">
-          <div id="dpeStickerLayer" style="display:none;font-size:56px;filter:drop-shadow(0 6px 16px rgba(0,0,0,0.7));"></div>
-          <div id="dpeTextLayer" style="display:none;background:rgba(0,0,0,0.65);padding:8px 16px;border-radius:14px;font-size:20px;font-weight:800;color:#fff;max-width:85%;"></div>
-          <div id="dpeCaptionLayer" style="display:none;background:rgba(24,24,27,0.85);border:1px solid rgba(255,255,255,0.2);padding:6px 14px;border-radius:999px;font-size:13px;font-weight:700;color:#fde047;"></div>
-        </div>
-
-        <!-- Bottom Tool Bar + Open in Edits + Next -> -->
-        <div style="position:relative;z-index:15;padding:12px 14px 18px;background:linear-gradient(to top,rgba(0,0,0,0.92),rgba(0,0,0,0.55),transparent);">
-          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;max-width:460px;margin:0 auto 14px;">
-            <button type="button" id="dpeToolAudio" style="background:rgba(39,39,42,0.82);border:1px solid rgba(255,255,255,0.14);border-radius:14px;padding:10px 4px;color:#fff;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;font-size:11px;font-weight:700;">
-              <span style="font-size:18px;">🎵</span>
-              <span>Audio</span>
-            </button>
-
-            <button type="button" id="dpeToolText" style="background:rgba(39,39,42,0.82);border:1px solid rgba(255,255,255,0.14);border-radius:14px;padding:10px 4px;color:#fff;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;font-size:11px;font-weight:700;">
-              <span style="font-size:18px;font-weight:800;">Aa</span>
-              <span>Text</span>
-            </button>
-
-            <button type="button" id="dpeToolVoice" style="background:rgba(39,39,42,0.82);border:1px solid rgba(255,255,255,0.14);border-radius:14px;padding:10px 4px;color:#fff;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;font-size:11px;font-weight:700;">
-              <span style="font-size:18px;">🎙️</span>
-              <span>Voice</span>
-            </button>
-
-            <button type="button" id="dpeToolCaptions" style="background:rgba(39,39,42,0.82);border:1px solid rgba(255,255,255,0.14);border-radius:14px;padding:10px 4px;color:#fff;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;font-size:11px;font-weight:700;">
-              <span style="font-size:16px;font-weight:900;">CC</span>
-              <span>Captions</span>
-            </button>
-
-            <button type="button" id="dpeToolStickers" style="background:rgba(39,39,42,0.82);border:1px solid rgba(255,255,255,0.14);border-radius:14px;padding:10px 4px;color:#fff;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;font-size:11px;font-weight:700;">
-              <span style="font-size:18px;">☺</span>
-              <span>Stickers</span>
-            </button>
-          </div>
-
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:460px;margin:0 auto;">
-            <button type="button" id="dpeOpenEditsBtn" style="background:rgba(39,39,42,0.92);border:1px solid rgba(255,255,255,0.18);color:#fff;padding:11px 16px;border-radius:999px;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:6px;">
-              <span>CI</span>
-              <span>Open in Edits</span>
-            </button>
-
-            <button type="button" id="dpeNextBtn" style="background:#4f46e5;border:none;color:#fff;padding:11px 20px;border-radius:999px;font-size:13px;font-weight:800;cursor:pointer;">
-              Next →
-            </button>
-          </div>
-        </div>
-      `;
-
-      document.body.appendChild(wrap);
-      bindPostEditorActions();
-    }
-
-    function updateOverlayDisplay() {
-      const stEl = document.getElementById('dpeStickerLayer');
-      const txEl = document.getElementById('dpeTextLayer');
-      const cpEl = document.getElementById('dpeCaptionLayer');
-      const pill = document.getElementById('dpeStatusPill');
-
-      if (stEl) {
-        stEl.textContent = editState.sticker;
-        stEl.style.display = editState.sticker ? 'block' : 'none';
-      }
-      if (txEl) {
-        txEl.textContent = editState.textOverlay;
-        txEl.style.display = editState.textOverlay ? 'block' : 'none';
-      }
-      if (cpEl) {
-        cpEl.textContent = editState.captionText;
-        cpEl.style.display = editState.captionText ? 'block' : 'none';
-      }
-
-      const tags = [];
-      if (editState.audio) tags.push(editState.audio);
-      if (editState.voiceNote) tags.push(editState.voiceNote);
-      if (pill) {
-        pill.textContent = tags.join(' • ');
-        pill.style.display = tags.length ? 'block' : 'none';
-      }
-    }
-
-    function bindPostEditorActions() {
-      document.getElementById('dpeBackBtn').addEventListener('click', () => {
-        closePostEditor();
-      });
-
-      const audioTracks = [
-        '🎵 धाकड़ बीट',
-        '🎶 देसी वाइब',
-        '🔥 जोश ट्रैक',
-        '✨ चिल म्यूज़िक'
-      ];
-      document.getElementById('dpeToolAudio').addEventListener('click', () => {
-        const nextIdx = (audioTracks.indexOf(editState.audio) + 1) % audioTracks.length;
-        editState.audio = audioTracks[nextIdx];
-        updateOverlayDisplay();
-      });
-
-      document.getElementById('dpeToolText').addEventListener('click', () => {
-        const val = prompt('वीडियो पर लिखने के लिए टेक्स्ट डालें:', editState.textOverlay || 'धाकड़ रील 🔥');
-        if (val !== null) {
-          editState.textOverlay = val.trim();
-          updateOverlayDisplay();
-        }
-      });
-
-      document.getElementById('dpeToolVoice').addEventListener('click', () => {
-        editState.voiceNote = editState.voiceNote ? '' : '🎙️ वॉइस ओवर जुड़ा';
-        updateOverlayDisplay();
-      });
-
-      const sampleCaptions = [
-        '💬 धाकड़ मोमेंट — फुल एनर्जी!',
-        '💬 आज का सबसे बेस्ट शॉट 🔥',
-        '💬 स्टाइल और स्वैग दोनों साथ'
-      ];
-      document.getElementById('dpeToolCaptions').addEventListener('click', () => {
-        const nextIdx = (sampleCaptions.indexOf(editState.captionText) + 1) % sampleCaptions.length;
-        editState.captionText = sampleCaptions[nextIdx];
-        updateOverlayDisplay();
-      });
-
-      const stickers = ['🔥', '😎', '👑', '⚡', '❤️'];
-      document.getElementById('dpeToolStickers').addEventListener('click', () => {
-        const nextIdx = (stickers.indexOf(editState.sticker) + 1) % stickers.length;
-        editState.sticker = stickers[nextIdx];
-        updateOverlayDisplay();
-      });
-
-      document.getElementById('dpeOpenEditsBtn').addEventListener('click', () => {
-        const filters = [
-          'none',
-          'saturate(1.65) contrast(1.15)',
-          'sepia(0.32) saturate(1.35) brightness(1.05)',
-          'grayscale(1) contrast(1.35)'
-        ];
-        const idx = filters.indexOf(editState.filterCss);
-        editState.filterCss = filters[(idx + 1) % filters.length];
-        const vid = document.getElementById('dpeVideo');
-        if (vid) vid.style.filter = editState.filterCss;
-      });
-
-      document.getElementById('dpeNextBtn').addEventListener('click', () => {
-        saveEditedVideoToApp();
-        closePostEditor();
-      });
-    }
-
-    function saveEditedVideoToApp() {
-      const summaryParts = [
-        editState.textOverlay,
-        editState.captionText,
-        editState.sticker,
-        editState.audio,
-        editState.voiceNote
-      ].filter(Boolean);
-      const finalTitle = summaryParts.length ? summaryParts.join(' ') : 'नई धाकड़ वीडियो रील 🔥';
-
-      try {
-        if (window.state) {
-          const prof = window.state.profile || {};
-          const author = prof.name || 'वीर धाकड़';
-          const handle = prof.handle || '@veer_dhaakad';
-          const avatarColor = prof.avatarColor || 'from-rose-600 to-orange-500';
-          const initial = author.trim().charAt(0).toUpperCase() || 'ध';
-
-          if (Array.isArray(window.state.reels)) {
-            window.state.reels.unshift({
-              id: 'r_' + Date.now(),
-              title: finalTitle,
-              creator: author,
-              handle,
-              views: '1',
-              likes: 1,
-              liked: true,
-              image:
-                window.__dhaakadLastShotImg ||
-                'data:image/svg+xml;charset=UTF-8,' +
-                  encodeURIComponent(
-                    `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="900"><rect width="600" height="900" fill="#18181b"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#fff" font-family="sans-serif" font-size="32" font-weight="bold">DHAAKAD REEL</text></svg>`
-                  ),
-              videoUrl: editState.videoUrl || window.__dhaakadLastRecordedVideo || '',
-              badge: 'एडिटेड रील'
-            });
-          }
-
-          if (typeof window.saveState === 'function') window.saveState();
-          if (typeof window.switchTab === 'function') window.switchTab('reels');
-          else if (typeof window.renderAll === 'function') window.renderAll();
-        }
-      } catch (err) {
-        console.warn('Save edited video note:', err);
-      }
-    }
-
-    function openPostEditor(videoSrc) {
-      ensurePostEditorDom();
-      editState.videoUrl = videoSrc || window.__dhaakadLastRecordedVideo || '';
-      const vid = document.getElementById('dpeVideo');
-      if (vid) {
-        if (editState.videoUrl) {
-          vid.src = editState.videoUrl;
-          vid.play().catch(() => {});
-        } else {
-          const camVid = document.getElementById('npVideo');
-          if (camVid && camVid.srcObject) vid.srcObject = camVid.srcObject;
-        }
-        vid.style.filter = editState.filterCss;
-      }
-      updateOverlayDisplay();
-      document.getElementById(POST_EDIT_ID).style.display = 'flex';
-    }
-
-    function closePostEditor() {
-      const el = document.getElementById(POST_EDIT_ID);
-      if (el) el.style.display = 'none';
-    }
-
-    // रिकॉर्डिंग समाप्त होते ही या शटर/चुनें/पब्लिश पर एडिट स्क्रीन दिखाना
-    function hookVideoFinish() {
-      const shutter = document.getElementById('npShutter');
-      if (shutter && !shutter.dataset.dpeBound) {
-        shutter.dataset.dpeBound = '1';
-        shutter.addEventListener('click', () => {
-          setTimeout(() => {
-            const pv = document.getElementById('npRecVideoPreview');
-            const recVidSrc = (pv && pv.src && pv.src.startsWith('blob:')) ? pv.src : window.__dhaakadLastRecordedVideo;
-            if (recVidSrc) {
-              openPostEditor(recVidSrc);
-            }
-          }, 900);
-        });
-      }
-    }
-
-    const obs = new MutationObserver(() => {
-      if (document.getElementById('npShutter')) hookVideoFinish();
-    });
-    obs.observe(document.body, { childList: true, subtree: true });
-  })();
+    renderAll();
   </script>
-  <script>
-(function () {
-  let mediaRecorder = null;
-  let chunks = [];
-  let isRecording = false;
-
-  function findRecordButton() {
-    const candidates = Array.from(document.querySelectorAll("button, div, span, a"));
-    return candidates.find((el) => {
-      const rect = el.getBoundingClientRect();
-      const style = window.getComputedStyle(el);
-      const isBigCircle = rect.width >= 55 && rect.width <= 110 && Math.abs(rect.width - rect.height) < 15;
-      const isBottomCenter = rect.top > window.innerHeight * 0.65 && Math.abs(rect.left + rect.width / 2 - window.innerWidth / 2) < 90;
-      const isWhiteBg = style.backgroundColor.includes("255, 255, 255");
-      return isBigCircle && isBottomCenter && isWhiteBg;
-    });
-  }
-
-  function getActiveStream() {
-    const vid = document.querySelector("video");
-    if (vid && vid.srcObject && vid.srcObject.active) return vid.srcObject;
-    return window.cameraStream || window.stream || null;
-  }
-
-  function toggleRecording(btn) {
-    if (!isRecording) {
-      const stream = getActiveStream();
-      if (!stream) {
-        alert("कैमरा स्ट्रीम नहीं मिला। पहले कैमरा ऑन करें।");
-        return;
-      }
-      chunks = [];
-      try {
-        mediaRecorder = new MediaRecorder(stream);
-      } catch (err) {
-        alert("रिकॉर्डर शुरू नहीं हो पाया: " + err.message);
-        return;
-      }
-
-      mediaRecorder.ondataavailable = (e) => {
-        if (e.data && e.data.size > 0) chunks.push(e.data);
-      };
-
-      mediaRecorder.onstop = () => {
-        const blob = new Blob(chunks, { type: mediaRecorder.mimeType || "video/webm" });
-        window.recordedReelBlob = blob;
-        window.recordedReelUrl = URL.createObjectURL(blob);
-        alert("रील रिकॉर्ड हो गई! साइज़: " + (blob.size / 1024 / 1024).toFixed(2) + " MB");
-      };
-
-      mediaRecorder.start();
-      isRecording = true;
-      btn.style.outline = "4px solid #ff2e4d";
-      btn.style.transform = "scale(0.92)";
-    } else {
-      if (mediaRecorder && mediaRecorder.state !== "inactive") {
-        mediaRecorder.stop();
-      }
-      isRecording = false;
-      btn.style.outline = "";
-      btn.style.transform = "";
-    }
-  }
-
-  window.addEventListener("load", () => {
-    const btn = findRecordButton();
-    if (!btn) {
-      console.warn("सफ़ेद रिकॉर्ड बटन नहीं मिला");
-      return;
-    }
-    btn.style.zIndex = "50";
-    btn.style.pointerEvents = "auto";
-    btn.addEventListener("click", () => toggleRecording(btn));
-  });
-})();
-  </script>
-<!DOCTYPE html>
-<html lang="hi">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>धाकड़ - रील कैमरा और एडिटर</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      user-select: none;
-    }
-
-    body {
-      background-color: #000;
-      color: #fff;
-      height: 100vh;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .top-bar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 20;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 16px;
-      background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
-    }
-
-    .close-btn {
-      font-size: 24px;
-      background: none;
-      border: none;
-      color: #fff;
-      cursor: pointer;
-    }
-
-    .title-text {
-      font-size: 16px;
-      font-weight: 600;
-    }
-
-    .publish-btn {
-      background: linear-gradient(45deg, #ff512f, #dd2476);
-      color: #fff;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-weight: 600;
-      font-size: 14px;
-      cursor: pointer;
-    }
-
-    .camera-container {
-      position: relative;
-      width: 100%;
-      height: calc(100vh - 60px);
-      background: #111;
-      border-radius: 0 0 20px 20px;
-      overflow: hidden;
-    }
-
-    video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: filter 0.3s ease;
-    }
-
-    .filter-normal { filter: none; }
-    .filter-warm { filter: sepia(0.35) saturate(1.4) contrast(1.05); }
-    .filter-cool { filter: hue-rotate(180deg) saturate(1.2) brightness(1.05); }
-    .filter-bw { filter: grayscale(1) contrast(1.2); }
-    .filter-vintage { filter: sepia(0.6) contrast(1.1) brightness(0.9); }
-
-    .sub-controls {
-      position: absolute;
-      top: 60px;
-      left: 0;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      z-index: 15;
-      padding: 0 10px;
-      flex-wrap: wrap;
-    }
-
-    .pill-btn {
-      background: rgba(30, 30, 30, 0.75);
-      backdrop-filter: blur(6px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: #fff;
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      cursor: pointer;
-    }
-
-    .pill-btn.active {
-      background: #ff512f;
-      border-color: #ff512f;
-    }
-
-    .music-pill {
-      position: absolute;
-      top: 105px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0, 0, 0, 0.65);
-      backdrop-filter: blur(8px);
-      padding: 6px 16px;
-      border-radius: 20px;
-      font-size: 13px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      z-index: 15;
-      cursor: pointer;
-      border: 1px solid rgba(255,255,255,0.2);
-      white-space: nowrap;
-    }
-
-    .side-tools {
-      position: absolute;
-      left: 14px;
-      top: 45%;
-      transform: translateY(-50%);
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      z-index: 15;
-    }
-
-    .tool-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: rgba(30, 30, 30, 0.7);
-      backdrop-filter: blur(5px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      border: 1px solid rgba(255,255,255,0.15);
-      cursor: pointer;
-    }
-
-    .filter-bar {
-      position: absolute;
-      bottom: 105px;
-      left: 0;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      gap: 14px;
-      z-index: 15;
-    }
-
-    .filter-dot {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.2);
-      border: 2px solid transparent;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    .filter-dot.selected {
-      border-color: #ff2e63;
-      transform: scale(1.12);
-      background: rgba(255, 46, 99, 0.25);
-    }
-
-    .bottom-actions {
-      position: absolute;
-      bottom: 20px;
-      left: 0;
-      width: 100%;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      z-index: 15;
-    }
-
-    .gallery-thumb {
-      width: 42px;
-      height: 42px;
-      border-radius: 10px;
-      border: 2px solid #fff;
-      background: #333;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      cursor: pointer;
-    }
-
-    .record-btn {
-      width: 72px;
-      height: 72px;
-      border-radius: 50%;
-      background: #fff;
-      border: 5px solid rgba(255, 255, 255, 0.4);
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    .record-btn.recording {
-      background: #ff2e63;
-      transform: scale(1.1);
-      border-color: #fff;
-      animation: pulse 1s infinite;
-    }
-
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(255, 46, 99, 0.7); }
-      70% { box-shadow: 0 0 0 15px rgba(255, 46, 99, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(255, 46, 99, 0); }
-    }
-
-    .flip-btn {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background: rgba(30, 30, 30, 0.7);
-      border: none;
-      color: #fff;
-      font-size: 20px;
-      cursor: pointer;
-    }
-
-    .mode-tabs {
-      height: 60px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 24px;
-      background: #000;
-      font-size: 13px;
-      font-weight: 600;
-      color: #888;
-    }
-
-    .mode-tabs span.active {
-      color: #fff;
-      border-bottom: 2px solid #ff512f;
-      padding-bottom: 4px;
-    }
-
-    .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.85);
-      z-index: 50;
-      flex-direction: column;
-      padding: 20px;
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-    }
-
-    .search-input {
-      width: 100%;
-      padding: 12px 15px;
-      border-radius: 12px;
-      border: none;
-      background: #222;
-      color: #fff;
-      font-size: 15px;
-      margin-bottom: 15px;
-      outline: none;
-    }
-
-    .song-list {
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .song-item {
-      background: #1a1a1a;
-      padding: 12px;
-      border-radius: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
-    }
-
-    .song-item:hover {
-      background: #2a2a2a;
-    }
-
-    #editorScreen {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: #000;
-      z-index: 40;
-      flex-direction: column;
-    }
-
-    .overlay-text {
-      position: absolute;
-      top: 40%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 24px;
-      font-weight: bold;
-      color: #fff;
-      text-shadow: 2px 2px 8px rgba(0,0,0,0.9);
-      background: rgba(0,0,0,0.4);
-      padding: 6px 14px;
-      border-radius: 8px;
-      z-index: 25;
-      pointer-events: none;
-    }
-
-    .editor-tools {
-      position: absolute;
-      bottom: 30px;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      z-index: 30;
-    }
-  </style>
-</head>
-<body>
-
-  <div id="cameraScreen">
-    <div class="top-bar">
-      <button class="close-btn" onclick="alert('बंद किया जा रहा है')">✕</button>
-      <div class="title-text">नई पोस्ट • रील</div>
-      <button class="publish-btn" onclick="openEditor()">आगे बढ़ें ➔</button>
-    </div>
-
-    <div class="camera-container">
-      <video id="cameraFeed" autoplay playsinline muted class="filter-normal"></video>
-
-      <div class="sub-controls">
-        <button class="pill-btn" onclick="document.getElementById('galleryInput').click()">🖼️ गैलरी</button>
-        <button class="pill-btn active" id="micBtn" onclick="toggleMic()">🎙️ ऑन</button>
-        <button class="pill-btn" id="speedBtn" onclick="changeSpeed()">1x</button>
-        <button class="pill-btn" id="timerBtn" onclick="changeTimer()">⏱️ ऑफ</button>
-      </div>
-
-      <div class="music-pill" onclick="openMusicModal()">
-        <span>🎶</span>
-        <span id="selectedSongText">रात की रफ़्तार — लो-फ़ाई</span>
-      </div>
-
-      <div class="side-tools">
-        <div class="tool-icon" onclick="openMusicModal()" title="गाना बदलें">🎵</div>
-        <div class="tool-icon" onclick="cycleFilter()" title="फिल्टर बदलें">✨</div>
-        <div class="tool-icon" onclick="addTextPrompt()" title="टेक्स्ट लिखें">Aa</div>
-        <div class="tool-icon" id="durationBadge" onclick="toggleDuration()">15s</div>
-      </div>
-
-      <div id="liveTextOverlay" class="overlay-text" style="display:none;"></div>
-
-      <div class="filter-bar">
-        <div class="filter-dot selected" onclick="setFilter('filter-normal', this)">✨</div>
-        <div class="filter-dot" onclick="setFilter('filter-warm', this)">🔥</div>
-        <div class="filter-dot" onclick="setFilter('filter-vintage', this)">🌅</div>
-        <div class="filter-dot" onclick="setFilter('filter-cool', this)">💫</div>
-        <div class="filter-dot" onclick="setFilter('filter-bw', this)">🎬</div>
-      </div>
-
-      <div class="bottom-actions">
-        <div class="gallery-thumb" onclick="document.getElementById('galleryInput').click()">🖼️</div>
-        <button class="record-btn" id="recordBtn" onclick="toggleRecording()"></button>
-        <button class="flip-btn" onclick="flipCamera()">🔄</button>
-      </div>
-    </div>
-
-    <div class="mode-tabs">
-      <span>POST</span>
-      <span>STORY</span>
-      <span class="active">REEL</span>
-      <span>LIVE</span>
-    </div>
-  </div>
-
-  <input type="file" id="galleryInput" accept="video/*" style="display:none" onchange="handleGalleryVideo(event)" />
-
-  <div id="editorScreen">
-    <div class="top-bar">
-      <button class="close-btn" onclick="backToCamera()">← वापस</button>
-      <div class="title-text">रील एडिट करें</div>
-      <button class="publish-btn" onclick="publishReel()">पब्लिश करें</button>
-    </div>
-
-    <div class="camera-container">
-      <video id="previewVideo" loop controls playsinline></video>
-      <div id="editorTextOverlay" class="overlay-text" style="display:none;"></div>
-
-      <div class="editor-tools">
-        <button class="pill-btn" onclick="addTextPrompt()">Aa टेक्स्ट लिखें</button>
-        <button class="pill-btn" onclick="openMusicModal()">🎵 गाना बदलें</button>
-        <button class="pill-btn" onclick="cyclePreviewFilter()">✨ फिल्टर बदलें</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal" id="musicModal">
-    <div class="modal-header">
-      <h3>🎶 गाना सर्च करें</h3>
-      <button class="close-btn" onclick="closeMusicModal()">✕</button>
-    </div>
-    <input type="text" class="search-input" id="songSearchInput" placeholder="गाने का नाम लिखें (जैसे: धाकड़, हरियाणवी, लो-फ़ाई)..." onkeyup="filterSongs()" />
-    <div class="song-list" id="songList"></div>
-  </div>
-
-  <audio id="bgMusicPlayer" loop></audio>
-    <script>
-    let currentStream = null;
-    let useFrontCamera = true;
-    let mediaRecorder = null;
-    let recordedChunks = [];
-    let isRecording = false;
-    let recordedVideoURL = null;
-    let currentFilter = 'filter-normal';
-    let micOn = true;
-    let speedList = ['1x', '1.5x', '2x', '0.5x'];
-    let speedIdx = 0;
-    let durationSec = 15;
-
-    const songsDatabase = [
-      { title: "रात की रफ़्तार — लो-फ़ाई", artist: "धाकड़ बीट्स", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
-      { title: "धाकड़ छोरा — हरियाणवी स्वैग", artist: "देसी स्टार", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
-      { title: "शाम की महफ़िल — रोमांटिक", artist: "अरिजीत वाइब्स", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
-      { title: "देसी ठाठ — डीजे रीमिक्स", artist: "डीजे भारत", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" },
-      { title: "सफ़रनामा — ट्रैवल वाइब", artist: "इंडी म्यूजिक", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" }
-    ];
-
-    window.onload = () => {
-      startCamera();
-      renderSongs(songsDatabase);
-    };
-
-    async function startCamera() {
-      if (currentStream) {
-        currentStream.getTracks().forEach(track => track.stop());
-      }
-      try {
-        const constraints = {
-          video: { facingMode: useFrontCamera ? "user" : "environment" },
-          audio: micOn
-        };
-        currentStream = await navigator.mediaDevices.getUserMedia(constraints);
-        document.getElementById('cameraFeed').srcObject = currentStream;
-      } catch (err) {
-        alert("कैमरा चालू नहीं हो पाया। कृपया ब्राउज़र में कैमरा की परमिशन दें।");
-      }
-    }
-
-    function flipCamera() {
-      useFrontCamera = !useFrontCamera;
-      startCamera();
-    }
-
-    function toggleMic() {
-      micOn = !micOn;
-      const btn = document.getElementById('micBtn');
-      btn.innerText = micOn ? "🎙️ ऑन" : "🔇 म्यूट";
-      btn.classList.toggle('active', micOn);
-      startCamera();
-    }
-
-    function changeSpeed() {
-      speedIdx = (speedIdx + 1) % speedList.length;
-      document.getElementById('speedBtn').innerText = speedList[speedIdx];
-    }
-
-    function changeTimer() {
-      const btn = document.getElementById('timerBtn');
-      btn.innerText = btn.innerText.includes('ऑफ') ? '⏱️ 3s' : '⏱️ ऑफ';
-    }
-
-    function toggleDuration() {
-      durationSec = durationSec === 15 ? 30 : 15;
-      document.getElementById('durationBadge').innerText = durationSec + "s";
-    }
-
-    function setFilter(filterClass, el) {
-      currentFilter = filterClass;
-      document.getElementById('cameraFeed').className = filterClass;
-      document.querySelectorAll('.filter-dot').forEach(dot => dot.classList.remove('selected'));
-      if (el) el.classList.add('selected');
-    }
-
-    function cycleFilter() {
-      const filters = ['filter-normal', 'filter-warm', 'filter-vintage', 'filter-cool', 'filter-bw'];
-      let nextIdx = (filters.indexOf(currentFilter) + 1) % filters.length;
-      setFilter(filters[nextIdx], document.querySelectorAll('.filter-dot')[nextIdx]);
-    }
-
-    function toggleRecording() {
-      const btn = document.getElementById('recordBtn');
-      const bgMusic = document.getElementById('bgMusicPlayer');
-
-      if (!isRecording) {
-        if (!currentStream) return alert("कैमरा तैयार नहीं है!");
-        recordedChunks = [];
-        mediaRecorder = new MediaRecorder(currentStream);
-
-        mediaRecorder.ondataavailable = (e) => {
-          if (e.data.size > 0) recordedChunks.push(e.data);
-        };
-
-        mediaRecorder.onstop = () => {
-          const blob = new Blob(recordedChunks, { type: 'video/webm' });
-          recordedVideoURL = URL.createObjectURL(blob);
-          openEditor();
-        };
-
-        mediaRecorder.start();
-        isRecording = true;
-        btn.classList.add('recording');
-        if (bgMusic.src) bgMusic.play().catch(() => {});
-      } else {
-        mediaRecorder.stop();
-        isRecording = false;
-        btn.classList.remove('recording');
-        bgMusic.pause();
-      }
-    }
-
-    function handleGalleryVideo(event) {
-      const file = event.target.files[0];
-      if (file) {
-        recordedVideoURL = URL.createObjectURL(file);
-        openEditor();
-      }
-    }
-
-    function openEditor() {
-      if (!recordedVideoURL) {
-        alert("पहले कैमरा से वीडियो रिकॉर्ड करें या गैलरी से कोई वीडियो चुनें!");
-        return;
-      }
-      document.getElementById('cameraScreen').style.display = 'none';
-      document.getElementById('editorScreen').style.display = 'flex';
-
-      const preview = document.getElementById('previewVideo');
-      preview.src = recordedVideoURL;
-      preview.className = currentFilter;
-      preview.play();
-
-      const bgMusic = document.getElementById('bgMusicPlayer');
-      if (bgMusic.src) bgMusic.play().catch(() => {});
-    }
-
-    function backToCamera() {
-      document.getElementById('editorScreen').style.display = 'none';
-      document.getElementById('cameraScreen').style.display = 'block';
-      document.getElementById('previewVideo').pause();
-      document.getElementById('bgMusicPlayer').pause();
-    }
-
-    function cyclePreviewFilter() {
-      const filters = ['filter-normal', 'filter-warm', 'filter-vintage', 'filter-cool', 'filter-bw'];
-      let nextIdx = (filters.indexOf(currentFilter) + 1) % filters.length;
-      currentFilter = filters[nextIdx];
-      document.getElementById('previewVideo').className = currentFilter;
-    }
-
-    function addTextPrompt() {
-      const txt = prompt("रील पर लिखने के लिए टेक्स्ट डालें:");
-      if (txt !== null) {
-        const liveEl = document.getElementById('liveTextOverlay');
-        const editEl = document.getElementById('editorTextOverlay');
-        if (txt.trim() === "") {
-          liveEl.style.display = 'none';
-          editEl.style.display = 'none';
-        } else {
-          liveEl.innerText = txt;
-          editEl.innerText = txt;
-          liveEl.style.display = 'block';
-          editEl.style.display = 'block';
-        }
-      }
-    }
-
-    function openMusicModal() {
-      document.getElementById('musicModal').style.display = 'flex';
-    }
-
-    function closeMusicModal() {
-      document.getElementById('musicModal').style.display = 'none';
-    }
-
-    function renderSongs(list) {
-      const container = document.getElementById('songList');
-      container.innerHTML = "";
-      list.forEach(song => {
-        const div = document.createElement('div');
-        div.className = 'song-item';
-        div.innerHTML = `
-          <div>
-            <div style="font-weight:bold; font-size:14px;">${song.title}</div>
-            <div style="font-size:12px; color:#aaa;">${song.artist}</div>
-          </div>
-          <button class="publish-btn" style="padding:5px 12px; font-size:12px;">चुनें ✓</button>
-        `;
-        div.onclick = () => selectSong(song);
-        container.appendChild(div);
-      });
-    }
-
-    function filterSongs() {
-      const query = document.getElementById('songSearchInput').value.toLowerCase();
-      const filtered = songsDatabase.filter(s =>
-        s.title.toLowerCase().includes(query) || s.artist.toLowerCase().includes(query)
-      );
-      renderSongs(filtered);
-    }
-
-    function selectSong(song) {
-      document.getElementById('selectedSongText').innerText = song.title;
-      const bgMusic = document.getElementById('bgMusicPlayer');
-      bgMusic.src = song.url;
-      bgMusic.play().catch(() => {});
-      closeMusicModal();
-    }
-
-    function publishReel() {
-      const songName = document.getElementById('selectedSongText').innerText;
-      const overlayTxt = document.getElementById('editorTextOverlay').innerText;
-      alert(`🎉 बधाई हो! आपकी धाकड़ रील पब्लिश हो गई है!\n\nगाना: ${songName}\nफिल्टर: ${currentFilter}\nटेक्स्ट: ${overlayTxt || 'कोई नहीं'}`);
-    }
-  : flex; gap: 10px; justify-content: center; }
-
-</script>
- 
 </body>
 </html>
-
