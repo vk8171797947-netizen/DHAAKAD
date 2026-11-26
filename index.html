@@ -3131,48 +3131,6 @@
   <!-- Hidden Audio Player -->
   <audio id="bgAudio" loop></audio>
 
-<script>
-  const video = document.getElementById('videoPlayer');
-  const bgAudio = document.getElementById('bgAudio');
-  const recordBtn = document.getElementById('recordBtn');
-  const timerEl = document.getElementById('timer');
-  const textOverlay = document.getElementById('textOverlay');
-
-  let currentStream = null;
-  let mediaRecorder = null;
-  let recordedChunks = [];
-  let isRecording = false;
-  let facingMode = 'user'; // 'user' = front, 'environment' = back
-  let timerInterval = null;
-  let seconds = 0;
-  let currentSpeed = 1;
-  let selectedTextColor = '#ffffff';
-  let isEditMode = false;
-
-  // 1. Start Live Camera
-  async function startCamera() {
-    if (currentStream) {
-      currentStream.getTracks().forEach(track => track.stop());
-    }
-    try {
-      const constraints = {
-        video: { facingMode: facingMode },
-        audio: true
-      };
-      currentStream = await navigator.mediaDevices.getUserMedia(constraints);
-      video.srcObject = currentStream;
-      video.muted = true;
-      video.classList.toggle('mirror', facingMode === 'user');
-      isEditMode = false;
-    } catch (err) {
-      alert("Camera permission nahi mili ya device support nahi kar raha. Aap Gallery se video upload kar sakte hain!");
-    }
-  }
-
-  // 2. Flip Camera (Front / Back)
-  function switchCamera() {
-    if (isEditMode) return alert("Pehle Reset dabakar camera mode mein aayein.");
-    facingMode = (facingMode === 'user') ? 'environment' : 'user';
     startCamera();
   }
 
