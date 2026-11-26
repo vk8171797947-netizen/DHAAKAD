@@ -3672,48 +3672,8 @@
     dsCloseStudio();
   }
   </script>
-<script>
-  (function hideMiddleThreeButtons() {
-    function cleanButtons() {
-      const targets = ['Audio', 'Text', 'Aa', 'Speed', '1x'];
-      document.querySelectorAll('button, div, span').forEach(el => {
-        if (el.closest('#dhaakadStudioModal')) return;
-        const txt = (el.innerText || '').trim();
-        if (targets.includes(txt) && el.children.length <= 2) {
-          const btnWrap = el.closest('button') || el;
-          btnWrap.style.display = 'none';
-          btnWrap.remove();
-        }
-      });
-    }
+<script>;
 
-    cleanButtons();
-    setTimeout(cleanButtons, 300);
-    setTimeout(cleanButtons, 1000);
-  })();
-</script>
-<script>
-  (function removeRemainingEditorExtras() {
-    const extraLabels = ['Reset', 'Next', 'Post', '✕ Band Karein', 'बंद करें'];
-
-    function cleanExtras() {
-      document.querySelectorAll('button, span, div').forEach(el => {
-        if (el.closest('#dhaakadStudioModal') || el.closest('#dsTextModal') || el.closest('#dsMusicModal')) return;
-        const txt = (el.innerText || '').trim();
-        if (extraLabels.includes(txt) && el.children.length <= 2) {
-          const item = el.closest('button') || el;
-          item.style.display = 'none';
-          item.remove();
-        }
-      });
-    }
-
-    cleanExtras();
-    setTimeout(cleanExtras, 300);
-    setTimeout(cleanExtras, 1000);
-  })();
-</script>
-  
 </body>
 </html>
 
