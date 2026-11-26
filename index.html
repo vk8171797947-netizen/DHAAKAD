@@ -595,4 +595,566 @@
         renderProfile(container);
       }
       }
-          
+              function renderHomeFeed(container) {
+      const myInitial = (state.profile.name || 'ध').trim().charAt(0).toUpperCase();
+
+      const storiesHtml = `
+        <div class="bg-zinc-900/60 border border-zinc-800/80 rounded-3xl p-3.5 mb-5">
+          <div class="flex items-center gap-4 overflow-x-auto no-scrollbar">
+            <button onclick="openCreatePost('story')" class="flex flex-col items-center gap-1.5 shrink-0 group">
+              <div class="relative w-16 h-16 rounded-full bg-gradient-to-br ${state.profile.avatarColor} flex items-center justify-center font-extrabold text-lg text-white">
+                ${myInitial}
+                <span class="absolute -bottom-0.5 -right-0.5 w-6 h-6 rounded-full dhaakad-gradient text-white text-sm font-bold flex items-center justify-center border-2 border-zinc-950">+</span>
+              </div>
+              <span class="text-[11px] font-semibold text-zinc-200">आपकी स्टोरी</span>
+            </button>
+
+            ${state.stories.map((st, idx) => `
+              <button onclick="openStoryViewer(${idx})" class="flex flex-col items-center gap-1.5 shrink-0 group">
+                <div class="${st.seen ? 'p-[2px] rounded-full bg-zinc-700' : 'dhaakad-ring'} group-hover:scale-105 transition">
+                  <div class="w-16 h-16 rounded-full bg-gradient-to-br ${st.avatarColor} flex items-center justify-center font-extrabold text-lg text-white">
+                    ${escapeHtml(st.avatarInitial)}
+                  </div>
+                </div>
+                <span class="text-[11px] font-medium text-zinc-300 max-w-[72px] truncate">${escapeHtml(st.author.split(' ')[0])}</span>
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      `;
+
+      const postsHtml = state.posts.map(post => {
+        const isFollowing = state.followingHandles.includes(post.handle);
+        const isSaved = state.savedPostIds.includes(post.id);
+        const isSelf = post.handle === state.profile.handle;
+
+        return `
+          <article id="post-${post.id}" class="bg-zinc-900/65 border border-zinc-800/80 rounded-3xl overflow-hidden mb-5 shadow-lg">
+            <div class="flex items-center justify-between px-4 py-3 min-w-0">
+              <div class="flex items-center gap-3 min-w-0">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br ${post.avatarColor} flex items-center justify-center font-bold text-white shrink-0">
+                  ${escapeHtml(post.avatarInitial)}
+                </div>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-bold text-white truncate">${escapeHtml(post.author)}</span>
+                    <span class="text-xs text-zinc-400 truncate">${escapeHtml(post.handle)}</span>
+                  </div>
+                  <div class="text-[11px] text-zinc-400 truncate">
+                    ${post.location ? `📍 ${escapeHtml(post.location)} • ` : ''}${escapeHtml(post.time)}
+                  </div>
+                </div>
+              </div>
+
+              ${!isSelf ? `
+                <button onclick="toggleFollow('${post.handle}')" class="px-3.5 py-1.5 rounded-full text-xs font-bold transition shrink-0 ${
+                  isFollowing
+                    ? 'bg-zinc-800 text-zinc-200 border border-zinc-700'
+                    : 'dhaakad-gradient text-white shadow'
+                }">
+                  ${isFollowing ? 'फ़ॉलोइंग ✓' : '+ फ़ॉलो करें'}
+                </button>
+              ` : ''}
+            </div>
+
+            <div ondblclick="doubleTapLike('${post.id}')" class="relative aspect-square max-h-[540px] w-full bg-zinc-950 select-none cursor-pointer">
+              <img src="${post.image}" alt="${escapeHtml(post.caption)}" class="w-full h-full object-cover ${post.filter || 'filter-none'}" />
+              <div id="burst-${post.id}" class="hidden pointer-events-none absolute top-1/2 left-1/2 text-7xl text-rose-500 drop-shadow-2xl">
+                ❤️
+              </div>
+            </div>
+
+            <div class="p-4">
+              <div class="flex items-center justify-between mb-2.5">
+                <div class="flex items-center gap-4">
+                  <button onclick="toggleLike('${post.id}')" class="flex items-center gap-1.5 text-sm font-bold transition ${
+                    post.liked ? 'text-rose-500' : 'text-zinc-200 hover:text-rose-400'
+                  }">
+                    <span class="text-xl">${post.liked ? '❤️' : '🤍'}</span>
+                    <span>${post.likes}</span>
+                  </button>
+
+                  <button onclick="focusComment('${post.id}')" class="flex items-center gap-1.5 text-sm font-bold text-zinc-200 hover:text-amber-300 transition">
+                    <span class="text-xl">💬</span>
+                    <span>${post.comments.length}</span>
+                  </button>
+
+                  <button onclick="sharePost('${post.id}')" class="flex items-center gap-1 text-sm font-bold text-zinc-200 hover:text-emerald-400 transition">
+                    <span class="text-xl">📤</span>
+                  </button>
+                </div>
+
+                <button onclick="toggleSavePost('${post.id}')" class="text-xl transition ${isSaved ? 'text-amber-400' : 'text-zinc-300 hover:text-amber-300'}">
+                  ${isSaved ? '🔖' : '📑'}
+                </button>
+              </div>
+
+              <div class="text-sm leading-relaxed text-zinc-100 mb-2">
+                <span class="font-bold mr-1.5">${escapeHtml(post.author)}</span>
+                <span>${escapeHtml(post.caption)}</span>
+                ${post.tags ? `<span class="block text-xs font-semibold text-rose-400 mt-1">${escapeHtml(post.tags)}</span>` : ''}
+              </div>
+
+              ${post.comments.length > 0 ? `
+                <div class="space-y-1.5 mt-3 pt-2.5 border-t border-zinc-800/70">
+                  ${post.comments.map(c => `
+                    <div class="text-xs text-zinc-300">
+                      <span class="font-bold text-white mr-1.5">${escapeHtml(c.user)}</span>
+                      <span>${escapeHtml(c.text)}</span>
+                    </div>
+                  `).join('')}
+                </div>
+              ` : ''}
+
+              <form onsubmit="addComment(event, '${post.id}')" class="flex items-center gap-2 mt-3 pt-2.5 border-t border-zinc-800/70">
+                <input id="comment-input-${post.id}" type="text" placeholder="कमेंट लिखें..." class="flex-1 bg-transparent text-sm text-white placeholder-zinc-500 focus:outline-none" />
+                <button type="submit" class="text-xs font-extrabold text-rose-400 hover:text-rose-300 px-2 py-1">पोस्ट</button>
+              </form>
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      const rightSidebar = `
+        <aside class="hidden xl:block w-80 shrink-0 space-y-4">
+          <div class="bg-zinc-900/70 border border-zinc-800/80 rounded-3xl p-4">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-br ${state.profile.avatarColor} flex items-center justify-center font-bold text-white">
+                  ${myInitial}
+                </div>
+                <div>
+                  <div class="text-sm font-extrabold text-white">${escapeHtml(state.profile.name)}</div>
+                  <div class="text-xs text-zinc-400">${escapeHtml(state.profile.handle)}</div>
+                </div>
+              </div>
+              <button onclick="openEditProfile()" class="text-xs font-bold text-rose-400 hover:text-rose-300">बदलें</button>
+            </div>
+            <p class="text-xs text-zinc-300 leading-relaxed mb-3">${escapeHtml(state.profile.bio)}</p>
+            <div class="flex justify-between text-center bg-zinc-950/70 rounded-2xl p-2.5 border border-zinc-800/60">
+              <div>
+                <div class="text-sm font-extrabold text-white">${state.posts.filter(p => p.handle === state.profile.handle).length}</div>
+                <div class="text-[11px] text-zinc-400">पोस्ट</div>
+              </div>
+              <div>
+                <div class="text-sm font-extrabold text-white">${state.profile.followers}</div>
+                <div class="text-[11px] text-zinc-400">फ़ॉलोअर्स</div>
+              </div>
+              <div>
+                <div class="text-sm font-extrabold text-white">${state.profile.following}</div>
+                <div class="text-[11px] text-zinc-400">फ़ॉलोइंग</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-zinc-900/70 border border-zinc-800/80 rounded-3xl p-4">
+            <div class="text-xs font-extrabold uppercase tracking-wider text-amber-400 mb-3">🔥 धाकड़ ट्रेंडिंग</div>
+            <div class="flex flex-wrap gap-2">
+              ${['#धाकड़स्वैग', '#फ़िटनेस', '#मोटिवेशन', '#लाइफ़स्टाइल', '#रील्स'].map(tag => `
+                <button onclick="switchTab('explore')" class="px-3 py-1.5 rounded-full bg-zinc-800 hover:bg-zinc-700 text-xs font-semibold text-zinc-200">${tag}</button>
+              `).join('')}
+            </div>
+          </div>
+        </aside>
+      `;
+
+      container.innerHTML = `
+        <div class="flex gap-7 justify-center">
+          <div class="w-full max-w-[540px]">
+            ${storiesHtml}
+            ${postsHtml}
+          </div>
+          ${rightSidebar}
+        </div>
+      `;
+    }
+
+    function toggleLike(postId) {
+      const post = state.posts.find(p => p.id === postId);
+      if (!post) return;
+      post.liked = !post.liked;
+      post.likes += post.liked ? 1 : -1;
+      saveState();
+      renderAll();
+    }
+
+    function doubleTapLike(postId) {
+      const post = state.posts.find(p => p.id === postId);
+      if (!post) return;
+      if (!post.liked) {
+        post.liked = true;
+        post.likes += 1;
+        saveState();
+      }
+      const burst = document.getElementById(`burst-${postId}`);
+      if (burst) {
+        burst.classList.remove('hidden', 'heart-burst');
+        void burst.offsetWidth;
+        burst.classList.add('heart-burst');
+        setTimeout(() => burst.classList.add('hidden'), 900);
+      }
+      renderAll();
+    }
+
+    function toggleFollow(handle) {
+      const idx = state.followingHandles.indexOf(handle);
+      if (idx >= 0) {
+        state.followingHandles.splice(idx, 1);
+        state.profile.following = Math.max(0, state.profile.following - 1);
+      } else {
+        state.followingHandles.push(handle);
+        state.profile.following += 1;
+      }
+      saveState();
+      renderAll();
+    }
+
+    function toggleSavePost(postId) {
+      const idx = state.savedPostIds.indexOf(postId);
+      if (idx >= 0) state.savedPostIds.splice(idx, 1);
+      else state.savedPostIds.push(postId);
+      saveState();
+      renderAll();
+    }
+
+    function focusComment(postId) {
+      const input = document.getElementById(`comment-input-${postId}`);
+      if (input) input.focus();
+    }
+
+    function addComment(e, postId) {
+      e.preventDefault();
+      const input = document.getElementById(`comment-input-${postId}`);
+      const text = input.value.trim();
+      if (!text) return;
+      const post = state.posts.find(p => p.id === postId);
+      if (!post) return;
+      post.comments.push({ user: state.profile.name, text });
+      input.value = '';
+      saveState();
+      renderAll();
+    }
+
+    function sharePost(postId) {
+      const post = state.posts.find(p => p.id === postId);
+      if (!post) return;
+      const shareText = `${post.author} की धाकड़ पोस्ट: ${post.caption}`;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(shareText).catch(() => {});
+      }
+      alert('पोस्ट का टेक्स्ट कॉपी हो गया है!');
+      }
+                                                                              function renderExplore(container) {
+      container.innerHTML = `
+        <div class="mb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-xl font-extrabold text-white">एक्सप्लोर ग्रिड</h2>
+            <p class="text-xs text-zinc-400">किसी भी पोस्ट पर क्लिक करके बड़ी स्क्रीन पर देखें</p>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="openCreatePost('post')" class="px-4 py-2 rounded-2xl dhaakad-gradient text-xs font-bold text-white shadow">
+              + ग्रिड में फ़ोटो जोड़ें
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-4">
+          ${state.posts.map(post => `
+            <button onclick="openExplorePost('${post.id}')" class="group relative aspect-square rounded-2xl overflow-hidden bg-zinc-900 border border-zinc-800">
+              <img src="${post.image}" alt="${escapeHtml(post.caption)}" class="w-full h-full object-cover ${post.filter || 'filter-none'}" />
+              <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-4 text-sm font-bold text-white">
+                <span>❤️ ${post.likes}</span>
+                <span>💬 ${post.comments.length}</span>
+              </div>
+            </button>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function openExplorePost(postId) {
+      const post = state.posts.find(p => p.id === postId);
+      if (!post) return;
+      const modal = document.getElementById('exploreModal');
+      const card = document.getElementById('exploreModalCard');
+      card.innerHTML = `
+        <div class="bg-zinc-950 flex items-center justify-center aspect-square md:aspect-auto">
+          <img src="${post.image}" alt="Post" class="w-full h-full object-cover ${post.filter || 'filter-none'}" />
+        </div>
+        <div class="p-5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between pb-3 border-b border-zinc-800">
+              <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-full bg-gradient-to-br ${post.avatarColor} flex items-center justify-center font-bold text-sm text-white">
+                  ${escapeHtml(post.avatarInitial)}
+                </div>
+                <div>
+                  <div class="text-sm font-bold text-white">${escapeHtml(post.author)}</div>
+                  <div class="text-[11px] text-zinc-400">${escapeHtml(post.location || post.handle)}</div>
+                </div>
+              </div>
+              <button onclick="closeExploreModal()" class="w-8 h-8 rounded-full bg-zinc-800 text-zinc-300 font-bold">✕</button>
+            </div>
+            <p class="text-sm text-zinc-200 mt-3 leading-relaxed">${escapeHtml(post.caption)}</p>
+            <div class="mt-4 space-y-2 max-h-44 overflow-y-auto">
+              ${post.comments.length ? post.comments.map(c => `
+                <div class="text-xs bg-zinc-950/70 p-2 rounded-xl"><span class="font-bold text-white mr-1.5">${escapeHtml(c.user)}</span>${escapeHtml(c.text)}</div>
+              `).join('') : `<div class="text-xs text-zinc-500">अभी कोई कमेंट नहीं है।</div>`}
+            </div>
+          </div>
+          <div class="pt-4 border-t border-zinc-800 flex items-center justify-between">
+            <button onclick="toggleLike('${post.id}'); openExplorePost('${post.id}');" class="px-4 py-2 rounded-xl bg-zinc-800 text-xs font-bold text-white">
+              ${post.liked ? '❤️' : '🤍'} ${post.likes} लाइक
+            </button>
+            <button onclick="closeExploreModal(); switchTab('home');" class="text-xs font-bold text-amber-400">फ़ीड में देखें →</button>
+          </div>
+        </div>
+      `;
+      modal.classList.remove('hidden');
+    }
+
+    function closeExploreModal() {
+      document.getElementById('exploreModal').classList.add('hidden');
+    }
+
+    function renderReels(container) {
+      container.innerHTML = `
+        <div class="mb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-xl font-extrabold text-white">धाकड़ रील्स (Reels)</h2>
+            <p class="text-xs text-zinc-400">शॉर्ट विज़ुअल रील्स को लाइक और फ़ॉलो करें, या अपना रील स्टूडियो खोलें</p>
+          </div>
+          <button onclick="openReelStudio()" class="px-4 py-2 rounded-2xl dhaakad-gradient text-xs font-extrabold text-white shadow-lg shadow-rose-600/20">
+            🎬 रील कैमरा / स्टूडियो खोलें
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          ${state.reels.map(reel => {
+            const following = state.followingHandles.includes(reel.handle);
+            return `
+              <div class="relative rounded-3xl overflow-hidden bg-zinc-900 border border-zinc-800 aspect-[9/14] flex flex-col justify-between shadow-xl">
+                ${reel.videoUrl ? `
+                  <video src="${reel.videoUrl}" controls playsinline loop class="absolute inset-0 w-full h-full object-cover"></video>
+                ` : `
+                  <img src="${reel.image}" alt="${escapeHtml(reel.title)}" class="absolute inset-0 w-full h-full object-cover" />
+                `}
+                <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/40 pointer-events-none"></div>
+
+                <div class="relative z-10 p-4 flex items-center justify-between">
+                  <span class="px-3 py-1 rounded-full bg-black/55 backdrop-blur-sm text-[11px] font-bold text-amber-300">
+                    ${escapeHtml(reel.badge || 'रील')}
+                  </span>
+                  <span class="px-2.5 py-1 rounded-full bg-black/55 text-[11px] font-semibold text-zinc-200">
+                    👁 ${escapeHtml(reel.views || '1')}
+                  </span>
+                </div>
+
+                <div class="relative z-10 p-4 flex items-end justify-between gap-3">
+                  <div class="min-w-0">
+                    <div class="flex items-center gap-2 mb-1.5">
+                      <span class="text-sm font-extrabold text-white truncate">${escapeHtml(reel.creator)}</span>
+                      <button onclick="toggleFollow('${reel.handle}')" class="px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
+                        following ? 'bg-zinc-800 text-zinc-200' : 'dhaakad-gradient text-white'
+                      }">
+                        ${following ? 'फ़ॉलोइंग' : '+ फ़ॉलो'}
+                      </button>
+                    </div>
+                    <div class="text-xs font-semibold text-zinc-100 leading-snug">${escapeHtml(reel.title)}</div>${reel.music ? `<div class="text-[11px] text-amber-300 mt-1 truncate">🎵 ${escapeHtml(reel.music)}</div>` : ''}
+                  </div>
+
+                  <button onclick="toggleReelLike('${reel.id}')" class="flex flex-col items-center gap-1 bg-black/50 hover:bg-black/70 px-3 py-2 rounded-2xl transition shrink-0">
+                    <span class="text-xl">${reel.liked ? '❤️' : '🤍'}</span>
+                    <span class="text-xs font-bold text-white">${reel.likes}</span>
+                  </button>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function toggleReelLike(reelId) {
+      const reel = state.reels.find(r => r.id === reelId);
+      if (!reel) return;
+      reel.liked = !reel.liked;
+      reel.likes += reel.liked ? 1 : -1;
+      saveState();
+      renderAll();
+      }
+                            function renderMessages(container) {
+      const handles = Object.keys(state.chats);
+      if (!state.activeChatHandle || !state.chats[state.activeChatHandle]) {
+        state.activeChatHandle = handles[0];
+      }
+      const currentChat = state.chats[state.activeChatHandle];
+
+      container.innerHTML = `
+        <div class="mb-4">
+          <h2 class="text-xl font-extrabold text-white">डायरेक्ट मैसेज (DM)</h2>
+          <p class="text-xs text-zinc-400">दोस्तों के साथ तुरंत बातचीत करें</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 bg-zinc-900/70 border border-zinc-800/80 rounded-3xl overflow-hidden min-h-[460px]">
+          <div class="md:col-span-4 border-b md:border-b-0 md:border-r border-zinc-800/80 p-3 space-y-1.5">
+            ${handles.map(h => {
+              const c = state.chats[h];
+              const active = h === state.activeChatHandle;
+              const lastMsg = c.messages[c.messages.length - 1];
+              return `
+                <button onclick="selectChat('${h}')" class="w-full flex items-center gap-3 p-2.5 rounded-2xl text-left transition ${
+                  active ? 'bg-zinc-800 text-white' : 'hover:bg-zinc-800/50 text-zinc-300'
+                }">
+                  <div class="relative shrink-0">
+                    <div class="w-11 h-11 rounded-full bg-gradient-to-br ${c.avatarColor} flex items-center justify-center font-bold text-white">
+                      ${escapeHtml(c.avatarInitial)}
+                    </div>
+                    ${c.online ? `<span class="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-500 border-2 border-zinc-900"></span>` : ''}
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <div class="text-sm font-bold truncate">${escapeHtml(c.name)}</div>
+                    <div class="text-xs text-zinc-400 truncate">${lastMsg ? escapeHtml(lastMsg.text) : 'चैट शुरू करें'}</div>
+                  </div>
+                </button>
+              `;
+            }).join('')}
+          </div>
+
+          <div class="md:col-span-8 flex flex-col justify-between p-4">
+            <div class="flex items-center gap-3 pb-3 border-b border-zinc-800">
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br ${currentChat.avatarColor} flex items-center justify-center font-bold text-white">
+                ${escapeHtml(currentChat.avatarInitial)}
+              </div>
+              <div>
+                <div class="text-sm font-bold text-white">${escapeHtml(currentChat.name)}</div>
+                <div class="text-[11px] ${currentChat.online ? 'text-emerald-400' : 'text-zinc-400'}">
+                  ${currentChat.online ? 'ऑनलाइन' : 'ऑफ़लाइन'}
+                </div>
+              </div>
+            </div>
+
+            <div id="chatMessagesBox" class="flex-1 py-4 space-y-2.5 max-h-[300px] overflow-y-auto">
+              ${currentChat.messages.map(m => `
+                <div class="flex ${m.sender === 'me' ? 'justify-end' : 'justify-start'}">
+                  <div class="max-w-[78%] px-3.5 py-2 rounded-2xl text-sm ${
+                    m.sender === 'me'
+                      ? 'dhaakad-gradient text-white rounded-br-sm font-medium'
+                      : 'bg-zinc-800 text-zinc-100 rounded-bl-sm'
+                  }">
+                    <div>${escapeHtml(m.text)}</div>
+                    <div class="text-[10px] opacity-70 mt-1 text-right">${escapeHtml(m.time)}</div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+
+            <form onsubmit="sendChatMessage(event)" class="flex gap-2 pt-3 border-t border-zinc-800">
+              <input id="chatInput" type="text" placeholder="मैसेज लिखें..." class="flex-1 bg-zinc-950 border border-zinc-800 rounded-full px-4 py-2 text-sm text-white focus:outline-none focus:border-rose-500" />
+              <button type="submit" class="px-4 py-2 rounded-full dhaakad-gradient text-sm font-bold text-white">भेजें</button>
+            </form>
+          </div>
+        </div>
+      `;
+    }
+
+    function selectChat(handle) {
+      state.activeChatHandle = handle;
+      saveState();
+      renderAll();
+    }
+
+    function sendChatMessage(e) {
+      e.preventDefault();
+      const input = document.getElementById('chatInput');
+      const text = input.value.trim();
+      if (!text) return;
+      const chat = state.chats[state.activeChatHandle];
+      const nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      chat.messages.push({ sender: 'me', text, time: nowTime });
+      input.value = '';
+      saveState();
+      renderAll();
+
+      setTimeout(() => {
+        const target = state.chats[state.activeChatHandle];
+        if (!target) return;
+        target.messages.push({
+          sender: 'them',
+          text: 'बढ़िया! बिल्कुल सही कहा 🔥👍',
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        });
+        saveState();
+        if (state.activeTab === 'messages') renderAll();
+      }, 650);
+    }
+
+    function renderProfile(container) {
+      const p = state.profile;
+      const initial = (p.name || 'ध').trim().charAt(0).toUpperCase();
+      const myPosts = state.posts.filter(item => item.handle === p.handle);
+      const savedPosts = state.posts.filter(item => state.savedPostIds.includes(item.id));
+
+      container.innerHTML = `
+        <div class="bg-zinc-900/70 border border-zinc-800/80 rounded-3xl p-5 sm:p-7 mb-6">
+          <div class="flex flex-col sm:flex-row items-center sm:items-start gap-5">
+            <div class="dhaakad-ring shrink-0">
+              <div class="w-24 h-24 rounded-full bg-gradient-to-br ${p.avatarColor} flex items-center justify-center font-extrabold text-3xl text-white">
+                ${initial}
+              </div>
+            </div>
+
+            <div class="flex-1 text-center sm:text-left">
+              <div class="flex flex-col sm:flex-row sm:items-center gap-3 mb-2">
+                <h2 class="text-xl font-extrabold text-white">${escapeHtml(p.name)}</h2>
+                <span class="text-xs font-semibold text-zinc-400">${escapeHtml(p.handle)}</span>
+                <div class="flex items-center justify-center sm:justify-start gap-2 sm:ml-auto">
+                  <button onclick="openEditProfile()" class="px-4 py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-white">
+                    प्रोफ़ाइल बदलें
+                  </button>
+                  <button onclick="openCreatePost('post')" class="px-4 py-1.5 rounded-xl dhaakad-gradient text-xs font-bold text-white">
+                    + नई पोस्ट
+                  </button>
+                </div>
+              </div>
+
+              <div class="flex justify-center sm:justify-start gap-6 my-3 text-sm">
+                <div><span class="font-extrabold text-white">${myPosts.length}</span> <span class="text-zinc-400">पोस्ट</span></div>
+                <div><span class="font-extrabold text-white">${p.followers}</span> <span class="text-zinc-400">फ़ॉलोअर्स</span></div>
+                <div><span class="font-extrabold text-white">${p.following}</span> <span class="text-zinc-400">फ़ॉलोइंग</span></div>
+              </div>
+
+              <p class="text-sm text-zinc-200 leading-relaxed">${escapeHtml(p.bio)}</p>
+              ${p.city ? `<div class="text-xs text-amber-400 mt-1.5 font-semibold">📍 ${escapeHtml(p.city)}</div>` : ''}
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3 flex items-center justify-between">
+          <h3 class="text-base font-extrabold text-white">आपकी पोस्ट (${myPosts.length})</h3>
+          <span class="text-xs text-zinc-400">सेव की गई: ${savedPosts.length}</span>
+        </div>
+
+        ${myPosts.length === 0 ? `
+          <div class="bg-zinc-900/50 border border-zinc-800 rounded-3xl p-10 text-center">
+            <p class="text-sm text-zinc-400 mb-3">आपने अभी तक कोई पोस्ट नहीं बनाई है।</p>
+            <button onclick="openCreatePost('post')" class="px-5 py-2.5 rounded-2xl dhaakad-gradient text-xs font-extrabold text-white">
+              पहली पोस्ट बनाएं
+            </button>
+          </div>
+        ` : `
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            ${myPosts.map(post => `
+              <button onclick="openExplorePost('${post.id}')" class="group relative aspect-square rounded-2xl overflow-hidden bg-zinc-900 border border-zinc-800">
+                <img src="${post.image}" alt="My post" class="w-full h-full object-cover ${post.filter || 'filter-none'}" />
+                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-4 text-sm font-bold text-white">
+                  <span>❤️ ${post.likes}</span>
+                  <span>💬 ${post.comments.length}</span>
+                </div>
+              </button>
+            `).join('')}
+          </div>
+        `}
+      `;
+      }
+        
