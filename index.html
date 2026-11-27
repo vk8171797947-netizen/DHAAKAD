@@ -1933,7 +1933,156 @@
     })();
 
     renderAll();
-  
+ <div id="dhakadMusicBox" style="margin-top: 10px;">
+  <div style="display: flex; gap: 8px;">
+    <input
+      id="dhakadMusicInput"
+      type="text"
+      placeholder="गाना या कलाकार खोजें (जैसे Haryana song)..."
+      style="flex: 1; padding: 8px 10px; border-radius: 8px; border: 1px solid #444; background: #18181b; color: #fff;"
+    />
+    <button
+      id="dhakadMusicBtn"
+      type="button"
+      style="padding: 8px 14px; border-radius: 8px; border: none; background: #ff4d4d; color: #fff; cursor: pointer;"
+    >
+      खोजें
+    </button>
+  </div>
+
+  <div id="dhakadMusicMsg" style="font-size: 12px; color: #b0b0b8; margin-top: 6px;"></div>
+  <div id="dhakadMusicList" style="display: flex; flex-direction: column; gap: 6px; margin-top: 8px; max-height: 210px; overflow-y: auto;"></div>
+  <audio id="dhakadMusicPlayer" controls style="width: 100%; margin-top: 8px; display: none;"></audio>
+</div>
+   (() => {
+  const input = document.getElementById("dhakadMusicInput");
+  const btn = document.getElementById("dhakadMusicBtn");
+  const msg = document.getElementById("dhakadMusicMsg");
+  const list = document.getElementById("dhakadMusicList");
+  const player = document.getElementById("dhakadMusicPlayer");
+
+  if (!input || !btn || !msg || !list || !player) return;
+
+  let timer = null;
+
+  async function fetchSongs(term) {
+    const url = `https://itunes.apple.com/search?term=${encodeURIComponent(term)}&media=music&entity=song&limit=12`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("Network error");
+    const data = await res.json();
+    return (data.results || []).filter((item) => item.previewUrl);
+  }
+
+  async function runSearch(rawText) {
+    const query = rawText.trim();
+    list.innerHTML = "";
+
+    if (!query) {
+      msg.textContent = "";
+      return;
+    }
+
+    msg.textContent = "गाने खोजे जा रहे हैं...";
+
+    try {
+      let songs = await fetchSongs(query);
+
+      if (songs.length === 0 && /haryana/i.test(query) && !/haryanvi/i.test(query)) {
+        songs = await fetchSongs(query.replace(/haryana/i, "Haryanvi"));
+      }
+
+      if (songs.length === 0) {
+        msg.textContent = 'कोई गाना नहीं मिला — आप "फ़ोन से ऑडियो चुनें" से फ़ाइल लगा सकते हैं।';
+        return;
+      }
+
+      msg.textContent = `${songs.length} गाने मिले — प्रीव्यू के लिए गाने पर टैप करें:`;
+      renderSongs(songs);
+    } catch (err) {
+      console.error(err);
+      msg.textContent = "सर्च करने में समस्या आई, कृपया दोबारा प्रयास करें।";
+    }
+  }
+
+  function renderSongs(songs) {
+    list.innerHTML = "";
+
+    songs.forEach((song) => {
+      const item = document.createElement("div");
+      item.style.cssText =
+        "display:flex; align-items:center; justify-content:space-between; gap:8px; padding:8px; border-radius:8px; background:#242429; cursor:pointer;";
+
+      const infoWrap = document.createElement("div");
+      infoWrap.style.cssText = "display:flex; align-items:center; gap:8px; min-width:0;";
+
+      const thumb = document.createElement("img");
+      thumb.src = song.artworkUrl60 || song.artworkUrl100 || "";
+      thumb.alt = song.trackName || "Song";
+      thumb.style.cssText = "width:38px; height:38px; border-radius:6px; object-fit:cover; flex-shrink:0;";
+
+      const textWrap = document.createElement("div");
+      textWrap.style.cssText = "min-width:0;";
+
+      const title = document.createElement("div");
+      title.textContent = song.trackName;
+      title.style.cssText =
+        "font-size:13px; font-weight:600; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;";
+
+      const artist = document.createElement("div");
+      artist.textContent = song.artistName;
+      artist.style.cssText =
+        "font-size:11px; color:#bbbbC4; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;";
+
+      textWrap.append(title, artist);
+      infoWrap.append(thumb, textWrap);
+
+      const pickBtn = document.createElement("button");
+      pickBtn.type = "button";
+      pickBtn.textContent = "चुनें";
+      pickBtn.style.cssText =
+        "padding:5px 10px; border-radius:6px; border:none; background:#3b82f6; color:#fff; font-size:12px; cursor:pointer; flex-shrink:0;";
+
+      item.addEventListener("click", () => {
+        player.src = song.previewUrl;
+        player.style.display = "block";
+        player.play().catch(() => {});
+      });
+
+      pickBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const chosen = {
+          id: song.trackId,
+          title: song.trackName,
+          artist: song.artistName,
+          previewUrl: song.previewUrl,
+          artwork: song.artworkUrl100 || song.artworkUrl60
+        };
+        window.selectedStoryAudio = chosen;
+        msg.textContent = `चुना गया ऑडियो: ${chosen.title} — ${chosen.artist}`;
+        document.dispatchEvent(new CustomEvent("dhakadAudioSelected", { detail: chosen }));
+      });
+
+      item.append(infoWrap, pickBtn);
+      list.appendChild(item);
+    });
+  }
+
+  btn.addEventListener("click", () => runSearch(input.value));
+
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      runSearch(input.value);
+    }
+  });
+
+  input.addEventListener("input", () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => runSearch(input.value), 450);
+  });
+})();
+     const storyOnlineAudio = window.selectedStoryAudio || null;
+      
 </script>
   
 </body>
